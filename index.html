@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Referral flow · case study prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#000; --ink2:#747474; --line:#E3E3E3; --soft:#F8F8F8; --chip:#F1F1F1;
+  --green:#64E86A; --green-ink:#1B8C33; --page:#EDEDEF; --white:#fff;
+  --r:16px; --font:"Instrument Sans",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font);background:var(--page);color:var(--ink);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+svg{display:block}
+
+/* ---------- layout ---------- */
+.wrap{min-height:100%;display:flex;gap:48px;align-items:center;justify-content:center;padding:32px 16px}
+.panel{width:320px;flex-shrink:0}
+.panel h1{font-size:24px;font-weight:700;line-height:1.2}
+.panel p.lead{color:var(--ink2);font-size:14px;line-height:1.5;margin:10px 0 20px}
+.flow{display:flex;flex-direction:column;gap:4px}
+.flow .grp{font-size:12px;font-weight:600;color:var(--ink2);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 4px}
+.flow button{display:flex;gap:10px;align-items:baseline;text-align:left;padding:8px 10px;border-radius:10px;font-size:14px}
+.flow button span{color:var(--ink2);font-size:12px;min-width:18px}
+.flow button:hover{background:#fff}
+.flow button.on{background:#fff;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.reset{margin-top:16px;font-size:13px;color:var(--ink2);text-decoration:underline}
+
+.phone{width:375px;height:812px;background:#fff;border-radius:48px;position:relative;overflow:hidden;
+  box-shadow:0 0 0 10px #111,0 0 0 11px #333,0 30px 80px rgba(0,0,0,.25);flex-shrink:0}
+@media (max-width:860px){
+  .wrap{flex-direction:column-reverse;gap:24px;padding:16px}
+  .panel{width:100%;max-width:375px}
+}
+@media (max-width:420px){
+  .wrap{padding:0;gap:0}
+  .phone{width:100vw;height:100dvh;border-radius:0;box-shadow:none}
+  .panel{padding:20px 16px 40px}
+}
+
+/* ---------- phone chrome ---------- */
+.status{position:absolute;top:0;left:0;right:0;height:47px;display:flex;align-items:center;justify-content:space-between;padding:14px 30px 0 34px;font-size:16px;font-weight:600;z-index:30;pointer-events:none}
+.status .sig{display:flex;gap:6px;align-items:center}
+.homebar{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:#000;z-index:60;pointer-events:none}
+
+.screen{position:absolute;inset:0;background:#fff;display:none;flex-direction:column}
+.screen.on{display:flex}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 16px 24px;scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+.scroll.has-footer{padding-bottom:150px}
+
+.hdr{height:56px;margin-top:47px;display:grid;grid-template-columns:48px 1fr 48px;align-items:center;padding:0 8px;flex-shrink:0}
+.hdr h2{font-size:18px;font-weight:600;text-align:center}
+.hdr .ic{width:40px;height:40px;display:grid;place-items:center;border-radius:20px}
+.hdr .ic:active{background:var(--chip)}
+
+/* ---------- atoms ---------- */
+.btn{height:48px;border-radius:999px;width:100%;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn.primary{background:#000;color:#fff}
+.btn.primary:active{opacity:.85}
+.btn.secondary{border:1px solid #000;background:#fff}
+.btn.tertiary{height:40px;text-decoration:underline;text-underline-offset:3px}
+.footer{position:absolute;left:0;right:0;bottom:0;background:#fff;padding:12px 16px 30px;display:flex;flex-direction:column;gap:4px;z-index:5;box-shadow:0 -4px 16px rgba(0,0,0,.06)}
+.footer.flat{box-shadow:none}
+
+.card{border-radius:var(--r);background:var(--soft);padding:16px}
+.list{border:1px solid var(--line);border-radius:var(--r);background:#fff}
+.list h3{font-size:16px;font-weight:700;padding:16px 16px 4px}
+.row{display:flex;gap:16px;align-items:flex-start;padding:16px;position:relative;text-align:left;width:100%}
+.row + .row::before{content:"";position:absolute;top:0;left:16px;right:16px;border-top:1px solid var(--line)}
+.row .t{font-size:16px;font-weight:500;line-height:1.35}
+.row .s{font-size:14px;color:var(--ink2);line-height:1.4;margin-top:2px}
+.row.center{align-items:center}
+.row .grow{flex:1;min-width:0}
+.row .ico{width:24px;height:24px;flex-shrink:0;margin-top:1px}
+
+.avatar{width:48px;height:48px;border-radius:24px;background:var(--chip);display:grid;place-items:center;font-weight:700;font-size:18px;flex-shrink:0;position:relative}
+.avatar.lg{width:64px;height:64px;border-radius:32px;font-size:24px}
+.dot{width:8px;height:8px;border-radius:4px;background:#F04438;display:inline-block;margin-right:6px;vertical-align:1px}
+
+.hero{text-align:center;padding:8px 0 16px}
+.hero h1{font-size:32px;font-weight:700;letter-spacing:-.01em;line-height:1.1;margin-top:8px}
+.hero p{font-size:18px;font-weight:600;margin-top:6px;line-height:1.3}
+
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);background:var(--chip);border-radius:999px;padding:4px;margin:16px 0 8px}
+.tabs button{height:36px;border-radius:999px;font-size:15px;color:var(--ink2)}
+.tabs button.on{background:#fff;color:#000;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+
+.amount{font-size:56px;font-weight:700;letter-spacing:-.02em;text-align:center;margin-top:12px}
+.amount small{font-size:24px}
+.caption{text-align:center;font-size:14px;color:var(--ink2);margin-top:2px}
+
+.trail{font-size:16px;font-weight:500;white-space:nowrap}
+.trail.muted{color:#9a9a9a}
+.chev{flex-shrink:0;align-self:center}
+
+.toast{position:absolute;left:16px;right:16px;bottom:150px;background:#111;color:#fff;border-radius:14px;padding:14px 16px;font-size:15px;z-index:80;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;text-align:center}
+.toast.on{opacity:1;transform:none}
+
+/* ---------- sheets ---------- */
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,.4);z-index:40;opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:50;border-radius:24px 24px 0 0;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);padding:8px 16px 34px}
+.sheet.on{transform:none}
+.sheet.ios{background:#F2F2F7}
+.sheet.app{background:#fff;text-align:center}
+.grab{width:36px;height:5px;border-radius:3px;background:#C7C7CC;margin:0 auto 16px}
+.preview{display:flex;gap:12px;align-items:center;background:#fff;border-radius:14px;padding:12px}
+.preview .thumb{width:56px;height:56px;border-radius:12px;background:#EEF9EE;display:grid;place-items:center;flex-shrink:0}
+.preview .pt{font-size:15px;font-weight:600}
+.preview .pu{font-size:13px;color:var(--ink2);margin-top:2px}
+.apps{display:flex;justify-content:space-between;margin:20px 0}
+.apps button{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;width:60px}
+.apps i{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;color:#fff;font-style:normal;font-weight:700;font-size:22px}
+.acts{background:#fff;border-radius:12px}
+.acts button{display:block;width:100%;text-align:left;padding:14px 16px;font-size:16px}
+.acts button + button{border-top:1px solid #E5E5EA}
+
+/* ios alert */
+.alert{position:absolute;inset:0;z-index:90;display:none;place-items:center;background:rgba(0,0,0,.35)}
+.alert.on{display:grid}
+.alert .box{width:270px;background:rgba(242,242,247,.97);border-radius:14px;text-align:center;overflow:hidden}
+.alert .bt{padding:18px 16px 14px;font-size:16px;font-weight:600;line-height:1.3}
+.alert .bt p{font-weight:400;font-size:13px;margin-top:4px}
+.alert .bb{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #C6C6C8}
+.alert .bb button{padding:12px;color:#007AFF;font-size:16px}
+.alert .bb button + button{border-left:1px solid #C6C6C8;font-weight:600}
+
+/* timeline */
+.tl{padding:16px}
+.tl h3{font-size:16px;font-weight:700;margin-bottom:12px}
+.step{display:flex;gap:12px}
+.rail{display:flex;flex-direction:column;align-items:center;width:22px;flex-shrink:0;padding-top:2px}
+.ind{width:22px;height:22px;border-radius:11px;flex-shrink:0;display:grid;place-items:center}
+.ind.done{background:var(--green)}
+.ind.now{border:6px solid var(--green);background:#fff}
+.ind.todo{border:2px solid #D9D9D9;background:#fff}
+.line{width:2px;flex:1;min-height:12px;margin:4px 0;background:var(--line)}
+.line.done{background:var(--green)}
+.step .tx{padding-bottom:16px;flex:1}
+.step:last-child .tx{padding-bottom:0}
+.step .a{font-size:16px;font-weight:500}
+.step .b{font-size:14px;color:var(--ink2);margin-top:2px;line-height:1.4}
+.step.now .a{font-weight:600}
+.step.now .b{color:var(--green-ink)}
+.step.todo .a{color:var(--ink2)}
+
+.kv{display:flex;justify-content:space-between;padding:16px;font-size:16px;font-weight:500;position:relative}
+.kv + .kv::before{content:"";position:absolute;top:0;left:16px;right:16px;border-top:1px solid var(--line)}
+
+/* home */
+.home-top{display:flex;align-items:center;justify-content:space-between;margin-top:47px;padding:10px 16px 0}
+.home-top h2{font-size:32px;font-weight:700}
+.home-top .r{display:flex;gap:14px;align-items:center}
+.chipbtn{display:flex;gap:6px;align-items:center;background:var(--chip);border-radius:999px;padding:6px 12px 6px 10px;font-size:15px;font-weight:500}
+.chipbtn:active{background:#e4e4e4}
+.me{width:40px;height:40px;border-radius:20px;background:#000;display:grid;place-items:center;color:#fff}
+.search{margin:16px 0;height:44px;border-radius:12px;background:var(--soft);display:flex;align-items:center;gap:10px;padding:0 12px;color:var(--ink2);font-size:16px}
+.cats{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;font-size:14px;font-weight:500;gap:8px}
+.cats div{display:flex;flex-direction:column;align-items:center;gap:6px}
+.cats i{width:56px;height:56px;border-radius:28px;background:var(--soft);display:grid;place-items:center}
+.promo{height:300px;border-radius:20px;margin-top:20px;background:linear-gradient(160deg,#2b2b2b,#6b6b6b);color:#fff;padding:24px;display:flex;flex-direction:column;justify-content:flex-end}
+.promo b{font-size:28px;line-height:1.1}
+.promo span{font-size:17px;font-weight:600;margin-top:6px}
+.promo em{font-style:normal;color:var(--green)}
+.sect{font-size:22px;font-weight:700;margin:24px 0 12px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{height:120px;border-radius:16px;background:var(--soft);padding:12px;display:flex;flex-direction:column;justify-content:flex-end;font-size:15px;font-weight:600}
+.tile span{font-size:13px;color:#7C3AED;font-weight:600}
+
+.note{font-size:13px;color:var(--ink2);text-align:center;line-height:1.45;margin-top:16px}
+.note b{color:#000;font-weight:600;font-size:14px;display:block;margin-bottom:2px}
+.center-block{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px 140px}
+.center-block h1{font-size:28px;font-weight:700;line-height:1.15;margin-top:12px}
+.center-block p{font-size:16px;color:var(--ink2);line-height:1.5;margin-top:8px}
+.steps-ol{text-align:left;margin-top:16px;display:flex;flex-direction:column;gap:10px}
+.steps-ol div{display:flex;gap:12px;align-items:center;font-size:16px}
+.steps-ol i{width:28px;height:28px;border-radius:14px;background:var(--soft);display:grid;place-items:center;font-style:normal;font-weight:600;font-size:14px;flex-shrink:0}
+.perm{border:1px solid var(--line);border-radius:var(--r);padding:24px 16px;text-align:center;margin:auto 0}
+.perm h1{font-size:24px;font-weight:700;margin-top:12px;line-height:1.2}
+.perm p{font-size:15px;color:var(--ink2);margin:8px 0 16px;line-height:1.45}
+.perm small{display:block;font-size:13px;color:var(--ink2);margin-top:12px}
+.empty-pad{height:8px}
+.pill{font-size:12px;font-weight:600;background:#EEF9EE;color:var(--green-ink);border-radius:999px;padding:3px 8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <aside class="panel">
+    <h1>Referral flow</h1>
+    <p class="lead">Case study prototype. Redesign of a cash back app referral flow: understand and share, then track and nudge. Tap through the phone or jump to a screen.</p>
+    <nav class="flow" id="flow"></nav>
+    <button class="reset" onclick="resetAll()">Reset prototype</button>
+  </aside>
+
+  <div class="phone" id="phone">
+    <div class="status"><span>9:41</span><span class="sig">
+      <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 2.5c2.3 0 4.4.9 6 2.4l1.2-1.3A10.4 10.4 0 0 0 8 .7 10.4 10.4 0 0 0 .8 3.6L2 4.9a8.6 8.6 0 0 1 6-2.4Zm0 3.6c1.3 0 2.5.5 3.4 1.3l1.2-1.3A6.9 6.9 0 0 0 8 4.3a6.9 6.9 0 0 0-4.6 1.8l1.2 1.3c.9-.8 2.1-1.3 3.4-1.3Zm0 3.5-2 2.1L8 12l2-2.3-2-1.9Z"/></svg>
+      <svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="#000" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2"/><rect x="25" y="4.5" width="1.5" height="4" rx=".75" opacity=".4"/></svg>
+    </span></div>
+
+    <!-- 0 HOME -->
+    <section class="screen" id="home">
+      <div class="home-top">
+        <h2>Home</h2>
+        <div class="r">
+          <button class="chipbtn" onclick="go('referral')"><i data-i="userplus" data-s="18"></i>Give $3</button>
+          <i data-i="bell"></i>
+          <div class="me"><i data-i="user" data-c="#fff" data-s="20"></i></div>
+        </div>
+      </div>
+      <div class="scroll">
+        <div class="search"><i data-i="search" data-c="#747474" data-s="18"></i>Search an offer, a brand...</div>
+        <div class="cats">
+          <div><i><svg-i data-i="globe"></svg-i></i>Online</div>
+          <div><i><svg-i data-i="card"></svg-i></i>Card-linked</div>
+          <div><i><svg-i data-i="gift"></svg-i></i>Gift cards</div>
+        </div>
+        <div class="promo"><b>Internet deal</b><span>Up to <em>30%</em> off + <em>8%</em> cash back</span></div>
+        <div class="sect">Boosted</div>
+        <div class="tiles">
+          <div class="tile">Fashion store<span>10% cash back</span></div>
+          <div class="tile">Home &amp; garden<span>8% cash back</span></div>
+          <div class="tile">Sports<span>6% cash back</span></div>
+          <div class="tile">Travel<span>5% cash back</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1 REFERRAL -->
+    <section class="screen" id="referral">
+      <div class="hdr"><button class="ic" onclick="back()"><i data-i="chevl"></i></button><h2>Referrals</h2><span></span></div>
+      <div class="scroll has-footer">
+        <div class="hero">
+          <div style="display:flex;justify-content:center"><svg-plant data-s="96"></svg-plant></div>
+          <h1>Give $3, get $3</h1>
+          <p>+ 10% of their cash back for 12 months, paid by us</p>
+        </div>
+        <button class="list row center" style="margin-bottom:16px" onclick="go('referrals')">
+          <i data-i="users" class="ico"></i>
+          <div class="grow"><div class="t">My referrals</div><div class="s" style="color:#000">3 in progress · $46.88 earned</div></div>
+          <i data-i="chevr" class="chev"></i>
+        </button>
+        <div class="card" style="margin-bottom:16px">
+          <div style="font-weight:700;font-size:16px">What a friend can earn you</div>
+          <div style="font-size:14px;color:var(--ink2);margin-top:4px;line-height:1.4">If Paul earns $120 in cash back this year, like an average member</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px">
+            <div><div style="font-size:14px;font-weight:500">You get</div><div style="font-size:13px;color:var(--ink2);margin-top:2px">$3 bonus + $12 (10% of $120)</div></div>
+            <div style="font-size:32px;font-weight:700">$15</div>
+          </div>
+        </div>
+        <div class="list" style="margin-bottom:16px">
+          <h3>How it works</h3>
+          <div class="row"><i data-i="link" class="ico"></i><div class="grow"><div class="t">Share your link</div><div class="s">Your code is added automatically when they sign up.</div></div></div>
+          <div class="row"><i data-i="bank" class="ico"></i><div class="grow"><div class="t">They connect a bank account</div><div class="s">Any bank except PayPal. It unlocks their cash back.</div></div></div>
+          <div class="row"><i data-i="coin" class="ico"></i><div class="grow"><div class="t">You both get $3</div><div class="s">As soon as their bank is connected. Then the 10% starts.</div></div></div>
+        </div>
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-size:12px;color:var(--ink2)">Your code</div><div style="font-size:24px;font-weight:700;letter-spacing:.02em">UBBAKZ</div></div>
+          <button class="hdr-ic" onclick="toast('Code copied')" aria-label="Copy code" style="width:40px;height:40px;display:grid;place-items:center"><i data-i="copy"></i></button>
+        </div>
+        <div class="note"><b>Good to know</b>Your bonus is paid once your friend connects a bank. <u>See full terms</u></div>
+      </div>
+      <div class="footer">
+        <button class="btn primary" onclick="openSheet('share')"><i data-i="link" data-c="#fff" data-s="20"></i>Share my link</button>
+        <button class="btn tertiary" onclick="go('contacts')">Invite from contacts</button>
+      </div>
+    </section>
+
+    <!-- 2 CONTACTS PERMISSION -->
+    <section class="screen" id="contacts">
+      <div class="hdr"><button class="ic" onclick="back()"><i data-i="x"></i></button><h2>Invite from contacts</h2><span></span></div>
+      <div class="scroll" style="display:flex;flex-direction:column">
+        <div class="perm">
+          <div style="display:flex;justify-content:center"><i data-i="idcard" data-s="40"></i></div>
+          <h1>Pick friends from your contacts</h1>
+          <p>Choose who to invite. We'll prepare the message, you send it.</p>
+          <button class="btn primary" onclick="showAlert()">Continue</button>
+          <small>Contacts stay on your phone. We never save them.</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 NEXT STEPS -->
+    <section class="screen" id="next">
+      <div class="hdr"><button class="ic" onclick="go('referral',true)"><i data-i="chevl"></i></button><h2>Referrals</h2><span></span></div>
+      <div class="center-block">
+        <svg-plant data-s="120" class="grow-anim"></svg-plant>
+        <h1>Here's what happens next</h1>
+        <div class="steps-ol">
+          <div><i>1</i>Your friend opens your link</div>
+          <div><i>2</i>They sign up and connect a bank</div>
+          <div><i>3</i>You both get $3</div>
+        </div>
+        <p>We'll notify you at each step.</p>
+      </div>
+      <div class="footer flat">
+        <button class="btn primary" onclick="go('referrals')">Track my referrals</button>
+        <button class="btn tertiary" onclick="go('referral',true);setTimeout(()=>openSheet('share'),250)">Share again</button>
+      </div>
+    </section>
+
+    <!-- 5 MY REFERRALS -->
+    <section class="screen" id="referrals">
+      <div class="hdr"><button class="ic" onclick="back()"><i data-i="chevl"></i></button><h2>My referrals</h2><span></span></div>
+      <div class="scroll has-footer">
+        <div class="amount">$46<small>.88</small></div>
+        <div class="caption">Earned from referrals · +$4.20 this month</div>
+        <div class="tabs" id="tabs">
+          <button class="on" data-t="unlock">To unlock</button>
+          <button data-t="earning">Earning</button>
+          <button data-t="ended">Ended</button>
+        </div>
+        <div id="reflist"></div>
+      </div>
+      <div class="footer">
+        <button class="btn primary" onclick="go('referral');setTimeout(()=>openSheet('share'),250)"><i data-i="link" data-c="#fff" data-s="20"></i>Share my link</button>
+      </div>
+    </section>
+
+    <!-- 6 DETAILS -->
+    <section class="screen" id="details">
+      <div class="hdr"><button class="ic" onclick="back()"><i data-i="chevl"></i></button><h2>Referral details</h2><span></span></div>
+      <div class="scroll has-footer" id="detailBody"></div>
+      <div class="footer">
+        <button class="btn primary" id="remindBtn" onclick="openRemind(current)">Remind Paul</button>
+        <button class="btn tertiary" onclick="toast('Help center would open here')">Stuck? Get help</button>
+      </div>
+    </section>
+
+    <div class="scrim" id="scrim" onclick="closeSheets()"></div>
+
+    <!-- SHARE SHEET (native) -->
+    <div class="sheet ios" id="share">
+      <div class="grab"></div>
+      <div class="preview"><div class="thumb"><svg-plant data-s="44"></svg-plant></div><div><div class="pt" id="pvTitle">Alex gave you $3</div><div class="pu">app.link/r/alex</div></div></div>
+      <div class="apps" id="apps"></div>
+      <div class="acts">
+        <button onclick="shareDone('Link copied')">Copy link</button>
+        <button onclick="toast('Code copied');closeSheets()">Copy code</button>
+      </div>
+    </div>
+
+    <!-- CASH BACK MOMENT -->
+    <div class="sheet app" id="cashback">
+      <div class="grab"></div>
+      <div style="display:flex;justify-content:center"><svg-plant data-s="96"></svg-plant></div>
+      <div style="font-size:24px;font-weight:700;margin-top:8px">+$4.20 cash back confirmed</div>
+      <div style="font-size:16px;color:var(--ink2);margin:8px 8px 20px;line-height:1.45">Know someone who'd like this? Give them $3 to start, you get $3 too.</div>
+      <button class="btn primary" onclick="closeSheets();setTimeout(()=>go('referral'),200)">Give $3 to a friend</button>
+      <button class="btn tertiary" onclick="closeSheets()">Not now</button>
+    </div>
+
+    <div class="alert" id="alert"><div class="box">
+      <div class="bt">“App” would like to access your contacts<p>Pick friends to invite. Contacts stay on your phone.</p></div>
+      <div class="bb"><button onclick="denyContacts()">Don't Allow</button><button onclick="allowContacts()">Allow</button></div>
+    </div></div>
+
+    <div class="toast" id="toast"></div>
+    <div class="homebar"></div>
+  </div>
+</div>
+
+<script>
+/* ---------- icons ---------- */
+const P={
+ chevl:'<path d="M15 18l-6-6 6-6"/>',
+ chevr:'<path d="M9 18l6-6-6-6"/>',
+ x:'<path d="M6 6l12 12M18 6L6 18"/>',
+ link:'<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
+ bank:'<path d="M3 10h18L12 4 3 10Z"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>',
+ coin:'<circle cx="12" cy="12" r="9"/><path d="M14.5 9.5c-.4-.9-1.4-1.5-2.5-1.5-1.5 0-2.5.8-2.5 2s1 1.6 2.5 2 2.5.8 2.5 2-1 2-2.5 2c-1.2 0-2.2-.6-2.6-1.6M12 6.5V8m0 8v1.5"/>',
+ copy:'<rect x="9" y="9" width="12" height="12" rx="3"/><path d="M5 15H4.5A1.5 1.5 0 0 1 3 13.5v-9A1.5 1.5 0 0 1 4.5 3h9A1.5 1.5 0 0 1 15 4.5V5"/>',
+ users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.9.7 3.2 2.5 3.5 5.2"/>',
+ userplus:'<circle cx="10" cy="8" r="4"/><path d="M3 20c.7-3.6 3.5-6 7-6 1.3 0 2.5.3 3.5.9M19 14v6M16 17h6"/>',
+ user:'<circle cx="12" cy="8" r="4"/><path d="M4.5 20c.8-3.6 3.8-6 7.5-6s6.7 2.4 7.5 6"/>',
+ bell:'<path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15L6 16Z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
+ search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
+ globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.5 5.7 3.5 9s-1 6.3-3.5 9c-2.5-2.7-3.5-5.7-3.5-9s1-6.3 3.5-9Z"/>',
+ card:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h3"/>',
+ gift:'<rect x="3.5" y="8" width="17" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12M12 8c-1-3-5-4-5-1.5S12 8 12 8Zm0 0c1-3 5-4 5-1.5S12 8 12 8Z"/>',
+ idcard:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2.2"/><path d="M5.5 16.5c.6-1.8 1.9-2.7 3.5-2.7s2.9.9 3.5 2.7M14.5 9.5H18M14.5 13H18"/>',
+ check:'<path d="M5 12.5l4.2 4L19 7"/>'
+};
+function svg(name,size=24,color='#000',sw=1.6){return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${P[name]}</svg>`}
+function plant(s){return `<svg width="${s}" height="${s}" viewBox="0 0 100 100"><path d="M50 72V40" stroke="#3E8E2E" stroke-width="3"/><path d="M50 58c-14 0-22-8-24-18 12-2 22 4 24 18Z" fill="#5BBF3A"/><path d="M50 52c12 0 20-7 22-16-11-2-20 3-22 16Z" fill="#7AD64F"/><circle cx="50" cy="26" r="15" fill="#D9D9DC" stroke="#A9A9AE" stroke-width="2"/><text x="50" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#7D7D82" font-family="Instrument Sans,sans-serif">$</text><path d="M30 70h40l-5 24H35l-5-24Z" fill="#222"/><rect x="28" y="66" width="44" height="7" rx="2" fill="#333"/></svg>`}
+function paintIcons(root=document){
+  root.querySelectorAll('i[data-i]').forEach(e=>{if(e.dataset.done)return;e.innerHTML=svg(e.dataset.i,+(e.dataset.s||24),e.dataset.c||'#000');e.dataset.done=1;e.style.display='inline-grid'});
+  root.querySelectorAll('svg-i').forEach(e=>{e.outerHTML=svg(e.dataset.i,26)});
+  root.querySelectorAll('svg-plant').forEach(e=>{const w=document.createElement('div');w.className=e.className;w.innerHTML=plant(+e.dataset.s);e.replaceWith(w)});
+}
+
+/* ---------- data ---------- */
+const people={
+ paul:{n:'Paul Martin',i:'P',tab:'unlock',sub:'Needs to connect a bank',action:true,state:'bank',invited:'Mar 1',signed:'Mar 3',reminded:false},
+ lea:{n:'Léa Dubois',i:'L',tab:'unlock',sub:'Not signed up yet',action:true,state:'signup',invited:'Mar 6',reminded:false,contact:true},
+ sam:{n:'Sam Petit',i:'S',tab:'unlock',sub:'Needs to connect a bank',action:false,state:'bank',invited:'Feb 26',signed:'Feb 27',reminded:'yesterday'},
+ nina:{n:'Nina Roy',i:'N',tab:'earning',earned:'$14.20',sub:'Earning until Jan 12, 2027'},
+ tom:{n:'Tom Garcia',i:'T',tab:'earning',earned:'$9.85',sub:'Earning until Nov 3, 2026'},
+ eva:{n:'Eva Moreau',i:'E',tab:'ended',earned:'$22.83',sub:'Ended on Mar 23, 2025'}
+};
+let tab='unlock', current='paul';
+
+function renderList(){
+  const el=document.getElementById('reflist'); let h='<div class="list">';
+  if(tab==='unlock'){
+    h+=`<button class="row center" onclick="toast('Opened 4 times · 1 sign-up (Sam)')"><i class="ico">${svg('link')}</i><div class="grow"><div class="t">Your shared link</div><div class="s" style="color:#000">Opened 4 times · 1 sign-up</div></div>${svg('chevr')}</button>`;
+  }
+  Object.entries(people).filter(([k,p])=>p.tab===tab).forEach(([k,p])=>{
+    let trail='';
+    if(tab==='unlock') trail = p.reminded?`<span class="trail muted">Reminded</span>`:`<span class="trail" onclick="event.stopPropagation();openRemind('${k}')">Remind</span>`;
+    else trail=`<span class="trail">${p.earned}</span>`;
+    const sub=(tab==='unlock'&&!p.reminded?'<span class="dot"></span>':'')+(p.reminded?'Reminded '+p.reminded:p.sub);
+    h+=`<button class="row center" onclick="openDetails('${k}')"><div class="avatar">${p.i}</div><div class="grow"><div class="t">${p.n}</div><div class="s" style="color:#000">${sub}</div></div>${trail}${svg('chevr')}</button>`;
+  });
+  el.innerHTML=h+'</div>';
+}
+document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;tab=b.dataset.t;document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));renderList()});
+
+function openDetails(k){
+  current=k; const p=people[k]; const first=p.n.split(' ')[0];
+  let body=`<div style="text-align:center;padding:8px 0 16px"><div class="avatar lg" style="margin:0 auto">${p.i}</div><div style="font-size:24px;font-weight:700;margin-top:12px">${p.n}</div></div>`;
+  if(p.tab==='unlock'){
+    body+=`<div class="list" style="margin-bottom:16px"><div class="kv"><span>You've earned</span><span>$0 so far</span></div><div class="kv"><span>Next reward</span><span>$3 for you, $3 for ${first}</span></div></div>`;
+    const s1=p.state==='signup'?'now':'done', s2=p.state==='signup'?'todo':'now';
+    body+=`<div class="list tl"><h3>${first}'s progress</h3>
+      ${step(s1,'Signed up with your link',s1==='done'?`${p.signed} · invited ${p.invited}`:`Now · invited ${p.invited} via contacts`,true)}
+      ${step(s2,'Connect a bank account',s2==='now'?`Now · waiting for ${first}`:'Any bank except PayPal',true)}
+      ${step('todo','You earn together',`$3 each, then 10% of ${p.state?'their':''} cash back for 12 months`,false)}
+    </div>`;
+    body+=`<div class="note">${first} agreed to share their progress when they signed up. You can remind them once every 3 days.</div>`;
+    document.getElementById('remindBtn').style.display='';
+    const rb=document.getElementById('remindBtn'); rb.textContent=p.reminded?`Reminded ${p.reminded}`:`Remind ${first}`; rb.disabled=p.reminded; rb.style.opacity=p.reminded?.35:1;
+  } else {
+    body+=`<div class="list"><div class="kv"><span>You've earned</span><span>${p.earned}</span></div><div class="kv"><span>Status</span><span class="pill">${p.tab==='earning'?'Earning 10%':'Ended'}</span></div><div class="kv"><span>${p.tab==='earning'?'Until':'Ended on'}</span><span>${p.sub.replace(/^(Earning until|Ended on) /,'')}</span></div></div>`;
+    document.getElementById('remindBtn').style.display='none';
+  }
+  document.getElementById('detailBody').innerHTML=body; go('details');
+}
+function step(st,a,b,line){return `<div class="step ${st}"><div class="rail"><div class="ind ${st}">${st==='done'?svg('check',14,'#fff',2.4):''}</div>${line?`<div class="line ${st==='done'?'done':''}"></div>`:''}</div><div class="tx"><div class="a">${a}</div><div class="b">${b}</div></div></div>`}
+
+/* ---------- navigation ---------- */
+const stack=['home'];
+function go(id,replace){
+  closeSheets(true);
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));
+  if(replace){stack.length=0;stack.push('home');}
+  if(stack[stack.length-1]!==id) stack.push(id);
+  const sc=document.querySelector('#'+id+' .scroll'); if(sc) sc.scrollTop=0;
+  if(id==='next') replay();
+  mark(id);
+}
+function back(){stack.pop(); const id=stack[stack.length-1]||'home'; document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id)); mark(id)}
+function openSheet(id){document.getElementById('scrim').classList.add('on');document.getElementById(id).classList.add('on');mark(id)}
+function closeSheets(silent){document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('on'));document.getElementById('scrim').classList.remove('on');if(!silent)mark(stack[stack.length-1])}
+let shareMode='link';
+function openRemind(k){
+  current=k; const p=people[k]; if(p.reminded)return; shareMode='remind';
+  document.getElementById('pvTitle').textContent=`${p.n.split(' ')[0]}, your $3 is waiting`;
+  openSheet('share'); mark('remind');
+}
+const _openSheet=openSheet;
+openSheet=function(id){ if(id==='share'&&shareMode!=='remind'){document.getElementById('pvTitle').textContent='Alex gave you $3'} _openSheet(id) };
+function shareDone(msg){
+  if(shareMode==='remind'){ const p=people[current]; p.reminded='today'; closeSheets(); shareMode='link'; renderList(); toast(`Reminder sent to ${p.n.split(' ')[0]}`); if(document.getElementById('details').classList.contains('on')) openDetails(current); return;}
+  closeSheets(); if(msg) toast(msg); setTimeout(()=>go('next'),250);
+}
+const apps=[['Messages','#34C759','M'],['WhatsApp','#25D366','W'],['Messenger','#3B66FF','m'],['Mail','#1A8CFF','@'],['More','#D1D1D6','···']];
+document.getElementById('apps').innerHTML=apps.map(a=>`<button onclick="shareDone()"><i style="background:${a[1]};${a[0]==='More'?'color:#444':''}">${a[2]}</i>${a[0]}</button>`).join('');
+
+function showAlert(){document.getElementById('alert').classList.add('on')}
+function allowContacts(){document.getElementById('alert').classList.remove('on');toast('Contact picker would open here');}
+function denyContacts(){document.getElementById('alert').classList.remove('on');go('referral',true);setTimeout(()=>toast('No problem. You can share your link instead.'),200)}
+
+let tt; function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2200)}
+function replay(){const g=document.querySelector('#next .grow-anim');if(!g)return;g.animate([{transform:'scale(.6)',opacity:.3},{transform:'scale(1.08)',opacity:1},{transform:'scale(1)'}],{duration:700,easing:'cubic-bezier(.2,.8,.2,1)'})}
+
+/* ---------- side panel ---------- */
+const flow=[
+ ['Entry points',[['home','0a','Home · “Give $3” chip'],['cashback','0b','After a cash back']]],
+ ['Understand and share',[['referral','1','Referral page'],['contacts','2','Before contacts access'],['share','3','Share sheet'],['next','4','What happens next']]],
+ ['Track and nudge',[['referrals','5','My referrals'],['details','6','Referral details'],['remind','7','Remind sheet']]]
+];
+document.getElementById('flow').innerHTML=flow.map(([g,items])=>`<div class="grp">${g}</div>`+items.map(([id,n,l])=>`<button data-j="${id}"><span>${n}</span>${l}</button>`).join('')).join('');
+document.getElementById('flow').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;jump(b.dataset.j)});
+function jump(id){
+  shareMode='link'; document.getElementById('toast').classList.remove('on');
+  if(id==='cashback'){go('home',true);setTimeout(()=>openSheet('cashback'),150);return}
+  if(id==='share'){go('referral',true);setTimeout(()=>openSheet('share'),150);return}
+  if(id==='details'){people.paul.reminded=false;tab='unlock';renderList();openDetails('paul');return}
+  if(id==='remind'){people.paul.reminded=false;openDetails('paul');setTimeout(()=>openRemind('paul'),150);return}
+  go(id,true);
+}
+function mark(id){document.querySelectorAll('#flow button').forEach(b=>b.classList.toggle('on',b.dataset.j===id))}
+function resetAll(){people.paul.reminded=false;people.lea.reminded=false;people.sam.reminded='yesterday';tab='unlock';document.querySelectorAll('#tabs button').forEach((x,i)=>x.classList.toggle('on',i===0));renderList();go('home',true)}
+
+paintIcons(); renderList(); go('home',true);
+</script>
+</body>
+</html>
