@@ -52,6 +52,7 @@ svg{display:block}
 .ic:active{background:var(--chip)}
 
 /* atoms */
+.btn.secondary{background:#fff;color:#000;border:1px solid #000;font-weight:500}
 .btn{height:48px;border-radius:999px;width:100%;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center}
 .btn.primary{background:#000;color:#fff}
 .btn.primary:active{opacity:.85}
@@ -681,7 +682,7 @@ function renderEnded(){
     if(!d.opened){
       h+=`<div class="duo ticket${d.justEnded?' fresh':''}">${head}<div class="perf"></div><div class="tz">Your year with ${d.n} is complete. Reveal how much you earned together.</div><button class="btn primary" onclick="openScratch('${k}')">${svg('giftstar',18,'#fff')}Reveal your total</button></div>`;
     } else {
-      h+=`<div class="duo">${head}<div class="tl3"><div><b>${d.together}</b><span>Together</span></div><div><b>${d.brand}</b><span>${d.opposite?'In common':'Top brand'}</span></div><div><b>${d.buys}</b><span>Shared buys</span></div></div><button class="btn primary" onclick="openStory('${k}',0)">${svg('history',18,'#fff')}Open your recap</button><div class="lk"><button class="link" onclick="openStory('${k}',4,true);setTimeout(openOpts,250)">${svg('share',16)}Share your story</button></div></div>`;
+      h+=`<div class="duo">${head}<div class="tl3"><div><b>${d.together}</b><span>Together</span></div><div><b>${d.brand}</b><span>${d.opposite?'In common':'Top brand'}</span></div><div><b>${d.buys}</b><span>Shared buys</span></div></div><button class="btn secondary" onclick="openStory('${k}',0)">Open your recap</button><div class="lk"><button class="link" onclick="openStory('${k}',4,true);setTimeout(openOpts,250)">${svg('share',16)}Share your story</button></div></div>`;
     }
   }
   return h;
