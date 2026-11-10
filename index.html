@@ -388,7 +388,7 @@ svg{display:block}
         </div>
         <div class="list">
           <h3>Questions</h3>
-          <button class="row" onclick="openAnswer('why')"><i data-i="info"></i><div class="grow t">Why do we pay you?</div><i data-i="chevr"></i></button>
+          <button class="row" onclick="openAnswer('why')"><i data-i="info"></i><div class="grow t">Why does Joko pay me?</div><i data-i="chevr"></i></button>
           <button class="row" onclick="openAnswer('safe')"><i data-i="shield"></i><div class="grow t">Is it safe for my friend?</div><i data-i="chevr"></i></button>
         </div>
         <div class="note"><b>Good to know</b>Your bonus is paid once your friend connects a bank. <u>See full terms</u></div>
@@ -699,7 +699,7 @@ const apps=[['Messages','#34C759','M'],['WhatsApp','#25D366','W'],['Messenger','
 document.getElementById('apps').innerHTML=apps.map(a=>`<button onclick="shareDone()"><i style="background:${a[1]};${a[0]==='More'?'color:#444':''}">${a[2]}</i>${a[0]}</button>`).join('');
 
 /* ---------- answers ---------- */
-const answers={why:['Why do we pay you?','Brands pay us a commission when your friends shop with cash back. We share part of it with you: $3 when they join, then 10% of their cash back for a year. Nothing is taken from your friend.'],
+const answers={why:['Why does Joko pay me?','Brands pay Joko a commission when your friends shop with cash back. Joko shares part of it with you: $3 when they join, then 10% of their cash back for a year. Nothing is taken from your friend.'],
  safe:['Is it safe for my friend?','Bank linking goes through a licensed provider and is read-only: we can see purchases to give cash back, but nobody can move money from the account.']};
 function openAnswer(k){document.getElementById('ansT').textContent=answers[k][0];document.getElementById('ansB').textContent=answers[k][1];openSheet('answer')}
 
@@ -754,7 +754,7 @@ function closeScratch(){document.getElementById('scratch').classList.remove('on'
 let sIdx=0, sDuo='eva';
 function slides(d){return [
  `<div class="kick">ONE YEAR TOGETHER · ENDED ${d.when.toUpperCase()}</div><div class="bigbub" style="transform:scale(1.6);transform-origin:left;margin:20px 0 24px"><span class="you">You</span><span>${d.i}</span></div><h2>One year of sharing is earning</h2><div style="color:var(--ink2);font-size:15px">Tap to see what you two did together</div>`,
- `<h3>Together, you got back</h3><div class="huge"><u>${d.together}</u></div><div><div class="srow"><div><b>${d.n}</b><span>${d.cb} cash back + $3 bonus</span></div><em>${d.friend}</em></div><div class="srow"><div><b>You</b><span>${d.cut} (10% of ${d.n}'s ${d.cb}) + $3 bonus</span></div><em>${d.you}</em></div></div><div style="color:var(--ink2);font-size:14px">Paid by us. Nobody paid for the other.</div>`,
+ `<h3>Together, you got back</h3><div class="huge"><u>${d.together}</u></div><div><div class="srow"><div><b>${d.n}</b><span>${d.cb} cash back + $3 bonus</span></div><em>${d.friend}</em></div><div class="srow"><div><b>You</b><span>${d.cut} (10% of ${d.n}'s ${d.cb}) + $3 bonus</span></div><em>${d.you}</em></div></div><div style="color:var(--ink2);font-size:14px">Paid by Joko. Nobody paid for the other.</div>`,
  (d.opposite?`<h3>Your shared favorites</h3><h2 style="font-size:40px">Zero brands in common</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="persona"><small>YOU LOVE</small>${d.mine.map(x=>`<b style="font-size:18px">${x}</b>`).join('')}</div><div class="persona"><small>${d.n.toUpperCase()} LOVES</small>${d.theirs.map(x=>`<b style="font-size:18px">${x}</b>`).join('')}</div></div><div style="font-size:17px;font-weight:600">Total opposites, and still ${d.together} back together.</div>`:`<h3>Your shared favorites</h3><h2 style="font-size:36px">You both shopped at the same brands</h2>${d.brands.map((b,i)=>`<div class="brand"><div class="n ${i===0?'g':''}">${i+1}</div><div><b>${b[0]}</b><span>${b[1]}</span></div></div>`).join('')}<div style="color:var(--ink2);font-size:13px">Only brands you both shop at. Nothing else is shown.</div>`),
  `<h3>Your shopper duo</h3><h2 style="color:var(--green-ink)">${d.type}</h2>${d.personas.map(p=>`<div class="persona"><small>${p[0].toUpperCase()}</small><b>${p[1]}</b><span>${p[2]}</span></div>`).join('')}`,
  `<h2>Ready for round two?</h2><div class="opt"><small>DUO CHALLENGE WITH ${d.n.toUpperCase()}</small><b>Both shop at 3 partner brands this month, get $5 each</b></div><div class="opt"><small>A NEW DUO YEAR</small><b>Invite a new friend: $3 each, then your 10% for a year</b></div>`
