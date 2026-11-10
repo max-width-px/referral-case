@@ -614,7 +614,8 @@ function renderList(){
   document.getElementById('amtCap').textContent='Total earned from referrals'; document.getElementById('amtBadgeWrap').style.display=freshMode?'none':'flex';
   if(tab==='ended'){el.innerHTML=renderEnded();return}
   if(freshMode){ el.innerHTML= tab==='pending'?`<div class="card" style="text-align:center;padding:28px 20px"><div style="width:56px;height:56px;border-radius:28px;background:#fff;display:grid;place-items:center;margin:0 auto 10px">${svg('link')}</div><div style="font-size:20px;font-weight:700">Your link was opened 3 times</div><div style="font-size:15px;color:var(--ink2);line-height:1.4;margin:8px 0 12px">Nobody has joined yet. Friends usually join within a few days, we'll let you know as soon as someone does.</div><button class="link" onclick="openShare('link')">Share it again</button></div>`:`<div class="note">Nothing here yet.</div>`; return; }
-  let h='<div class="list">';
+  const heads={pending:['On their way','You both get $3 once they connect a bank. A nudge can help.'],earning:['Earning you cash','You get 10% of their cash back until their year ends.']};
+  let h=`<div style="margin-bottom:12px"><div style="font-size:20px;font-weight:700">${heads[tab][0]}</div><div style="font-size:14px;color:var(--ink2);margin-top:4px;line-height:1.4">${heads[tab][1]}</div></div><div class="list">`;
   Object.entries(people).filter(([k,p])=>p.tab===tab&&!p.expired).forEach(([k,p])=>{
     const right= tab==='pending'?statusPill(p):`<span class="amt">${p.earned}</span>`;
     const sub= tab==='earning'?`<div class="s">${p.left}</div>`:'';
