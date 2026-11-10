@@ -248,9 +248,10 @@ svg{display:block}
 .duo{border:1px solid var(--line);border-radius:20px;padding:16px;background:#fff;margin-bottom:12px}
 .duo.ticket{border:2px solid var(--green)}
 .duo.fresh{border:1px solid #1A8C33}
+.duo .amts{display:flex;align-items:center;gap:16px;background:#F8F8F8;border-radius:14px;padding:12px 14px;margin:14px 0}.duo .amts>div{flex:1}.duo .amts i{width:1px;height:36px;background:#E3E3E3}.duo .amts b{display:block;font-size:22px;font-weight:700;letter-spacing:-.01em}.duo .amts span{font-size:12px;font-weight:500;color:var(--ink2)}.duo .amts .tg b,.duo .amts .tg span{color:#1A8C33}
 .jst{display:inline-flex;align-items:center;background:#E6FBE7;color:#1A8C33;font-size:13px;font-weight:600;border-radius:999px;padding:4px 8px;white-space:nowrap}
 .duo .tt .tr{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.duo .tt b{font-size:22px !important;line-height:1.25}.duo .tt>span{font-weight:700;font-size:14px}.duo .tt .jst{color:#1A8C33;font-size:13px;font-weight:600}.duo .am b{font-size:22px !important}
+.duo .tt b{font-size:22px !important;line-height:1.25}.duo .tt>span{font-weight:600;font-size:14px}.duo .tt .jst{color:#1A8C33;font-size:13px;font-weight:600}.duo .am b{font-size:22px !important}
 .duo .tl3 div:first-child{background:#E6FBE7}.duo .tl3 div:first-child span{color:#1A5932}
 .duo .top{display:flex;gap:12px;align-items:center}
 .bub{display:flex}
@@ -678,11 +679,11 @@ function renderEnded(){
   if(freshMode) return '<div class="note">Nothing here yet.</div>';
   let h=`<div style="margin-bottom:12px"><div style="font-size:20px;font-weight:700">3 duo years completed</div><div style="font-size:14px;color:var(--ink2);margin-top:4px;line-height:1.4">Every duo lasts a year. Open each recap to see what you earned together.</div></div>`;
   for(const [k,d] of Object.entries(duos)){
-    const jst=(d.justEnded&&!d.opened)?`<span class="jst">Just ended</span>`:''; const head=`<div class="top"><div class="tt"><div class="tr"><b>${d.opened?d.type:'Mystery duo'}</b>${jst}</div><span>You &amp; ${d.n} · ${d.when}</span></div><div class="am"><b>${d.you}</b><span>for you</span></div></div>`;
+    const jst=(d.justEnded&&!d.opened)?`<span class="jst">Just ended</span>`:''; const head=`<div class="top"><div class="tt"><div class="tr"><b>You &amp; ${d.n}</b>${jst}</div><span>${d.opened?d.type:'Mystery duo'} · ${d.when}</span></div>${d.opened?'':`<div class="am"><b>${d.you}</b><span>for you</span></div>`}</div>`;
     if(!d.opened){
       h+=`<div class="duo ticket${d.justEnded?' fresh':''}">${head}<div class="perf"></div><div class="tz">Your year with ${d.n} is complete. Reveal how much you earned together.</div><button class="btn primary" onclick="openScratch('${k}')">${svg('giftstar',18,'#fff')}Reveal your total</button></div>`;
     } else {
-      h+=`<div class="duo">${head}<div class="tl3"><div><b>${d.together}</b><span>Together</span></div><div><b>${d.brand}</b><span>${d.opposite?'In common':'Top brand'}</span></div><div><b>${d.buys}</b><span>Shared buys</span></div></div><button class="btn secondary" onclick="openStory('${k}',0)">Open your recap</button><div class="lk"><button class="link" onclick="openStory('${k}',4,true);setTimeout(openOpts,250)">${svg('share',16)}Share your story</button></div></div>`;
+      h+=`<div class="duo">${head}<div class="amts"><div><b>${d.you}</b><span>for you</span></div><i></i><div class="tg"><b>${d.together}</b><span>together</span></div></div><button class="btn secondary" onclick="openStory('${k}',0)">Open your recap</button><div class="lk"><button class="link" onclick="openStory('${k}',4,true);setTimeout(openOpts,250)">${svg('share',16)}Share your story</button></div></div>`;
     }
   }
   return h;
