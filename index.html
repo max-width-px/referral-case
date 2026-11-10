@@ -563,13 +563,13 @@ const people={
  tom:{n:'Tom Garcia',i:'T',tab:'earning',earned:'$9.85',left:'2 months left'}
 };
 const duos={
- eva:{n:'Eva',i:'E',type:'The Smart Savers',when:'Mar 2026',you:'$22.83',friend:'$201.30',together:'$224.13',brand:'Urban Wear',buys:'9',opened:false,
+ eva:{n:'Eva',i:'E',type:'The Smart Savers',when:'Mar 2026',cb:'$198.30',cut:'$19.83',you:'$22.83',friend:'$201.30',together:'$224.13',brand:'Urban Wear',buys:'9',opened:false,
       brands:[['Urban Wear','9 purchases between you'],['Peak Sports','6 purchases'],['Stayaway','2 trips, $41 back']],
       personas:[['You','The Deal Hunter','First on boosted offers, 23 of them this year'],['Eva','The Weekend Explorer','Travel and sports, mostly on Saturdays']]},
- hugo:{n:'Hugo',i:'H',type:'The Weekend Duo',when:'Jan 2026',you:'$31.40',friend:'$310.60',together:'$342',brand:'Peak Sports',buys:'11',opened:true,
+ hugo:{n:'Hugo',i:'H',type:'The Weekend Duo',when:'Jan 2026',cb:'$284.00',cut:'$28.40',you:'$31.40',friend:'$287.00',together:'$318.40',brand:'Peak Sports',buys:'11',opened:true,
       brands:[['Peak Sports','11 purchases between you'],['Stayaway','3 trips'],['Urban Wear','4 purchases']],
       personas:[['You','The Planner','Books early, saves more'],['Hugo','The Weekend Explorer','Always on the move']]},
- lina:{n:'Lina',i:'L',type:'The Deal Hunters',when:'Sep 2025',you:'$12.10',friend:'$120.90',together:'$133',brand:'Urban Wear',buys:'7',opened:true,
+ lina:{n:'Lina',i:'L',type:'The Deal Hunters',when:'Sep 2025',cb:'$91.00',cut:'$9.10',you:'$12.10',friend:'$94.00',together:'$106.10',brand:'Urban Wear',buys:'7',opened:true,
       brands:[['Urban Wear','7 purchases between you'],['Home Base','3 purchases'],['Peak Sports','2 purchases']],
       personas:[['You','The Deal Hunter','First on boosted offers'],['Lina','The Smart Shopper','Never pays full price']]}
 };
@@ -708,7 +708,7 @@ function closeScratch(){document.getElementById('scratch').classList.remove('on'
 let sIdx=0, sDuo='eva';
 function slides(d){return [
  `<div class="kick">ONE YEAR TOGETHER · ENDED ${d.when.toUpperCase()}</div><div class="bigbub" style="transform:scale(1.6);transform-origin:left;margin:20px 0 24px"><span class="you">You</span><span>${d.i}</span></div><h2>One year of sharing is earning</h2><div style="color:var(--ink2);font-size:15px">Tap to see what you two did together</div>`,
- `<h3>Together, you got back</h3><div class="huge"><u>${d.together}</u></div><div><div class="srow"><div><b>${d.n}</b><span>Cash back + $3 bonus</span></div><em>${d.friend}</em></div><div class="srow"><div><b>You</b><span>Your 10% + $3 bonus</span></div><em>${d.you}</em></div></div><div style="color:var(--ink2);font-size:14px">Paid by us. Nobody paid for the other.</div>`,
+ `<h3>Together, you got back</h3><div class="huge"><u>${d.together}</u></div><div><div class="srow"><div><b>${d.n}</b><span>${d.cb} cash back + $3 bonus</span></div><em>${d.friend}</em></div><div class="srow"><div><b>You</b><span>${d.cut} (10% of ${d.n}'s ${d.cb}) + $3 bonus</span></div><em>${d.you}</em></div></div><div style="color:var(--ink2);font-size:14px">Paid by us. Nobody paid for the other.</div>`,
  `<h3>Your shared favorites</h3><h2 style="font-size:36px">You both shopped at the same brands</h2>${d.brands.map((b,i)=>`<div class="brand"><div class="n ${i===0?'g':''}">${i+1}</div><div><b>${b[0]}</b><span>${b[1]}</span></div></div>`).join('')}<div style="color:var(--ink2);font-size:13px">Only brands you both shop at. Nothing else is shown.</div>`,
  `<h3>Your shopper duo</h3><h2 style="color:var(--green-ink)">${d.type}</h2>${d.personas.map(p=>`<div class="persona"><small>${p[0].toUpperCase()}</small><b>${p[1]}</b><span>${p[2]}</span></div>`).join('')}`,
  `<h2>Ready for round two?</h2><div class="opt"><small>DUO CHALLENGE WITH ${d.n.toUpperCase()}</small><b>Both shop at 3 partner brands this month, get $5 each</b></div><div class="opt"><small>A NEW DUO YEAR</small><b>Invite a new friend: $3 each, then your 10% for a year</b></div>`
