@@ -421,11 +421,7 @@ svg{display:block}
         <svg-plant data-s="96" class="grow-anim"></svg-plant>
         <h1 style="font-size:28px;font-weight:700;margin-top:10px">We handle the rest</h1>
         <p style="font-size:16px;color:var(--ink2);margin-top:6px;line-height:1.4">You just shared. Now relax, it all happens on its own.</p>
-        <div class="vflow">
-          <div class="vstep done"><div class="r"><div class="c"><svg-i data-i="link"></svg-i></div><div class="l"></div></div><div class="x"><b>Send your link</b><span>Done!</span></div></div>
-          <div class="vstep"><div class="r"><div class="c"><svg-i data-i="bank"></svg-i></div><div class="l"></div></div><div class="x"><b>Your friend joins and connects a bank</b><span>We guide them step by step</span></div></div>
-          <div class="vstep"><div class="r"><div class="c"><svg-i data-i="coin"></svg-i></div></div><div class="x"><b>You both get cash</b><span>$3 each, then 10% for you all year</span></div></div>
-        </div>
+        <div class="card" id="handledSteps" style="width:100%;text-align:left;margin-top:20px;padding:20px"></div>
       </div>
       <div class="footer flat">
         <button class="btn primary" onclick="go('referrals')">Track my referrals</button>
@@ -881,6 +877,7 @@ function mark(id){
 }
 function resetAll(){freshMode=false;people.lea.expired=false;people.paul.nudged=null;people.lea.nudged=null;people.sam.nudged='yesterday';duos.eva.opened=false;tab=null;go('home',true)}
 
+document.getElementById('handledSteps').innerHTML=step('done','You share your link','Done!',true,'link')+step('todo','They join and connect a bank','Any bank except PayPal',true,'bank')+step('todo','You both get $3','Then you earn 10% of their cash back for a year',false,'coin');
 document.getElementById('howSteps').innerHTML=step('neutral','You share your link','Your code is added automatically',true,'link')+step('neutral','They join and connect a bank','Any bank except PayPal',true,'bank')+step('neutral','You both get $3','Then you earn 10% of their cash back for a year',false,'coin');
 paintIcons(); go('home',true);
 </script>
