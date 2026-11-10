@@ -319,6 +319,15 @@ svg{display:block}
 .brand .n.g{color:var(--green-ink)}
 .brand b{font-size:22px;display:block}
 .brand span{font-size:14px;color:var(--ink2)}
+.slide-money{display:flex;flex-direction:column;gap:16px;position:relative}.slide-money .deco{position:absolute;right:-30px;top:-120px;width:150px;transform:rotate(-8deg)}
+.cats{display:flex;flex-direction:column;gap:10px}
+.cat{position:relative;overflow:hidden;background:#fff;border:1px solid #E3E3E3;border-radius:20px;height:96px;display:flex;align-items:center;padding:0 16px}
+.cat.top{height:116px;border-color:#1A8C33}
+.cat>div{position:relative;z-index:1;max-width:62%}.cat small{font-size:12px;font-weight:700;color:var(--green-ink)}.cat b{display:block;font-size:20px;font-weight:700;line-height:1.15}.cat span{font-size:13px;color:var(--ink2);display:block;margin-top:2px}
+.cat img{position:absolute;right:0;bottom:0;height:100%;width:auto}
+.cat.sq{height:104px;align-items:flex-start;padding-top:14px;margin-top:8px}.cat.sq b{font-size:17px}.cat.sq img{height:78%}
+.opp{display:grid;grid-template-columns:1fr 1fr;gap:10px}.opp small{font-size:12px;font-weight:700;color:var(--ink2);letter-spacing:.04em}
+.pimg{position:relative;overflow:hidden;background:#fff !important;border:1px solid #E3E3E3;border-radius:20px !important;padding-right:104px !important;min-height:96px}.pimg img{position:absolute;right:0;bottom:0;height:96px}
 .persona{background:var(--soft);border-radius:16px;padding:16px}
 .persona small{font-size:12px;font-weight:700;color:var(--ink2);letter-spacing:.04em}
 .persona b{font-size:22px;display:block;margin:2px 0}
@@ -640,14 +649,14 @@ const people={
  tom:{n:'Tom Garcia',i:'T',tab:'earning',earned:'$9.85',left:'2 months left'}
 };
 const duos={
- eva:{n:'Eva',i:'E',type:'The Smart Savers',when:'Nov 2026',cb:'$198.30',cut:'$19.83',you:'$22.83',friend:'$201.30',together:'$224.13',brand:'Urban Wear',buys:'9',opened:false,justEnded:true,
+ eva:{n:'Eva',i:'E',type:'The Smart Savers',when:'Nov 2026',cb:'$198.30',cut:'$19.83',you:'$22.83',friend:'$201.30',together:'$224.13',brand:'Urban Wear',buys:'9',opened:false,justEnded:true,cats:[['fashion','Fashion','Urban Wear · 9 buys together'],['leisure','Sports & leisure','Peak Sports · 6 buys'],['travel','Travel','Stayaway · 2 trips, $41 back']],
       brands:[['Urban Wear','9 purchases between you'],['Peak Sports','6 purchases'],['Stayaway','2 trips, $41 back']],
       personas:[['You','The Deal Hunter','First on boosted offers, 23 of them this year'],['Eva','The Weekend Explorer','Travel and sports, mostly on Saturdays']]},
- hugo:{n:'Hugo',i:'H',type:'The Weekend Duo',when:'Jan 2026',cb:'$284.00',cut:'$28.40',you:'$31.40',friend:'$287.00',together:'$318.40',brand:'Sports',buys:'11',opened:true,
+ hugo:{n:'Hugo',i:'H',type:'The Weekend Duo',when:'Jan 2026',cb:'$284.00',cut:'$28.40',you:'$31.40',friend:'$287.00',together:'$318.40',brand:'Sports',buys:'11',opened:true,cats:[['leisure','Sports & leisure','Peak Sports · 11 buys together'],['travel','Travel','Stayaway · 3 trips'],['fashion','Fashion','Urban Wear · 4 buys']],
       brands:[['Peak Sports','11 purchases between you'],['Stayaway','3 trips'],['Urban Wear','4 purchases']],
       personas:[['You','The Planner','Books early, saves more'],['Hugo','The Weekend Explorer','Always on the move']]},
  lina:{n:'Lina',i:'L',type:'The Opposites',when:'Sep 2025',cb:'$91.00',cut:'$9.10',you:'$12.10',friend:'$94.00',together:'$106.10',brand:'None',buys:'0',opened:true,opposite:true,
-      brands:[],mine:['Peak Sports','Stayaway'],theirs:['Home Base','Urban Wear'],
+      brands:[],mine:['Peak Sports','Stayaway'],theirs:['Home Base','Urban Wear'],mineC:[['leisure','Sports'],['travel','Travel']],theirsC:[['home','Home'],['fashion','Fashion']],
       personas:[['You','The Adventurer','Sports gear and weekend trips'],['Lina','The Homebody','Home, decor and cosy nights in']]}
 };
 let tab=null, current='paul', currentDuo='eva', shareMode='link', freshMode=false;
@@ -683,7 +692,7 @@ function renderEnded(){
     if(!d.opened){
       h+=`<div class="duo ticket${d.justEnded?' fresh':''}">${head}<div class="perf"></div><div class="tz">Your year with ${d.n} is complete. Reveal how much you earned together.</div><button class="btn primary" onclick="openScratch('${k}')">${svg('giftstar',18,'#fff')}Reveal your total</button></div>`;
     } else {
-      h+=`<div class="duo">${head}<div class="amts"><div><b>${d.you}</b><span>for you</span></div><i></i><div class="tg"><b>${d.together}</b><span>together</span></div></div><button class="btn secondary" onclick="openStory('${k}',0)">Open your recap</button><div class="lk"><button class="link" onclick="openStory('${k}',4,true);setTimeout(openOpts,250)">${svg('share',16)}Share your story</button></div></div>`;
+      h+=`<div class="duo">${head}<div class="amts"><div><b>${d.you}</b><span>for you</span></div><i></i><div class="tg"><b>${d.together}</b><span>together</span></div></div><button class="btn secondary" onclick="openStory('${k}',0)">Open your recap</button><div class="lk"><button class="link" onclick="openStory('${k}',99,true);setTimeout(openOpts,250)">${svg('share',16)}Share your story</button></div></div>`;
     }
   }
   return h;
@@ -836,16 +845,17 @@ function closeScratch(){document.getElementById('scratch').classList.remove('on'
 
 /* ---------- stories (white) ---------- */
 let sIdx=0, sDuo='eva';
+const personaImg={'The Deal Hunter':'boosted','The Weekend Explorer':'travel','The Planner':'finance','The Adventurer':'leisure','The Homebody':'home'};
 function slides(d){return [
- `<div class="kick">ONE YEAR TOGETHER · ENDED ${d.when.toUpperCase()}</div><div class="bigbub" style="transform:scale(1.6);transform-origin:left;margin:20px 0 24px"><span class="you">You</span><span>${d.i}</span></div><h2>One year of sharing is earning</h2><div style="color:var(--ink2);font-size:15px">Tap to see what you two did together</div>`,
- `<h3>Together, you got back</h3><div class="huge"><u>${d.together}</u></div><div><div class="srow"><div><b>${d.n}</b><span>${d.cb} cash back + $3 bonus</span></div><em>${d.friend}</em></div><div class="srow"><div><b>You</b><span>${d.cut} (10% of ${d.n}'s ${d.cb}) + $3 bonus</span></div><em>${d.you}</em></div></div><div style="color:var(--ink2);font-size:14px">Paid by Joko. Nobody paid for the other.</div>`,
- (d.opposite?`<h3>Your shared favorites</h3><h2 style="font-size:40px">Zero brands in common</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="persona"><small>YOU LOVE</small>${d.mine.map(x=>`<b style="font-size:18px">${x}</b>`).join('')}</div><div class="persona"><small>${d.n.toUpperCase()} LOVES</small>${d.theirs.map(x=>`<b style="font-size:18px">${x}</b>`).join('')}</div></div><div style="font-size:17px;font-weight:600">Total opposites, and still ${d.together} back together.</div>`:`<h3>Your shared favorites</h3><h2 style="font-size:36px">You both shopped at the same brands</h2>${d.brands.map((b,i)=>`<div class="brand"><div class="n ${i===0?'g':''}">${i+1}</div><div><b>${b[0]}</b><span>${b[1]}</span></div></div>`).join('')}<div style="color:var(--ink2);font-size:13px">Only brands you both shop at. Nothing else is shown.</div>`),
- `<h3>Your shopper duo</h3><h2 style="color:var(--green-ink)">${d.type}</h2>${d.personas.map(p=>`<div class="persona"><small>${p[0].toUpperCase()}</small><b>${p[1]}</b><span>${p[2]}</span></div>`).join('')}`,
- `<h2>Ready for round two?</h2><div class="opt"><small>DUO CHALLENGE WITH ${d.n.toUpperCase()}</small><b>Both shop at 3 partner brands this month, get $5 each</b></div><div class="opt"><small>A NEW DUO YEAR</small><b>Invite a new friend: $3 each, then your 10% for a year</b></div>`
+ `<div class="slide-money"><img class="deco" src="img/plant.png" alt=""><h3>Together, you got back</h3><div class="huge"><u>${d.together}</u></div><div><div class="srow"><div><b>${d.n}</b><span>${d.cb} cash back + $3 bonus</span></div><em>${d.friend}</em></div><div class="srow"><div><b>You</b><span>${d.cut} (10% of ${d.n}'s ${d.cb}) + $3 bonus</span></div><em>${d.you}</em></div></div><div style="color:var(--ink2);font-size:14px">Paid by Joko. Nobody paid for the other.</div></div>`,
+ (d.opposite?`<h3>Your shared favorites</h3><h2 style="font-size:36px">Zero brands in common</h2><div class="opp"><div><small>YOU LOVE</small>${d.mineC.map(c=>`<div class="cat sq"><b>${c[1]}</b><img src="img/cat-${c[0]}.png" alt=""></div>`).join('')}</div><div><small>${d.n.toUpperCase()} LOVES</small>${d.theirsC.map(c=>`<div class="cat sq"><b>${c[1]}</b><img src="img/cat-${c[0]}.png" alt=""></div>`).join('')}</div></div><div style="font-size:16px;font-weight:600">Total opposites, and still ${d.together} back together.</div>`
+ :`<h3>Your shared favorites</h3><h2 style="font-size:34px">Same taste, same brands</h2><div class="cats">${d.cats.map((c,i)=>`<div class="cat${i===0?' top':''}"><div><small>#${i+1}</small><b>${c[1]}</b><span>${c[2]}</span></div><img src="img/cat-${c[0]}.png" alt=""></div>`).join('')}</div><div style="color:var(--ink2);font-size:13px">Only brands you both shop at. Nothing else is shown.</div>`),
+ `<h3>Your shopper duo</h3><h2 style="color:var(--green-ink)">${d.type}</h2>${d.personas.map(p=>`<div class="persona pimg"><small>${p[0].toUpperCase()}</small><b>${p[1]}</b><span>${p[2]}</span><img src="img/cat-${personaImg[p[1]]||'gifts'}.png" alt=""></div>`).join('')}`,
+ `<h2>Ready for round two?</h2><div class="opt pimg"><small>DUO CHALLENGE WITH ${d.n.toUpperCase()}</small><b>Both shop at 3 partner brands this month, get $5 each</b><img src="img/cat-gifts.png" alt=""></div><div class="opt pimg"><small>A NEW DUO YEAR</small><b>Invite a new friend: $3 each, then your 10% for a year</b><img src="img/cat-boosted.png" alt=""></div>`
 ];}
-function openStory(k,i,jumpShare){sDuo=k; sIdx=i; closeScratchSilently(); renderStory(); document.getElementById('story').classList.add('on'); mark('story'); if(jumpShare) setTimeout(openIg,150);}
+function openStory(k,i,jumpShare){sDuo=k; sIdx=Math.min(i,slides(duos[k]).length-1); closeScratchSilently(); renderStory(); document.getElementById('story').classList.add('on'); mark('story'); if(jumpShare) setTimeout(openIg,150);}
 function closeScratchSilently(){document.getElementById('scratch').classList.remove('on')}
-function renderStory(){const d=duos[sDuo]; const s=slides(d);
+function renderStory(){const d=duos[sDuo]; const s=slides(d); document.getElementById('story').style.background=sIdx===0?'#E6FBE7':'#fff';
   document.getElementById('bars').innerHTML=s.map((_,i)=>`<i class="${i<=sIdx?'on':''}"></i>`).join('');
   document.getElementById('sbody').innerHTML=s[sIdx];
   document.getElementById('sctas').innerHTML= sIdx===s.length-1? `<button class="btn primary" onclick="openOpts()">${svg('share',18,'#fff')}Share your recap</button><button class="btn tertiary" onclick="closeStory();go('referral');setTimeout(()=>openShare('link'),250)">Invite a new friend</button>`:'';
@@ -1011,7 +1021,7 @@ function jump(id){
   if(id==='nudge'){people.paul.nudged=null;go('referrals',true);setTab('pending');openDetails('paul');setTimeout(()=>openNudge('paul'),150);return}
   if(id==='scratch'){duos.eva.opened=false;go('referrals',true);setTab('ended');openScratch('eva');return}
   if(id==='story'){duos.eva.opened=true;go('referrals',true);setTab('ended');openStory('eva',0);return}
-  if(id==='ig'){duos.eva.opened=true;go('referrals',true);setTab('ended');openStory('eva',4,true);return}
+  if(id==='ig'){duos.eva.opened=true;go('referrals',true);setTab('ended');openStory('eva',99,true);return}
   go(id,true);
 }
 function mark(id){
