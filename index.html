@@ -11,131 +11,135 @@
 <style>
 :root{
   --ink:#000; --ink2:#747474; --line:#E3E3E3; --soft:#F8F8F8; --chip:#F1F1F1;
-  --green:#64E86A; --green-ink:#1B8C33; --page:#EDEDEF; --white:#fff;
+  --green:#64E86A; --green-soft:#E6FBE7; --green-ink:#1B8C33; --page:#EDEDEF;
   --r:16px; --font:"Instrument Sans",system-ui,-apple-system,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{font-family:var(--font);background:var(--page);color:var(--ink);-webkit-font-smoothing:antialiased}
-button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:inherit}
 svg{display:block}
 
-/* ---------- layout ---------- */
+/* layout */
 .wrap{min-height:100%;display:flex;gap:48px;align-items:center;justify-content:center;padding:32px 16px}
-.panel{width:320px;flex-shrink:0}
+.panel{width:300px;flex-shrink:0}
 .panel h1{font-size:24px;font-weight:700;line-height:1.2}
-.panel p.lead{color:var(--ink2);font-size:14px;line-height:1.5;margin:10px 0 20px}
-.flow{display:flex;flex-direction:column;gap:4px}
-.flow .grp{font-size:12px;font-weight:600;color:var(--ink2);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 4px}
-.flow button{display:flex;gap:10px;align-items:baseline;text-align:left;padding:8px 10px;border-radius:10px;font-size:14px}
-.flow button span{color:var(--ink2);font-size:12px;min-width:18px}
+.panel p.lead{color:var(--ink2);font-size:14px;line-height:1.5;margin:10px 0 16px}
+.flow{display:flex;flex-direction:column;gap:2px}
+.flow .grp{font-size:12px;font-weight:600;color:var(--ink2);text-transform:uppercase;letter-spacing:.06em;margin:12px 0 4px}
+.flow button{display:flex;gap:10px;align-items:baseline;padding:7px 10px;border-radius:10px;font-size:14px}
+.flow button span{color:var(--ink2);font-size:12px;min-width:20px}
 .flow button:hover{background:#fff}
 .flow button.on{background:#fff;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.06)}
-.reset{margin-top:16px;font-size:13px;color:var(--ink2);text-decoration:underline}
+.reset{margin-top:14px;font-size:13px;color:var(--ink2);text-decoration:underline}
+.phone{width:375px;height:812px;background:#fff;border-radius:48px;position:relative;overflow:hidden;box-shadow:0 0 0 10px #111,0 0 0 11px #333,0 30px 80px rgba(0,0,0,.25);flex-shrink:0}
+@media (max-width:860px){.wrap{flex-direction:column-reverse;gap:24px;padding:16px}.panel{width:100%;max-width:375px}}
+@media (max-width:420px){.wrap{padding:0;gap:0}.phone{width:100vw;height:100dvh;border-radius:0;box-shadow:none}.panel{padding:20px 16px 40px}}
 
-.phone{width:375px;height:812px;background:#fff;border-radius:48px;position:relative;overflow:hidden;
-  box-shadow:0 0 0 10px #111,0 0 0 11px #333,0 30px 80px rgba(0,0,0,.25);flex-shrink:0}
-@media (max-width:860px){
-  .wrap{flex-direction:column-reverse;gap:24px;padding:16px}
-  .panel{width:100%;max-width:375px}
-}
-@media (max-width:420px){
-  .wrap{padding:0;gap:0}
-  .phone{width:100vw;height:100dvh;border-radius:0;box-shadow:none}
-  .panel{padding:20px 16px 40px}
-}
-
-/* ---------- phone chrome ---------- */
-.status{position:absolute;top:0;left:0;right:0;height:47px;display:flex;align-items:center;justify-content:space-between;padding:14px 30px 0 34px;font-size:16px;font-weight:600;z-index:30;pointer-events:none}
+/* chrome */
+.phone.dark .status{color:#fff}.phone.dark .status svg{fill:#fff}.phone.dark .status rect,.phone.dark .status path{fill:#fff}
+.status{position:absolute;top:0;left:0;right:0;height:47px;display:flex;align-items:center;justify-content:space-between;padding:14px 30px 0 34px;font-size:16px;font-weight:600;z-index:95;pointer-events:none}
 .status .sig{display:flex;gap:6px;align-items:center}
-.homebar{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:#000;z-index:60;pointer-events:none}
-
+.homebar{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:#000;z-index:96;pointer-events:none}
 .screen{position:absolute;inset:0;background:#fff;display:none;flex-direction:column}
 .screen.on{display:flex}
 .scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 16px 24px;scrollbar-width:none}
 .scroll::-webkit-scrollbar{display:none}
 .scroll.has-footer{padding-bottom:150px}
-
 .hdr{height:56px;margin-top:47px;display:grid;grid-template-columns:48px 1fr 48px;align-items:center;padding:0 8px;flex-shrink:0}
 .hdr h2{font-size:18px;font-weight:600;text-align:center}
-.hdr .ic{width:40px;height:40px;display:grid;place-items:center;border-radius:20px}
-.hdr .ic:active{background:var(--chip)}
+.ic{width:40px;height:40px;display:grid;place-items:center;border-radius:20px}
+.ic:active{background:var(--chip)}
 
-/* ---------- atoms ---------- */
-.btn{height:48px;border-radius:999px;width:100%;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px}
+/* atoms */
+.btn{height:48px;border-radius:999px;width:100%;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center}
 .btn.primary{background:#000;color:#fff}
 .btn.primary:active{opacity:.85}
-.btn.secondary{border:1px solid #000;background:#fff}
+.btn.primary[disabled]{opacity:.3;cursor:default}
 .btn.tertiary{height:40px;text-decoration:underline;text-underline-offset:3px}
+.link{display:inline-flex;gap:6px;align-items:center;font-size:14px;font-weight:500;text-decoration:underline;text-underline-offset:3px}
 .footer{position:absolute;left:0;right:0;bottom:0;background:#fff;padding:12px 16px 30px;display:flex;flex-direction:column;gap:4px;z-index:5;box-shadow:0 -4px 16px rgba(0,0,0,.06)}
 .footer.flat{box-shadow:none}
-
 .card{border-radius:var(--r);background:var(--soft);padding:16px}
 .list{border:1px solid var(--line);border-radius:var(--r);background:#fff}
 .list h3{font-size:16px;font-weight:700;padding:16px 16px 4px}
-.row{display:flex;gap:16px;align-items:flex-start;padding:16px;position:relative;text-align:left;width:100%}
+.row{display:flex;gap:14px;align-items:center;padding:14px 16px;position:relative;width:100%}
 .row + .row::before{content:"";position:absolute;top:0;left:16px;right:16px;border-top:1px solid var(--line)}
 .row .t{font-size:16px;font-weight:500;line-height:1.35}
 .row .s{font-size:14px;color:var(--ink2);line-height:1.4;margin-top:2px}
-.row.center{align-items:center}
 .row .grow{flex:1;min-width:0}
-.row .ico{width:24px;height:24px;flex-shrink:0;margin-top:1px}
-
-.avatar{width:48px;height:48px;border-radius:24px;background:var(--chip);display:grid;place-items:center;font-weight:700;font-size:18px;flex-shrink:0;position:relative}
+.row.top{align-items:flex-start}
+.avatar{width:48px;height:48px;border-radius:24px;background:var(--chip);display:grid;place-items:center;font-weight:700;font-size:18px;flex-shrink:0}
 .avatar.lg{width:64px;height:64px;border-radius:32px;font-size:24px}
-.dot{width:8px;height:8px;border-radius:4px;background:#F04438;display:inline-block;margin-right:6px;vertical-align:1px}
-
-.hero{text-align:center;padding:8px 0 16px}
-.hero h1{font-size:32px;font-weight:700;letter-spacing:-.01em;line-height:1.1;margin-top:8px}
-.hero p{font-size:18px;font-weight:600;margin-top:6px;line-height:1.3}
-
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);background:var(--chip);border-radius:999px;padding:4px;margin:16px 0 8px}
-.tabs button{height:36px;border-radius:999px;font-size:15px;color:var(--ink2)}
+.pill{display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 9px;border-radius:999px;background:var(--chip);font-size:13px;font-weight:500;white-space:nowrap;flex-shrink:0}
+.pill svg{width:14px;height:14px}
+.row .grow .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill.green{background:var(--green-soft)}
+.hero{text-align:center;padding:4px 0 16px}
+.hero h1{font-size:32px;font-weight:700;letter-spacing:-.01em;line-height:1.1;margin-top:6px}
+.hero p{font-size:17px;font-weight:600;margin-top:6px;line-height:1.3}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);background:var(--chip);border-radius:999px;padding:4px;margin:16px 0 12px}
+.tabs button{height:36px;border-radius:999px;font-size:15px;color:var(--ink2);text-align:center}
 .tabs button.on{background:#fff;color:#000;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-
-.amount{font-size:56px;font-weight:700;letter-spacing:-.02em;text-align:center;margin-top:12px}
+.amount{font-size:56px;font-weight:700;letter-spacing:-.02em;text-align:center;margin-top:8px}
 .amount small{font-size:24px}
 .caption{text-align:center;font-size:14px;color:var(--ink2);margin-top:2px}
-
-.trail{font-size:16px;font-weight:500;white-space:nowrap}
-.trail.muted{color:#9a9a9a}
-.chev{flex-shrink:0;align-self:center}
-
-.toast{position:absolute;left:16px;right:16px;bottom:150px;background:#111;color:#fff;border-radius:14px;padding:14px 16px;font-size:15px;z-index:80;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;text-align:center}
+.toast{position:absolute;left:16px;right:16px;bottom:150px;background:#111;color:#fff;border-radius:14px;padding:14px 16px;font-size:15px;z-index:120;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;text-align:center}
 .toast.on{opacity:1;transform:none}
+.note{font-size:13px;color:var(--ink2);text-align:center;line-height:1.45;margin-top:16px}
+.note b{color:#000;font-weight:600;font-size:14px;display:block;margin-bottom:2px}
 
-/* ---------- sheets ---------- */
+/* how it works */
+.how3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:14px;text-align:center}
+.how3 i{width:52px;height:52px;border-radius:26px;background:#fff;display:grid;place-items:center;margin:0 auto 8px}
+.how3 div{font-size:13px;font-weight:500;line-height:1.3}
+.sep{border-top:1px solid var(--line);margin:16px 0}
+.ex{display:flex;align-items:center;gap:12px}
+.ex .l{flex:1}
+.ex .a{font-size:28px;font-weight:700}
+.small{font-size:13px;color:var(--ink2);line-height:1.4;margin-top:2px}
+.stack{display:flex}
+.stack span{width:32px;height:32px;border-radius:16px;background:var(--chip);border:2px solid #fff;display:grid;place-items:center;font-size:13px;font-weight:700;margin-left:-8px}
+.stack span:first-child{margin-left:0}
+
+/* sheets */
 .scrim{position:absolute;inset:0;background:rgba(0,0,0,.4);z-index:40;opacity:0;pointer-events:none;transition:opacity .25s}
 .scrim.on{opacity:1;pointer-events:auto}
-.sheet{position:absolute;left:0;right:0;bottom:0;z-index:50;border-radius:24px 24px 0 0;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);padding:8px 16px 34px}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:50;border-radius:24px 24px 0 0;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);padding:8px 16px 34px;max-height:92%;overflow:auto}
 .sheet.on{transform:none}
 .sheet.ios{background:#F2F2F7}
-.sheet.app{background:#fff;text-align:center}
+.sheet.app{background:#fff}
 .grab{width:36px;height:5px;border-radius:3px;background:#C7C7CC;margin:0 auto 16px}
 .preview{display:flex;gap:12px;align-items:center;background:#fff;border-radius:14px;padding:12px}
-.preview .thumb{width:56px;height:56px;border-radius:12px;background:#EEF9EE;display:grid;place-items:center;flex-shrink:0}
-.preview .pt{font-size:15px;font-weight:600}
+.preview .og{width:56px;height:56px;border-radius:12px;background:var(--green);display:grid;place-items:center;font-weight:700;font-size:22px;flex-shrink:0}
+.preview .pt{font-size:15px;font-weight:600;line-height:1.3}
 .preview .pu{font-size:13px;color:var(--ink2);margin-top:2px}
 .apps{display:flex;justify-content:space-between;margin:20px 0}
-.apps button{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;width:60px}
+.apps button{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;width:60px;text-align:center}
 .apps i{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;color:#fff;font-style:normal;font-weight:700;font-size:22px}
 .acts{background:#fff;border-radius:12px}
-.acts button{display:block;width:100%;text-align:left;padding:14px 16px;font-size:16px}
+.acts button{display:block;width:100%;padding:14px 16px;font-size:16px}
 .acts button + button{border-top:1px solid #E5E5EA}
+.chips{display:flex;gap:8px;margin:16px 0}
+.chips button{padding:8px 14px;border-radius:999px;background:var(--chip);font-size:14px;font-weight:500}
+.chips button.on{background:#000;color:#fff}
+.field{border:1.5px solid #000;border-radius:14px;background:var(--soft);padding:12px 14px}
+.field textarea{width:100%;border:0;background:none;font:inherit;font-size:15px;line-height:1.45;resize:none;outline:none;min-height:96px}
+.field .meta{display:flex;justify-content:space-between;font-size:13px;color:var(--ink2);margin-top:4px}
 
-/* ios alert */
-.alert{position:absolute;inset:0;z-index:90;display:none;place-items:center;background:rgba(0,0,0,.35)}
+/* alert */
+.alert{position:absolute;inset:0;z-index:110;display:none;place-items:center;background:rgba(0,0,0,.35)}
 .alert.on{display:grid}
 .alert .box{width:270px;background:rgba(242,242,247,.97);border-radius:14px;text-align:center;overflow:hidden}
 .alert .bt{padding:18px 16px 14px;font-size:16px;font-weight:600;line-height:1.3}
 .alert .bt p{font-weight:400;font-size:13px;margin-top:4px}
 .alert .bb{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #C6C6C8}
-.alert .bb button{padding:12px;color:#007AFF;font-size:16px}
+.alert .bb button{padding:12px;color:#007AFF;font-size:16px;text-align:center}
 .alert .bb button + button{border-left:1px solid #C6C6C8;font-weight:600}
 
 /* timeline */
 .tl{padding:16px}
-.tl h3{font-size:16px;font-weight:700;margin-bottom:12px}
+.tl h3{font-size:16px;font-weight:700;margin-bottom:12px;padding:0}
 .step{display:flex;gap:12px}
 .rail{display:flex;flex-direction:column;align-items:center;width:22px;flex-shrink:0;padding-top:2px}
 .ind{width:22px;height:22px;border-radius:11px;flex-shrink:0;display:grid;place-items:center}
@@ -147,55 +151,146 @@ svg{display:block}
 .step .tx{padding-bottom:16px;flex:1}
 .step:last-child .tx{padding-bottom:0}
 .step .a{font-size:16px;font-weight:500}
-.step .b{font-size:14px;color:var(--ink2);margin-top:2px;line-height:1.4}
+.step .b{font-size:14px;color:var(--ink2);margin-top:2px}
 .step.now .a{font-weight:600}
 .step.now .b{color:var(--green-ink)}
 .step.todo .a{color:var(--ink2)}
-
-.kv{display:flex;justify-content:space-between;padding:16px;font-size:16px;font-weight:500;position:relative}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:16px;font-size:16px;font-weight:500;position:relative}
 .kv + .kv::before{content:"";position:absolute;top:0;left:16px;right:16px;border-top:1px solid var(--line)}
+
+/* vertical flow */
+.vflow{background:var(--soft);border-radius:16px;padding:20px;width:100%;text-align:left;margin-top:20px}
+.vstep{display:flex;gap:14px}
+.vstep .r{display:flex;flex-direction:column;align-items:center;width:44px}
+.vstep .c{width:44px;height:44px;border-radius:22px;background:#fff;display:grid;place-items:center}
+.vstep.done .c{background:var(--green)}
+.vstep .l{width:2px;flex:1;background:#D9D9D9;margin:4px 0;min-height:14px}
+.vstep .x{padding:10px 0 18px}
+.vstep:last-child .x{padding-bottom:0}
+.vstep .x b{font-size:16px;font-weight:600;display:block}
+.vstep .x span{font-size:14px;color:var(--ink2)}
 
 /* home */
 .home-top{display:flex;align-items:center;justify-content:space-between;margin-top:47px;padding:10px 16px 0}
 .home-top h2{font-size:32px;font-weight:700}
-.home-top .r{display:flex;gap:14px;align-items:center}
+.home-top .r{display:flex;gap:12px;align-items:center}
 .chipbtn{display:flex;gap:6px;align-items:center;background:var(--chip);border-radius:999px;padding:6px 12px 6px 10px;font-size:15px;font-weight:500}
-.chipbtn:active{background:#e4e4e4}
-.me{width:40px;height:40px;border-radius:20px;background:#000;display:grid;place-items:center;color:#fff}
-.search{margin:16px 0;height:44px;border-radius:12px;background:var(--soft);display:flex;align-items:center;gap:10px;padding:0 12px;color:var(--ink2);font-size:16px}
-.cats{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;font-size:14px;font-weight:500;gap:8px}
-.cats div{display:flex;flex-direction:column;align-items:center;gap:6px}
+.me{width:40px;height:40px;border-radius:20px;background:#000;display:grid;place-items:center}
+.search{margin:16px 0;height:44px;border-radius:12px;background:var(--soft);display:flex;align-items:center;gap:10px;padding:0 12px;color:var(--ink2);font-size:16px;width:100%}
+.cats{display:grid;grid-template-columns:repeat(3,1fr);font-size:14px;font-weight:500;gap:8px}
+.cats button{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
 .cats i{width:56px;height:56px;border-radius:28px;background:var(--soft);display:grid;place-items:center}
-.promo{height:300px;border-radius:20px;margin-top:20px;background:linear-gradient(160deg,#2b2b2b,#6b6b6b);color:#fff;padding:24px;display:flex;flex-direction:column;justify-content:flex-end}
+.promo{height:280px;border-radius:20px;margin-top:20px;background:linear-gradient(160deg,#2b2b2b,#6b6b6b);color:#fff;padding:24px;display:flex;flex-direction:column;justify-content:flex-end;width:100%;text-align:left}
 .promo b{font-size:28px;line-height:1.1}
 .promo span{font-size:17px;font-weight:600;margin-top:6px}
 .promo em{font-style:normal;color:var(--green)}
 .sect{font-size:22px;font-weight:700;margin:24px 0 12px}
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.tile{height:120px;border-radius:16px;background:var(--soft);padding:12px;display:flex;flex-direction:column;justify-content:flex-end;font-size:15px;font-weight:600}
+.tile{height:120px;border-radius:16px;background:var(--soft);padding:12px;display:flex;flex-direction:column;justify-content:flex-end;font-size:15px;font-weight:600;text-align:left}
 .tile span{font-size:13px;color:#7C3AED;font-weight:600}
-
-.note{font-size:13px;color:var(--ink2);text-align:center;line-height:1.45;margin-top:16px}
-.note b{color:#000;font-weight:600;font-size:14px;display:block;margin-bottom:2px}
-.center-block{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px 140px}
-.center-block h1{font-size:28px;font-weight:700;line-height:1.15;margin-top:12px}
-.center-block p{font-size:16px;color:var(--ink2);line-height:1.5;margin-top:8px}
-.steps-ol{text-align:left;margin-top:16px;display:flex;flex-direction:column;gap:10px}
-.steps-ol div{display:flex;gap:12px;align-items:center;font-size:16px}
-.steps-ol i{width:28px;height:28px;border-radius:14px;background:var(--soft);display:grid;place-items:center;font-style:normal;font-weight:600;font-size:14px;flex-shrink:0}
 .perm{border:1px solid var(--line);border-radius:var(--r);padding:24px 16px;text-align:center;margin:auto 0}
 .perm h1{font-size:24px;font-weight:700;margin-top:12px;line-height:1.2}
 .perm p{font-size:15px;color:var(--ink2);margin:8px 0 16px;line-height:1.45}
 .perm small{display:block;font-size:13px;color:var(--ink2);margin-top:12px}
-.empty-pad{height:8px}
-.pill{font-size:12px;font-weight:600;background:#EEF9EE;color:var(--green-ink);border-radius:999px;padding:3px 8px}
+
+/* duo cards */
+.duo{border:1px solid var(--line);border-radius:20px;padding:16px;background:#fff;margin-bottom:12px}
+.duo.ticket{border:2px solid var(--green)}
+.duo .top{display:flex;gap:12px;align-items:center}
+.bub{display:flex}
+.bub span{width:40px;height:40px;border-radius:20px;display:grid;place-items:center;font-weight:700;font-size:15px;border:2px solid #fff;background:var(--chip)}
+.bub span + span{margin-left:-10px;background:var(--green)}
+.bub span.you{font-size:12px}
+.duo .tt{flex:1;min-width:0}
+.duo .tt b{font-size:16px;font-weight:700;display:block;line-height:1.25}
+.duo .tt span{font-size:13px;color:var(--ink2)}
+.duo .am{text-align:right}
+.duo .am b{font-size:22px;font-weight:700;display:block}
+.duo .am span{font-size:12px;color:var(--ink2)}
+.duo .perf{border-top:1.5px dashed #ccc;margin:14px 0 12px}
+.duo .tz{font-size:14px;color:var(--ink2);line-height:1.4;margin-bottom:14px}
+.duo .tl3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+.duo .tl3 div{background:var(--soft);border-radius:12px;padding:10px}
+.duo .tl3 b{font-size:13px;font-weight:700;display:block}
+.duo .tl3 span{font-size:11px;color:var(--ink2);font-weight:500}
+.duo .lk{display:flex;justify-content:center;margin-top:10px}
+
+/* scratch */
+.full{position:absolute;inset:0;background:#fff;z-index:70;display:none;flex-direction:column;align-items:center;padding:100px 24px 40px;text-align:center}
+.full.on{display:flex}
+.full .close{position:absolute;top:56px;left:16px}
+.full h1{font-size:32px;font-weight:700;line-height:1.1;margin-top:12px}
+.full p{font-size:16px;color:var(--ink2);line-height:1.4;margin-top:8px}
+.bigbub{display:flex}
+.bigbub span{width:56px;height:56px;border-radius:28px;display:grid;place-items:center;font-weight:700;font-size:20px;border:3px solid #fff;background:var(--chip)}
+.bigbub span.you{font-size:15px}
+.bigbub span + span{margin-left:-12px;background:var(--green)}
+.ticket-box{position:relative;width:311px;height:230px;border-radius:24px;overflow:hidden;margin-top:28px;background:var(--green);touch-action:none}
+.ticket-box .rv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.ticket-box .rv b{font-size:60px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.ticket-box .rv span{font-size:16px;font-weight:600}
+.ticket-box .rv small{font-size:14px;font-weight:500;color:#1a5a1e}
+.ticket-box canvas{position:absolute;inset:0;cursor:grab}
+.hint{font-size:15px;font-weight:500;color:var(--ink2);margin-top:20px}
+.taprev{margin-top:8px;font-size:14px;text-decoration:underline;color:var(--ink2)}
+.full .after{position:absolute;left:16px;right:16px;bottom:40px;display:none;flex-direction:column;gap:8px;align-items:center}
+.full .after.on{display:flex}
+.confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.confetti i{position:absolute;width:7px;height:13px;border-radius:2px;top:-20px;animation:fall 1.6s cubic-bezier(.2,.6,.4,1) forwards}
+@keyframes fall{to{transform:translateY(860px) rotate(540deg)}}
+
+/* stories (white) */
+.story{position:absolute;inset:0;background:#fff;z-index:75;display:none;flex-direction:column;padding:56px 24px 36px}
+.story.on{display:flex}
+.bars{display:flex;gap:4px}
+.bars i{flex:1;height:3px;border-radius:2px;background:#E3E3E3}
+.bars i.on{background:#000}
+.stop{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:13px;font-weight:600;color:var(--ink2)}
+.sbody{flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px}
+.sbody .kick{font-size:13px;font-weight:700;color:var(--green-ink);letter-spacing:.04em}
+.sbody h2{font-size:46px;font-weight:700;line-height:1.02;letter-spacing:-.02em}
+.sbody h3{font-size:20px;font-weight:600}
+.sbody .huge{font-size:76px;font-weight:700;letter-spacing:-.03em;line-height:1;color:#000}
+.sbody .huge u{text-decoration:none;background:linear-gradient(transparent 62%,var(--green) 62%)}
+.srow{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-top:1px solid var(--line)}
+.srow:last-child{border-bottom:1px solid var(--line)}
+.srow b{font-size:17px}
+.srow span{font-size:13px;color:var(--ink2);display:block}
+.srow em{font-style:normal;font-size:20px;font-weight:700}
+.brand{display:flex;gap:16px;align-items:center}
+.brand .n{font-size:44px;font-weight:700;width:30px}
+.brand .n.g{color:var(--green-ink)}
+.brand b{font-size:22px;display:block}
+.brand span{font-size:14px;color:var(--ink2)}
+.persona{background:var(--soft);border-radius:16px;padding:16px}
+.persona small{font-size:12px;font-weight:700;color:var(--ink2);letter-spacing:.04em}
+.persona b{font-size:22px;display:block;margin:2px 0}
+.persona span{font-size:14px;color:var(--ink2)}
+.opt{background:var(--soft);border-radius:16px;padding:16px}
+.opt small{font-size:12px;font-weight:700;color:var(--green-ink);letter-spacing:.04em}
+.opt b{font-size:17px;font-weight:600;display:block;margin-top:4px;line-height:1.3}
+.tapzones{position:absolute;inset:100px 0 140px;display:grid;grid-template-columns:1fr 2fr;z-index:1}
+.story .sctas{position:relative;z-index:2;display:flex;flex-direction:column;gap:6px;align-items:center}
+
+/* ig */
+.ig{position:absolute;inset:0;background:#141414;z-index:80;display:none}
+.ig.on{display:block}
+.igcard{position:absolute;left:50%;top:170px;width:290px;transform:translateX(-50%) rotate(-3deg);background:#fff;border-radius:26px;padding:26px 22px;text-align:center}
+.igcard small{font-size:12px;font-weight:700;color:var(--green-ink);letter-spacing:.04em}
+.igcard b{display:block;font-size:54px;font-weight:700;letter-spacing:-.02em;margin:4px 0}
+.igcard .tg{display:flex;gap:6px;justify-content:center;margin:12px 0 8px;flex-wrap:wrap}
+.igcard .tg span{background:var(--chip);border-radius:999px;padding:5px 10px;font-size:12px;font-weight:600}
+.igcard em{font-style:normal;font-weight:700;font-size:20px}
+.sticker{position:absolute;left:50%;top:520px;transform:translateX(-50%);background:#fff;color:#2563EB;border-radius:12px;padding:10px 16px;font-weight:700;font-size:15px;display:flex;gap:6px;align-items:center;white-space:nowrap}
+.igbot{position:absolute;bottom:40px;left:0;right:0;display:flex;gap:10px;justify-content:center}
+.igbot button{padding:13px 20px;border-radius:999px;font-weight:600;font-size:15px}
 </style>
 </head>
 <body>
 <div class="wrap">
   <aside class="panel">
     <h1>Referral flow</h1>
-    <p class="lead">Case study prototype. Redesign of a cash back app referral flow: understand and share, then track and nudge. Tap through the phone or jump to a screen.</p>
+    <p class="lead">Case study prototype: a cash back app referral flow. Understand and share, track and nudge, then celebrate each year together. Tap through the phone or jump to a step.</p>
     <nav class="flow" id="flow"></nav>
     <button class="reset" onclick="resetAll()">Reset prototype</button>
   </aside>
@@ -207,141 +302,143 @@ svg{display:block}
       <svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="#000" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2"/><rect x="25" y="4.5" width="1.5" height="4" rx=".75" opacity=".4"/></svg>
     </span></div>
 
-    <!-- 0 HOME -->
+    <!-- HOME -->
     <section class="screen" id="home">
       <div class="home-top">
         <h2>Home</h2>
         <div class="r">
-          <button class="chipbtn" onclick="go('referral')"><i data-i="userplus" data-s="18"></i>Give $3</button>
-          <i data-i="bell"></i>
-          <div class="me"><i data-i="user" data-c="#fff" data-s="20"></i></div>
+          <button class="chipbtn" onclick="go('referral')"><i data-i="userplus" data-s="18"></i>Share &amp; earn</button>
+          <button onclick="nope()"><i data-i="bell"></i></button>
+          <button class="me" onclick="nope()"><i data-i="user" data-c="#fff" data-s="20"></i></button>
         </div>
       </div>
       <div class="scroll">
-        <div class="search"><i data-i="search" data-c="#747474" data-s="18"></i>Search an offer, a brand...</div>
+        <button class="search" onclick="nope()"><i data-i="search" data-c="#747474" data-s="18"></i>Search an offer, a brand...</button>
         <div class="cats">
-          <div><i><svg-i data-i="globe"></svg-i></i>Online</div>
-          <div><i><svg-i data-i="card"></svg-i></i>Card-linked</div>
-          <div><i><svg-i data-i="gift"></svg-i></i>Gift cards</div>
+          <button onclick="nope()"><i><svg-i data-i="globe"></svg-i></i>Online</button>
+          <button onclick="nope()"><i><svg-i data-i="card"></svg-i></i>Card-linked</button>
+          <button onclick="nope()"><i><svg-i data-i="gift"></svg-i></i>Gift cards</button>
         </div>
-        <div class="promo"><b>Internet deal</b><span>Up to <em>30%</em> off + <em>8%</em> cash back</span></div>
+        <button class="promo" onclick="nope()"><b>Internet deal</b><span>Up to <em>30%</em> off + <em>8%</em> cash back</span></button>
         <div class="sect">Boosted</div>
         <div class="tiles">
-          <div class="tile">Fashion store<span>10% cash back</span></div>
-          <div class="tile">Home &amp; garden<span>8% cash back</span></div>
-          <div class="tile">Sports<span>6% cash back</span></div>
-          <div class="tile">Travel<span>5% cash back</span></div>
+          <button class="tile" onclick="nope()">Fashion store<span>10% cash back</span></button>
+          <button class="tile" onclick="nope()">Home &amp; garden<span>8% cash back</span></button>
+          <button class="tile" onclick="nope()">Sports<span>6% cash back</span></button>
+          <button class="tile" onclick="nope()">Travel<span>5% cash back</span></button>
         </div>
       </div>
     </section>
 
-    <!-- 1 REFERRAL -->
+    <!-- REFERRAL -->
     <section class="screen" id="referral">
       <div class="hdr"><button class="ic" onclick="back()"><i data-i="chevl"></i></button><h2>Referrals</h2><span></span></div>
       <div class="scroll has-footer">
         <div class="hero">
-          <div style="display:flex;justify-content:center"><svg-plant data-s="96"></svg-plant></div>
-          <h1>Give $3, get $3</h1>
-          <p>+ 10% of their cash back for 12 months, paid by us</p>
+          <div style="display:flex;justify-content:center"><svg-plant data-s="88"></svg-plant></div>
+          <h1>Sharing is earning</h1>
+          <p>Get $3 for every friend who joins, plus 10% of their cash back for a year</p>
         </div>
-        <button class="list row center" style="margin-bottom:16px" onclick="go('referrals')">
-          <i data-i="users" class="ico"></i>
-          <div class="grow"><div class="t">My referrals</div><div class="s" style="color:#000">3 in progress · $46.88 earned</div></div>
-          <i data-i="chevr" class="chev"></i>
-        </button>
         <div class="card" style="margin-bottom:16px">
-          <div style="font-weight:700;font-size:16px">What a friend can earn you</div>
-          <div style="font-size:14px;color:var(--ink2);margin-top:4px;line-height:1.4">If Paul earns $120 in cash back this year, like an average member</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px">
-            <div><div style="font-size:14px;font-weight:500">You get</div><div style="font-size:13px;color:var(--ink2);margin-top:2px">$3 bonus + $12 (10% of $120)</div></div>
-            <div style="font-size:32px;font-weight:700">$15</div>
+          <div style="font-weight:700;font-size:16px">How it works</div>
+          <div class="how3">
+            <div><i><svg-i data-i="link"></svg-i></i>You share<br>your link</div>
+            <div><i><svg-i data-i="bank"></svg-i></i>They join and<br>connect a bank</div>
+            <div><i><svg-i data-i="coin"></svg-i></i>You both get $3,<br>then you earn 10%</div>
           </div>
+          <div class="sep"></div>
+          <div class="ex"><div class="l"><div style="font-size:14px;font-weight:500">If your friend gets $120 back this year</div><div class="small">$3 bonus + $12 (10%). Paid by us, never taken from your friend.</div></div><div class="a">+$15</div></div>
+          <div class="small" style="margin-top:12px">Cash back = money back on what you buy, credited to your balance.</div>
         </div>
-        <div class="list" style="margin-bottom:16px">
-          <h3>How it works</h3>
-          <div class="row"><i data-i="link" class="ico"></i><div class="grow"><div class="t">Share your link</div><div class="s">Your code is added automatically when they sign up.</div></div></div>
-          <div class="row"><i data-i="bank" class="ico"></i><div class="grow"><div class="t">They connect a bank account</div><div class="s">Any bank except PayPal. It unlocks their cash back.</div></div></div>
-          <div class="row"><i data-i="coin" class="ico"></i><div class="grow"><div class="t">You both get $3</div><div class="s">As soon as their bank is connected. Then the 10% starts.</div></div></div>
-        </div>
-        <div class="card" style="display:flex;justify-content:space-between;align-items:center">
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
           <div><div style="font-size:12px;color:var(--ink2)">Your code</div><div style="font-size:24px;font-weight:700;letter-spacing:.02em">UBBAKZ</div></div>
-          <button class="hdr-ic" onclick="toast('Code copied')" aria-label="Copy code" style="width:40px;height:40px;display:grid;place-items:center"><i data-i="copy"></i></button>
+          <button class="ic" onclick="toast('Code copied')" aria-label="Copy code"><i data-i="copy"></i></button>
+        </div>
+        <button class="list" style="display:block;width:100%;padding:16px;margin-bottom:16px" onclick="go('referrals')">
+          <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:16px">Your referrals</b><span class="link" style="text-decoration:underline">Follow-up <i data-i="chevr" data-s="16"></i></span></div>
+          <div style="display:flex;align-items:baseline;gap:8px;margin:10px 0"><b style="font-size:32px">$90.38</b><span style="color:var(--ink2);font-size:14px">earned so far</span></div>
+          <div style="display:flex;align-items:center;gap:10px"><div class="stack"><span>P</span><span>L</span><span>S</span></div><span style="font-size:14px">3 friends in progress · 2 need a nudge</span></div>
+        </button>
+        <div class="list">
+          <h3>Questions</h3>
+          <button class="row" onclick="openAnswer('why')"><i data-i="info"></i><div class="grow t">Why do we pay you?</div><i data-i="chevr"></i></button>
+          <button class="row" onclick="openAnswer('safe')"><i data-i="shield"></i><div class="grow t">Is it safe for my friend?</div><i data-i="chevr"></i></button>
         </div>
         <div class="note"><b>Good to know</b>Your bonus is paid once your friend connects a bank. <u>See full terms</u></div>
       </div>
       <div class="footer">
-        <button class="btn primary" onclick="openSheet('share')"><i data-i="link" data-c="#fff" data-s="20"></i>Share my link</button>
+        <button class="btn primary" onclick="openShare('link')"><i data-i="link" data-c="#fff" data-s="20"></i>Share my link</button>
         <button class="btn tertiary" onclick="go('contacts')">Invite from contacts</button>
       </div>
     </section>
 
-    <!-- 2 CONTACTS PERMISSION -->
+    <!-- CONTACTS -->
     <section class="screen" id="contacts">
       <div class="hdr"><button class="ic" onclick="back()"><i data-i="x"></i></button><h2>Invite from contacts</h2><span></span></div>
       <div class="scroll" style="display:flex;flex-direction:column">
         <div class="perm">
           <div style="display:flex;justify-content:center"><i data-i="idcard" data-s="40"></i></div>
-          <h1>Pick friends from your contacts</h1>
-          <p>Choose who to invite. We'll prepare the message, you send it.</p>
-          <button class="btn primary" onclick="showAlert()">Continue</button>
+          <h1>Who do you want to bring along?</h1>
+          <p>Pick your friends. We prep the message, you hit send.</p>
+          <button class="btn primary" onclick="showAlert()">Pick my friends</button>
           <small>Contacts stay on your phone. We never save them.</small>
         </div>
       </div>
     </section>
 
-    <!-- 4 NEXT STEPS -->
+    <!-- NEXT -->
     <section class="screen" id="next">
       <div class="hdr"><button class="ic" onclick="go('referral',true)"><i data-i="chevl"></i></button><h2>Referrals</h2><span></span></div>
-      <div class="center-block">
-        <svg-plant data-s="120" class="grow-anim"></svg-plant>
-        <h1>Here's what happens next</h1>
-        <div class="steps-ol">
-          <div><i>1</i>Your friend opens your link</div>
-          <div><i>2</i>They sign up and connect a bank</div>
-          <div><i>3</i>You both get $3</div>
+      <div class="scroll" style="display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:16px">
+        <svg-plant data-s="96" class="grow-anim"></svg-plant>
+        <h1 style="font-size:28px;font-weight:700;margin-top:10px">We handle the rest</h1>
+        <p style="font-size:16px;color:var(--ink2);margin-top:6px;line-height:1.4">You just shared. Now relax, it all happens on its own.</p>
+        <div class="vflow">
+          <div class="vstep done"><div class="r"><div class="c"><svg-i data-i="link"></svg-i></div><div class="l"></div></div><div class="x"><b>Send your link</b><span>Done!</span></div></div>
+          <div class="vstep"><div class="r"><div class="c"><svg-i data-i="bank"></svg-i></div><div class="l"></div></div><div class="x"><b>Your friend joins and connects a bank</b><span>We guide them step by step</span></div></div>
+          <div class="vstep"><div class="r"><div class="c"><svg-i data-i="coin"></svg-i></div></div><div class="x"><b>You both get cash</b><span>$3 each, then 10% for you all year</span></div></div>
         </div>
-        <p>We'll notify you at each step.</p>
       </div>
       <div class="footer flat">
         <button class="btn primary" onclick="go('referrals')">Track my referrals</button>
-        <button class="btn tertiary" onclick="go('referral',true);setTimeout(()=>openSheet('share'),250)">Share again</button>
+        <button class="btn tertiary" onclick="go('referral',true);setTimeout(()=>openShare('link'),250)">Share again</button>
       </div>
     </section>
 
-    <!-- 5 MY REFERRALS -->
+    <!-- MY REFERRALS -->
     <section class="screen" id="referrals">
       <div class="hdr"><button class="ic" onclick="back()"><i data-i="chevl"></i></button><h2>My referrals</h2><span></span></div>
       <div class="scroll has-footer">
-        <div class="amount">$46<small>.88</small></div>
-        <div class="caption">Earned from referrals · +$4.20 this month</div>
+        <div class="amount">$90<small>.38</small></div>
+        <div class="caption">Total earned from referrals · +$4.20 this month</div>
         <div class="tabs" id="tabs">
-          <button class="on" data-t="unlock">To unlock</button>
+          <button data-t="pending">Pending</button>
           <button data-t="earning">Earning</button>
           <button data-t="ended">Ended</button>
         </div>
         <div id="reflist"></div>
       </div>
       <div class="footer">
-        <button class="btn primary" onclick="go('referral');setTimeout(()=>openSheet('share'),250)"><i data-i="link" data-c="#fff" data-s="20"></i>Share my link</button>
+        <button class="btn primary" id="refCta" onclick="go('referral');setTimeout(()=>openShare('link'),250)"><i data-i="link" data-c="#fff" data-s="20"></i>Share my link</button>
       </div>
     </section>
 
-    <!-- 6 DETAILS -->
+    <!-- DETAILS -->
     <section class="screen" id="details">
       <div class="hdr"><button class="ic" onclick="back()"><i data-i="chevl"></i></button><h2>Referral details</h2><span></span></div>
       <div class="scroll has-footer" id="detailBody"></div>
-      <div class="footer">
-        <button class="btn primary" id="remindBtn" onclick="openRemind(current)">Remind Paul</button>
-        <button class="btn tertiary" onclick="toast('Help center would open here')">Stuck? Get help</button>
+      <div class="footer" id="detailFooter">
+        <button class="btn primary" id="nudgeBtn" onclick="openNudge(current)">Send a nudge</button>
+        <button class="btn tertiary" onclick="toast('Help center would open here')" id="helpBtn">Stuck? Get help</button>
       </div>
     </section>
 
     <div class="scrim" id="scrim" onclick="closeSheets()"></div>
 
-    <!-- SHARE SHEET (native) -->
+    <!-- NATIVE SHARE SHEET -->
     <div class="sheet ios" id="share">
       <div class="grab"></div>
-      <div class="preview"><div class="thumb"><svg-plant data-s="44"></svg-plant></div><div><div class="pt" id="pvTitle">Alex gave you $3</div><div class="pu">app.link/r/alex</div></div></div>
+      <div class="preview"><div class="og">$3</div><div><div class="pt" id="pvTitle">Alex just sent you $3. Ready to claim it?</div><div class="pu">app.link/r/alex · Cash back app</div></div></div>
       <div class="apps" id="apps"></div>
       <div class="acts">
         <button onclick="shareDone('Link copied')">Copy link</button>
@@ -350,13 +447,68 @@ svg{display:block}
     </div>
 
     <!-- CASH BACK MOMENT -->
-    <div class="sheet app" id="cashback">
+    <div class="sheet app" id="cashback" style="text-align:center">
       <div class="grab"></div>
-      <div style="display:flex;justify-content:center"><svg-plant data-s="96"></svg-plant></div>
-      <div style="font-size:24px;font-weight:700;margin-top:8px">+$4.20 cash back confirmed</div>
-      <div style="font-size:16px;color:var(--ink2);margin:8px 8px 20px;line-height:1.45">Know someone who'd like this? Give them $3 to start, you get $3 too.</div>
-      <button class="btn primary" onclick="closeSheets();setTimeout(()=>go('referral'),200)">Give $3 to a friend</button>
+      <div style="display:flex;justify-content:center"><svg-plant data-s="92"></svg-plant></div>
+      <div style="font-size:24px;font-weight:700;margin-top:8px">+$6.40 cash back confirmed</div>
+      <div style="font-size:16px;color:var(--ink2);margin:8px 8px 20px;line-height:1.45">Sharing is earning: send a friend $3 to start. You get $3 too, plus 10% of their cash back for a year.</div>
+      <button class="btn primary" onclick="closeSheets();setTimeout(()=>go('referral'),200)">Share the good deal</button>
       <button class="btn tertiary" onclick="closeSheets()">Not now</button>
+    </div>
+
+    <!-- NUDGE SHEET -->
+    <div class="sheet app" id="nudge">
+      <div class="grab"></div>
+      <div style="font-size:22px;font-weight:700" id="nudgeTitle">Give Paul a friendly nudge</div>
+      <div style="font-size:15px;color:var(--ink2);margin-top:4px">Pick a tone, tweak the words, then send it your way.</div>
+      <div class="chips" id="tones"><button class="on" data-tone="friendly">Friendly</button><button data-tone="short">Short</button><button data-tone="funny">Funny</button></div>
+      <div class="field"><textarea id="msg" maxlength="300"></textarea><div class="meta"><span>Tap to edit</span><span id="count">0/300</span></div></div>
+      <div style="margin-top:16px"><button class="btn primary" onclick="nudgeToShare()">Choose an app to send</button><button class="btn tertiary" onclick="closeSheets()">Not now</button></div>
+    </div>
+
+    <!-- ANSWER SHEET -->
+    <div class="sheet app" id="answer">
+      <div class="grab"></div>
+      <div style="font-size:22px;font-weight:700" id="ansT"></div>
+      <div style="font-size:16px;color:var(--ink2);line-height:1.5;margin:10px 0 20px" id="ansB"></div>
+      <button class="btn primary" onclick="closeSheets()">Got it</button>
+    </div>
+
+    <!-- SCRATCH -->
+    <div class="full" id="scratch">
+      <button class="ic close" onclick="closeScratch()"><i data-i="x"></i></button>
+      <div class="confetti" id="confetti"></div>
+      <div class="bigbub"><span class="you">You</span><span id="scInit">E</span></div>
+      <h1 id="scTitle">One year with Eva</h1>
+      <p id="scSub">Scratch here to see how much you earned together</p>
+      <div class="ticket-box" id="ticket">
+        <div class="rv"><b id="scAmt">$224.13</b><span>earned together</span><small id="scSplit">You $22.83 · Eva $201.30</small></div>
+        <canvas id="scCanvas" width="622" height="460"></canvas>
+      </div>
+      <div class="hint" id="scHint">Use your finger to scratch</div>
+      <button class="taprev" id="scTap" onclick="revealAll()">Or tap to reveal</button>
+      <div class="after" id="scAfter">
+        <button class="btn primary" onclick="openStory(currentDuo,0)"><i data-i="history" data-c="#fff" data-s="18"></i>See your recap</button>
+        <span style="font-size:13px;color:var(--ink2)">Brands, duo type and a story to share</span>
+      </div>
+    </div>
+
+    <!-- STORIES (white) -->
+    <div class="story" id="story">
+      <div class="bars" id="bars"></div>
+      <div class="stop"><span>Your duo year, wrapped</span><button class="ic" onclick="closeStory()" style="width:32px;height:32px"><i data-i="x"></i></button></div>
+      <div class="tapzones"><button onclick="storyNav(-1)" aria-label="Previous"></button><button onclick="storyNav(1)" aria-label="Next"></button></div>
+      <div class="sbody" id="sbody"></div>
+      <div class="sctas" id="sctas"></div>
+    </div>
+
+    <!-- INSTAGRAM -->
+    <div class="ig" id="ig">
+      <button class="ic" style="position:absolute;top:56px;left:16px" onclick="closeIg()"><i data-i="x" data-c="#fff"></i></button>
+      <div style="position:absolute;top:62px;right:22px;color:#fff;font-weight:700;font-size:18px">Aa</div>
+      <div class="igcard" id="igcard"></div>
+      <div class="sticker"><i data-i="link" data-c="#2563EB" data-s="18"></i>GET $3 WITH MY LINK</div>
+      <div class="igbot"><button style="background:#fff;color:#000" onclick="igDone()">Your story</button><button style="background:#22C55E;color:#fff" onclick="igDone()">Close friends</button></div>
     </div>
 
     <div class="alert" id="alert"><div class="box">
@@ -372,14 +524,11 @@ svg{display:block}
 <script>
 /* ---------- icons ---------- */
 const P={
- chevl:'<path d="M15 18l-6-6 6-6"/>',
- chevr:'<path d="M9 18l6-6-6-6"/>',
- x:'<path d="M6 6l12 12M18 6L6 18"/>',
+ chevl:'<path d="M15 18l-6-6 6-6"/>', chevr:'<path d="M9 18l6-6-6-6"/>', x:'<path d="M6 6l12 12M18 6L6 18"/>',
  link:'<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
  bank:'<path d="M3 10h18L12 4 3 10Z"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>',
  coin:'<circle cx="12" cy="12" r="9"/><path d="M14.5 9.5c-.4-.9-1.4-1.5-2.5-1.5-1.5 0-2.5.8-2.5 2s1 1.6 2.5 2 2.5.8 2.5 2-1 2-2.5 2c-1.2 0-2.2-.6-2.6-1.6M12 6.5V8m0 8v1.5"/>',
  copy:'<rect x="9" y="9" width="12" height="12" rx="3"/><path d="M5 15H4.5A1.5 1.5 0 0 1 3 13.5v-9A1.5 1.5 0 0 1 4.5 3h9A1.5 1.5 0 0 1 15 4.5V5"/>',
- users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.9.7 3.2 2.5 3.5 5.2"/>',
  userplus:'<circle cx="10" cy="8" r="4"/><path d="M3 20c.7-3.6 3.5-6 7-6 1.3 0 2.5.3 3.5.9M19 14v6M16 17h6"/>',
  user:'<circle cx="12" cy="8" r="4"/><path d="M4.5 20c.8-3.6 3.8-6 7.5-6s6.7 2.4 7.5 6"/>',
  bell:'<path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15L6 16Z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
@@ -388,121 +537,246 @@ const P={
  card:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h3"/>',
  gift:'<rect x="3.5" y="8" width="17" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12M12 8c-1-3-5-4-5-1.5S12 8 12 8Zm0 0c1-3 5-4 5-1.5S12 8 12 8Z"/>',
  idcard:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2.2"/><path d="M5.5 16.5c.6-1.8 1.9-2.7 3.5-2.7s2.9.9 3.5 2.7M14.5 9.5H18M14.5 13H18"/>',
- check:'<path d="M5 12.5l4.2 4L19 7"/>'
+ check:'<path d="M5 12.5l4.2 4L19 7"/>', clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+ checkc:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.5L16 9.5"/>',
+ info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
+ shield:'<path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6l8-3Z"/>',
+ share:'<path d="M12 15V3M8 7l4-4 4 4"/><path d="M6 11H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-1"/>',
+ history:'<path d="M3.5 12a8.5 8.5 0 1 0 2.5-6"/><path d="M3 4v4h4M12 8v4l3 2"/>',
+ lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+ giftstar:'<rect x="3.5" y="8" width="17" height="4" rx="1"/><path d="M5 12v8h9M19 12v3M12 8v12M12 8c-1-3-5-4-5-1.5S12 8 12 8Zm0 0c1-3 5-4 5-1.5S12 8 12 8Z"/><path d="M18.5 16.5l.7 1.6 1.6.7-1.6.7-.7 1.6-.7-1.6-1.6-.7 1.6-.7.7-1.6Z"/>'
 };
 function svg(name,size=24,color='#000',sw=1.6){return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${P[name]}</svg>`}
 function plant(s){return `<svg width="${s}" height="${s}" viewBox="0 0 100 100"><path d="M50 72V40" stroke="#3E8E2E" stroke-width="3"/><path d="M50 58c-14 0-22-8-24-18 12-2 22 4 24 18Z" fill="#5BBF3A"/><path d="M50 52c12 0 20-7 22-16-11-2-20 3-22 16Z" fill="#7AD64F"/><circle cx="50" cy="26" r="15" fill="#D9D9DC" stroke="#A9A9AE" stroke-width="2"/><text x="50" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#7D7D82" font-family="Instrument Sans,sans-serif">$</text><path d="M30 70h40l-5 24H35l-5-24Z" fill="#222"/><rect x="28" y="66" width="44" height="7" rx="2" fill="#333"/></svg>`}
 function paintIcons(root=document){
   root.querySelectorAll('i[data-i]').forEach(e=>{if(e.dataset.done)return;e.innerHTML=svg(e.dataset.i,+(e.dataset.s||24),e.dataset.c||'#000');e.dataset.done=1;e.style.display='inline-grid'});
-  root.querySelectorAll('svg-i').forEach(e=>{e.outerHTML=svg(e.dataset.i,26)});
+  root.querySelectorAll('svg-i').forEach(e=>{e.outerHTML=svg(e.dataset.i,24)});
   root.querySelectorAll('svg-plant').forEach(e=>{const w=document.createElement('div');w.className=e.className;w.innerHTML=plant(+e.dataset.s);e.replaceWith(w)});
 }
 
 /* ---------- data ---------- */
 const people={
- paul:{n:'Paul Martin',i:'P',tab:'unlock',sub:'Needs to connect a bank',action:true,state:'bank',invited:'Mar 1',signed:'Mar 3',reminded:false},
- lea:{n:'Léa Dubois',i:'L',tab:'unlock',sub:'Not signed up yet',action:true,state:'signup',invited:'Mar 6',reminded:false,contact:true},
- sam:{n:'Sam Petit',i:'S',tab:'unlock',sub:'Needs to connect a bank',action:false,state:'bank',invited:'Feb 26',signed:'Feb 27',reminded:'yesterday'},
- nina:{n:'Nina Roy',i:'N',tab:'earning',earned:'$14.20',sub:'Earning until Jan 12, 2027'},
- tom:{n:'Tom Garcia',i:'T',tab:'earning',earned:'$9.85',sub:'Earning until Nov 3, 2026'},
- eva:{n:'Eva Moreau',i:'E',tab:'ended',earned:'$22.83',sub:'Ended on Mar 23, 2025'}
+ paul:{n:'Paul Martin',i:'P',tab:'pending',status:'nobank',signed:'Mar 3',nudged:null},
+ lea:{n:'Léa Dubois',i:'L',tab:'pending',status:'invited',invited:'Mar 6',nudged:null},
+ sam:{n:'Sam Petit',i:'S',tab:'pending',status:'nobank',signed:'Feb 27',nudged:'yesterday'},
+ nina:{n:'Nina Roy',i:'N',tab:'earning',earned:'$14.20',left:'8 months left'},
+ tom:{n:'Tom Garcia',i:'T',tab:'earning',earned:'$9.85',left:'2 months left'}
 };
-let tab='unlock', current='paul';
+const duos={
+ eva:{n:'Eva',i:'E',type:'The Smart Savers',when:'Mar 2026',you:'$22.83',friend:'$201.30',together:'$224.13',brand:'Urban Wear',buys:'9',opened:false,
+      brands:[['Urban Wear','9 purchases between you'],['Peak Sports','6 purchases'],['Stayaway','2 trips, $41 back']],
+      personas:[['You','The Deal Hunter','First on boosted offers, 23 of them this year'],['Eva','The Weekend Explorer','Travel and sports, mostly on Saturdays']]},
+ hugo:{n:'Hugo',i:'H',type:'The Weekend Duo',when:'Jan 2026',you:'$31.40',friend:'$310.60',together:'$342',brand:'Peak Sports',buys:'11',opened:true,
+      brands:[['Peak Sports','11 purchases between you'],['Stayaway','3 trips'],['Urban Wear','4 purchases']],
+      personas:[['You','The Planner','Books early, saves more'],['Hugo','The Weekend Explorer','Always on the move']]},
+ lina:{n:'Lina',i:'L',type:'The Deal Hunters',when:'Sep 2025',you:'$12.10',friend:'$120.90',together:'$133',brand:'Urban Wear',buys:'7',opened:true,
+      brands:[['Urban Wear','7 purchases between you'],['Home Base','3 purchases'],['Peak Sports','2 purchases']],
+      personas:[['You','The Deal Hunter','First on boosted offers'],['Lina','The Smart Shopper','Never pays full price']]}
+};
+let tab=null, current='paul', currentDuo='eva', shareMode='link';
+const needsAction=()=>Object.values(people).some(p=>p.tab==='pending'&&!p.nudged);
 
+/* ---------- my referrals ---------- */
+function setTab(t){tab=t;document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));renderList();
+  const cta=document.getElementById('refCta'); cta.innerHTML=(t==='ended'?'Start a new duo':svg('link',20,'#fff')+'Share my link');}
+document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setTab(b.dataset.t)});
+function statusPill(p){return p.status==='invited'?`<span class="pill">${svg('clock',16)}Invited</span>`:`<span class="pill">${svg('bank',16)}No bank yet</span>`}
 function renderList(){
-  const el=document.getElementById('reflist'); let h='<div class="list">';
-  if(tab==='unlock'){
-    h+=`<button class="row center" onclick="toast('Opened 4 times · 1 sign-up (Sam)')"><i class="ico">${svg('link')}</i><div class="grow"><div class="t">Your shared link</div><div class="s" style="color:#000">Opened 4 times · 1 sign-up</div></div>${svg('chevr')}</button>`;
-  }
+  const el=document.getElementById('reflist');
+  if(tab==='ended'){el.innerHTML=renderEnded();return}
+  let h='<div class="list">';
   Object.entries(people).filter(([k,p])=>p.tab===tab).forEach(([k,p])=>{
-    let trail='';
-    if(tab==='unlock') trail = p.reminded?`<span class="trail muted">Reminded</span>`:`<span class="trail" onclick="event.stopPropagation();openRemind('${k}')">Remind</span>`;
-    else trail=`<span class="trail">${p.earned}</span>`;
-    const sub=(tab==='unlock'&&!p.reminded?'<span class="dot"></span>':'')+(p.reminded?'Reminded '+p.reminded:p.sub);
-    h+=`<button class="row center" onclick="openDetails('${k}')"><div class="avatar">${p.i}</div><div class="grow"><div class="t">${p.n}</div><div class="s" style="color:#000">${sub}</div></div>${trail}${svg('chevr')}</button>`;
+    const right= tab==='pending'?statusPill(p):`<span class="pill">${svg('clock',16)}${p.left}</span>`;
+    const sub= tab==='earning'?`<div class="s">${p.earned} earned</div>`:'';
+    h+=`<button class="row" onclick="openDetails('${k}')"><div class="avatar">${p.i}</div><div class="grow"><div class="t">${p.n}</div>${sub}</div>${right}${svg('chevr')}</button>`;
   });
   el.innerHTML=h+'</div>';
 }
-document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;tab=b.dataset.t;document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));renderList()});
+function renderEnded(){
+  let h=`<div style="margin-bottom:12px"><div style="font-size:20px;font-weight:700">3 duo years completed</div><div style="font-size:14px;color:var(--ink2);margin-top:4px;line-height:1.4">Every duo lasts a year. Open each recap to see what you earned together.</div></div>`;
+  for(const [k,d] of Object.entries(duos)){
+    const head=`<div class="top"><div class="bub"><span class="you">You</span><span>${d.i}</span></div><div class="tt"><b>${d.opened?d.type:'Mystery duo'}</b><span>You &amp; ${d.n} · ${d.when}</span></div><div class="am"><b>${d.you}</b><span>for you</span></div></div>`;
+    if(!d.opened){
+      h+=`<div class="duo ticket">${head}<div class="perf"></div><div class="tz">Your year with ${d.n} is complete. Reveal how much you earned together.</div><button class="btn primary" onclick="openScratch('${k}')">${svg('giftstar',18,'#fff')}Reveal your total</button></div>`;
+    } else {
+      h+=`<div class="duo">${head}<div class="tl3"><div><b>${d.together}</b><span>Together</span></div><div><b>${d.brand}</b><span>Top brand</span></div><div><b>${d.buys}</b><span>Shared buys</span></div></div><button class="btn primary" onclick="openStory('${k}',0)">${svg('history',18,'#fff')}Open your recap</button><div class="lk"><button class="link" onclick="openStory('${k}',4,true)">${svg('share',16)}Share your story</button></div></div>`;
+    }
+  }
+  return h;
+}
 
+/* ---------- details ---------- */
 function openDetails(k){
   current=k; const p=people[k]; const first=p.n.split(' ')[0];
   let body=`<div style="text-align:center;padding:8px 0 16px"><div class="avatar lg" style="margin:0 auto">${p.i}</div><div style="font-size:24px;font-weight:700;margin-top:12px">${p.n}</div></div>`;
-  if(p.tab==='unlock'){
+  const nb=document.getElementById('nudgeBtn'), help=document.getElementById('helpBtn');
+  if(p.tab==='pending'){
     body+=`<div class="list" style="margin-bottom:16px"><div class="kv"><span>You've earned</span><span>$0 so far</span></div><div class="kv"><span>Next reward</span><span>$3 for you, $3 for ${first}</span></div></div>`;
-    const s1=p.state==='signup'?'now':'done', s2=p.state==='signup'?'todo':'now';
+    const s1=p.status==='invited'?'now':'done', s2=p.status==='invited'?'todo':'now';
     body+=`<div class="list tl"><h3>${first}'s progress</h3>
-      ${step(s1,'Signed up with your link',s1==='done'?`${p.signed} · invited ${p.invited}`:`Now · invited ${p.invited} via contacts`,true)}
-      ${step(s2,'Connect a bank account',s2==='now'?`Now · waiting for ${first}`:'Any bank except PayPal',true)}
-      ${step('todo','You earn together',`$3 each, then 10% of ${p.state?'their':''} cash back for 12 months`,false)}
-    </div>`;
-    body+=`<div class="note">${first} agreed to share their progress when they signed up. You can remind them once every 3 days.</div>`;
-    document.getElementById('remindBtn').style.display='';
-    const rb=document.getElementById('remindBtn'); rb.textContent=p.reminded?`Reminded ${p.reminded}`:`Remind ${first}`; rb.disabled=p.reminded; rb.style.opacity=p.reminded?.35:1;
+      ${step(s1,'Joined',s1==='done'?p.signed:`Now · invited ${p.invited}`,true)}
+      ${step(s2,'Bank to connect',s2==='now'?`Now · waiting for ${first}`:'Any bank except PayPal',true)}
+      ${step('todo','Cash for both','$3 each, then your 10% all year',false)}</div>`;
+    body+=`<div class="note">${first} agreed to share their progress. One nudge every 3 days.</div>`;
+    nb.style.display=''; help.textContent=`${first} is stuck? Get help`;
+    nb.disabled=!!p.nudged; nb.textContent=p.nudged?`Nudged ${p.nudged}`:`Send ${first} a nudge`;
   } else {
-    body+=`<div class="list"><div class="kv"><span>You've earned</span><span>${p.earned}</span></div><div class="kv"><span>Status</span><span class="pill">${p.tab==='earning'?'Earning 10%':'Ended'}</span></div><div class="kv"><span>${p.tab==='earning'?'Until':'Ended on'}</span><span>${p.sub.replace(/^(Earning until|Ended on) /,'')}</span></div></div>`;
-    document.getElementById('remindBtn').style.display='none';
+    body+=`<div class="list"><div class="kv"><span>You've earned</span><span>${p.earned}</span></div><div class="kv"><span>Status</span><span class="pill green">Earning 10%</span></div><div class="kv"><span>Time left</span><span>${p.left.replace(' left','')}</span></div></div>`;
+    nb.style.display='none'; help.textContent='Questions? Get help';
   }
   document.getElementById('detailBody').innerHTML=body; go('details');
 }
 function step(st,a,b,line){return `<div class="step ${st}"><div class="rail"><div class="ind ${st}">${st==='done'?svg('check',14,'#fff',2.4):''}</div>${line?`<div class="line ${st==='done'?'done':''}"></div>`:''}</div><div class="tx"><div class="a">${a}</div><div class="b">${b}</div></div></div>`}
 
-/* ---------- navigation ---------- */
-const stack=['home'];
-function go(id,replace){
-  closeSheets(true);
-  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));
-  if(replace){stack.length=0;stack.push('home');}
-  if(stack[stack.length-1]!==id) stack.push(id);
-  const sc=document.querySelector('#'+id+' .scroll'); if(sc) sc.scrollTop=0;
-  if(id==='next') replay();
-  mark(id);
-}
-function back(){stack.pop(); const id=stack[stack.length-1]||'home'; document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id)); mark(id)}
-function openSheet(id){document.getElementById('scrim').classList.add('on');document.getElementById(id).classList.add('on');mark(id)}
-function closeSheets(silent){document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('on'));document.getElementById('scrim').classList.remove('on');if(!silent)mark(stack[stack.length-1])}
-let shareMode='link';
-function openRemind(k){
-  current=k; const p=people[k]; if(p.reminded)return; shareMode='remind';
-  document.getElementById('pvTitle').textContent=`${p.n.split(' ')[0]}, your $3 is waiting`;
-  openSheet('share'); mark('remind');
-}
-const _openSheet=openSheet;
-openSheet=function(id){ if(id==='share'&&shareMode!=='remind'){document.getElementById('pvTitle').textContent='Alex gave you $3'} _openSheet(id) };
+/* ---------- nudge ---------- */
+const tones={
+ friendly:n=>`Hey ${n}! Your $3 is still waiting for you. Connect your bank in the app and we both get our cash. Here's my link: app.link/r/alex`,
+ short:n=>`${n}, your $3 is waiting. Connect your bank to get it: app.link/r/alex`,
+ funny:n=>`${n}, $3 is sitting there doing nothing. Give it a home: connect your bank and we both cash in. app.link/r/alex`
+};
+function openNudge(k){const p=people[k]; if(p.nudged)return; const f=p.n.split(' ')[0];
+  document.getElementById('nudgeTitle').textContent=`Give ${f} a friendly nudge`;
+  setTone('friendly'); openSheet('nudge'); mark('nudge');}
+function setTone(t){document.querySelectorAll('#tones button').forEach(b=>b.classList.toggle('on',b.dataset.tone===t)); const f=people[current].n.split(' ')[0]; const m=document.getElementById('msg'); m.value=tones[t](f); count();}
+document.getElementById('tones').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setTone(b.dataset.tone)});
+function count(){document.getElementById('count').textContent=document.getElementById('msg').value.length+'/300'}
+document.getElementById('msg').addEventListener('input',count);
+function nudgeToShare(){closeSheets(true); shareMode='nudge'; const f=people[current].n.split(' ')[0]; document.getElementById('pvTitle').textContent=`${f}, your $3 is waiting`; setTimeout(()=>openSheet('share'),220)}
+
+/* ---------- share ---------- */
+function openShare(mode){shareMode=mode; document.getElementById('pvTitle').textContent='Alex just sent you $3. Ready to claim it?'; openSheet('share')}
 function shareDone(msg){
-  if(shareMode==='remind'){ const p=people[current]; p.reminded='today'; closeSheets(); shareMode='link'; renderList(); toast(`Reminder sent to ${p.n.split(' ')[0]}`); if(document.getElementById('details').classList.contains('on')) openDetails(current); return;}
+  if(shareMode==='nudge'){const p=people[current]; p.nudged='today'; closeSheets(); shareMode='link'; renderList(); toast(`Nudge sent to ${p.n.split(' ')[0]}`); if(isOn('details')) openDetails(current); return;}
   closeSheets(); if(msg) toast(msg); setTimeout(()=>go('next'),250);
 }
 const apps=[['Messages','#34C759','M'],['WhatsApp','#25D366','W'],['Messenger','#3B66FF','m'],['Mail','#1A8CFF','@'],['More','#D1D1D6','···']];
 document.getElementById('apps').innerHTML=apps.map(a=>`<button onclick="shareDone()"><i style="background:${a[1]};${a[0]==='More'?'color:#444':''}">${a[2]}</i>${a[0]}</button>`).join('');
 
-function showAlert(){document.getElementById('alert').classList.add('on')}
-function allowContacts(){document.getElementById('alert').classList.remove('on');toast('Contact picker would open here');}
-function denyContacts(){document.getElementById('alert').classList.remove('on');go('referral',true);setTimeout(()=>toast('No problem. You can share your link instead.'),200)}
+/* ---------- answers ---------- */
+const answers={why:['Why do we pay you?','Brands pay us a commission when your friends shop with cash back. We share part of it with you: $3 when they join, then 10% of their cash back for a year. Nothing is taken from your friend.'],
+ safe:['Is it safe for my friend?','Bank linking goes through a licensed provider and is read-only: we can see purchases to give cash back, but nobody can move money from the account.']};
+function openAnswer(k){document.getElementById('ansT').textContent=answers[k][0];document.getElementById('ansB').textContent=answers[k][1];openSheet('answer')}
 
+/* ---------- scratch ---------- */
+let scratched=false, scCtx, drawing=false;
+function openScratch(k){
+  currentDuo=k; const d=duos[k];
+  document.getElementById('scInit').textContent=d.i;
+  document.getElementById('scTitle').textContent=`One year with ${d.n}`;
+  document.getElementById('scSub').textContent='Scratch here to see how much you earned together';
+  document.getElementById('scAmt').textContent=d.together;
+  document.getElementById('scSplit').textContent=`You ${d.you} · ${d.n} ${d.friend}`;
+  ['scHint','scTap'].forEach(id=>document.getElementById(id).style.display='');
+  document.getElementById('scAfter').classList.remove('on'); document.getElementById('confetti').innerHTML='';
+  scratched=false; const c=document.getElementById('scCanvas'); c.style.display=''; c.style.opacity=1; scCtx=c.getContext('2d');
+  scCtx.globalCompositeOperation='source-over';
+  const g=scCtx.createLinearGradient(0,0,622,460); g.addColorStop(0,'#C2C4C9'); g.addColorStop(.45,'#EDEDF0'); g.addColorStop(.7,'#CDCFD4'); g.addColorStop(1,'#E5E5E8');
+  scCtx.fillStyle=g; scCtx.fillRect(0,0,622,460);
+  scCtx.fillStyle='#5A5A5E'; scCtx.font='700 36px Instrument Sans, sans-serif'; scCtx.textAlign='center'; scCtx.fillText('SCRATCH HERE',311,250);
+  scCtx.font='60px sans-serif'; scCtx.fillText('✦',311,190);
+  document.getElementById('scratch').classList.add('on'); mark('scratch');
+}
+function scratchAt(e){
+  if(scratched) return; const c=document.getElementById('scCanvas'); const r=c.getBoundingClientRect();
+  const x=(e.clientX-r.left)*(622/r.width), y=(e.clientY-r.top)*(460/r.height);
+  scCtx.globalCompositeOperation='destination-out'; scCtx.beginPath(); scCtx.arc(x,y,38,0,Math.PI*2); scCtx.fill();
+  if(navigator.vibrate && navigator.userActivation && navigator.userActivation.hasBeenActive && e.isTrusted) try{navigator.vibrate(5)}catch(_){}
+  document.getElementById('scHint').textContent='Keep going…';
+}
+function checkProgress(){
+  const data=scCtx.getImageData(0,0,622,460).data; let clear=0; for(let i=3;i<data.length;i+=64){ if(data[i]===0) clear++; }
+  if(clear/(data.length/64)>0.55) revealAll();
+}
+const cv=document.getElementById('scCanvas');
+cv.addEventListener('pointerdown',e=>{drawing=true;cv.setPointerCapture(e.pointerId);scratchAt(e)});
+cv.addEventListener('pointermove',e=>{if(drawing)scratchAt(e)});
+cv.addEventListener('pointerup',()=>{drawing=false;checkProgress()});
+cv.addEventListener('pointercancel',()=>{drawing=false});
+function revealAll(){
+  if(scratched) return; scratched=true; const c=document.getElementById('scCanvas'); c.style.transition='opacity .4s'; c.style.opacity=0; setTimeout(()=>c.style.display='none',400);
+  document.getElementById('scTitle').textContent='What a year!'; document.getElementById('scSub').textContent="Here's what you two got back";
+  ['scHint','scTap'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('scAfter').classList.add('on');
+  const cf=document.getElementById('confetti'); const cols=['#64E86A','#000','#BFF2C1','#D9D9D9'];
+  cf.innerHTML=Array.from({length:44},(_,i)=>`<i style="left:${Math.random()*100}%;background:${cols[i%4]};animation-delay:${Math.random()*.5}s;transform:rotate(${Math.random()*180}deg)"></i>`).join('');
+  duos[currentDuo].opened=true; renderList();
+}
+function closeScratch(){document.getElementById('scratch').classList.remove('on'); mark(stack[stack.length-1]); if(tab==='ended') renderList();}
+
+/* ---------- stories (white) ---------- */
+let sIdx=0, sDuo='eva';
+function slides(d){return [
+ `<div class="kick">ONE YEAR TOGETHER · ENDED ${d.when.toUpperCase()}</div><div class="bigbub" style="transform:scale(1.6);transform-origin:left;margin:20px 0 24px"><span class="you">You</span><span>${d.i}</span></div><h2>One year of sharing is earning</h2><div style="color:var(--ink2);font-size:15px">Tap to see what you two did together</div>`,
+ `<h3>Together, you got back</h3><div class="huge"><u>${d.together}</u></div><div><div class="srow"><div><b>${d.n}</b><span>Cash back + $3 bonus</span></div><em>${d.friend}</em></div><div class="srow"><div><b>You</b><span>Your 10% + $3 bonus</span></div><em>${d.you}</em></div></div><div style="color:var(--ink2);font-size:14px">Paid by us. Nobody paid for the other.</div>`,
+ `<h3>Your shared favorites</h3><h2 style="font-size:36px">You both shopped at the same brands</h2>${d.brands.map((b,i)=>`<div class="brand"><div class="n ${i===0?'g':''}">${i+1}</div><div><b>${b[0]}</b><span>${b[1]}</span></div></div>`).join('')}<div style="color:var(--ink2);font-size:13px">Only brands you both shop at. Nothing else is shown.</div>`,
+ `<h3>Your shopper duo</h3><h2 style="color:var(--green-ink)">${d.type}</h2>${d.personas.map(p=>`<div class="persona"><small>${p[0].toUpperCase()}</small><b>${p[1]}</b><span>${p[2]}</span></div>`).join('')}`,
+ `<h2>Ready for round two?</h2><div class="opt"><small>DUO CHALLENGE WITH ${d.n.toUpperCase()}</small><b>Both shop at 3 partner brands this month, get $5 each</b></div><div class="opt"><small>A NEW DUO YEAR</small><b>Invite a new friend: $3 each, then your 10% for a year</b></div>`
+];}
+function openStory(k,i,jumpShare){sDuo=k; sIdx=i; closeScratchSilently(); renderStory(); document.getElementById('story').classList.add('on'); mark('story'); if(jumpShare) setTimeout(openIg,150);}
+function closeScratchSilently(){document.getElementById('scratch').classList.remove('on')}
+function renderStory(){const d=duos[sDuo]; const s=slides(d);
+  document.getElementById('bars').innerHTML=s.map((_,i)=>`<i class="${i<=sIdx?'on':''}"></i>`).join('');
+  document.getElementById('sbody').innerHTML=s[sIdx];
+  document.getElementById('sctas').innerHTML= sIdx===s.length-1? `<button class="btn primary" onclick="openIg()">${svg('share',18,'#fff')}Share your recap</button><button class="btn tertiary" onclick="closeStory();go('referral');setTimeout(()=>openShare('link'),250)">Invite a new friend</button>`:'';
+}
+function storyNav(dir){const n=slides(duos[sDuo]).length; sIdx=Math.max(0,Math.min(n-1,sIdx+dir)); renderStory();}
+function closeStory(){document.getElementById('story').classList.remove('on'); mark(stack[stack.length-1]); renderList();}
+function openIg(){const d=duos[sDuo]; document.getElementById('igcard').innerHTML=`<small>MY DUO YEAR WITH ${d.n.toUpperCase()}</small><b>${d.together}</b><div style="font-weight:600">back in our pockets</div><div class="tg">${d.brands.map(b=>`<span>${b[0]}</span>`).join('')}</div><em>${d.type}</em>`; document.getElementById('ig').classList.add('on'); document.getElementById('phone').classList.add('dark'); mark('ig');}
+function closeIg(){document.getElementById('phone').classList.remove('dark'); document.getElementById('ig').classList.remove('on'); mark('story');}
+function igDone(){document.getElementById('phone').classList.remove('dark'); document.getElementById('ig').classList.remove('on'); document.getElementById('story').classList.remove('on'); toast('Shared to your story, with your link'); renderList(); mark(stack[stack.length-1]);}
+
+/* ---------- navigation ---------- */
+const stack=['home'];
+function isOn(id){return document.getElementById(id).classList.contains('on')}
+function closeOverlays(){['scratch','story','ig','alert'].forEach(id=>document.getElementById(id).classList.remove('on')); document.getElementById('phone').classList.remove('dark')}
+function go(id,replace){
+  closeSheets(true); closeOverlays();
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));
+  if(replace){stack.length=0;stack.push('home');}
+  if(stack[stack.length-1]!==id) stack.push(id);
+  const sc=document.querySelector('#'+id+' .scroll'); if(sc) sc.scrollTop=0;
+  if(id==='referrals' && !tab) setTab(needsAction()?'pending':'earning');
+  if(id==='next') replay();
+  mark(id);
+}
+function back(){stack.pop(); const id=stack[stack.length-1]||'home'; document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id)); mark(id)}
+function openSheet(id){document.getElementById('scrim').classList.add('on');document.getElementById(id).classList.add('on');if(['share','cashback'].includes(id))mark(id)}
+function closeSheets(silent){document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('on'));document.getElementById('scrim').classList.remove('on');if(!silent)mark(stack[stack.length-1])}
+function showAlert(){document.getElementById('alert').classList.add('on')}
+function allowContacts(){document.getElementById('alert').classList.remove('on');toast('Contact picker would open here')}
+function denyContacts(){document.getElementById('alert').classList.remove('on');go('referral',true);setTimeout(()=>toast('No problem. You can share your link instead.'),200)}
 let tt; function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2200)}
-function replay(){const g=document.querySelector('#next .grow-anim');if(!g)return;g.animate([{transform:'scale(.6)',opacity:.3},{transform:'scale(1.08)',opacity:1},{transform:'scale(1)'}],{duration:700,easing:'cubic-bezier(.2,.8,.2,1)'})}
+function nope(){toast('Not part of this prototype. Try “Share & earn”.')}
+function replay(){const g=document.querySelector('#next .grow-anim');if(g)g.animate([{transform:'scale(.6)',opacity:.3},{transform:'scale(1.08)',opacity:1},{transform:'scale(1)'}],{duration:700,easing:'cubic-bezier(.2,.8,.2,1)'})}
 
 /* ---------- side panel ---------- */
 const flow=[
- ['Entry points',[['home','0a','Home · “Give $3” chip'],['cashback','0b','After a cash back']]],
- ['Understand and share',[['referral','1','Referral page'],['contacts','2','Before contacts access'],['share','3','Share sheet'],['next','4','What happens next']]],
- ['Track and nudge',[['referrals','5','My referrals'],['details','6','Referral details'],['remind','7','Remind sheet']]]
+ ['Entry points',[['home','0a','Home · “Share & earn”'],['cashback','0b','After a cash back']]],
+ ['Understand and share',[['referral','1','Referral page'],['contacts','2','Before contacts access'],['share','3','Share sheet'],['next','4','We handle the rest']]],
+ ['Track and nudge',[['pending','5','My referrals · Pending'],['earning','5a','My referrals · Earning'],['details','6','Referral details'],['nudge','7','Nudge sheet']]],
+ ['Celebrate',[['ended','8','My referrals · Ended'],['scratch','9','Scratch to reveal'],['story','10','Recap stories'],['ig','11','Share to a story']]]
 ];
 document.getElementById('flow').innerHTML=flow.map(([g,items])=>`<div class="grp">${g}</div>`+items.map(([id,n,l])=>`<button data-j="${id}"><span>${n}</span>${l}</button>`).join('')).join('');
-document.getElementById('flow').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;jump(b.dataset.j)});
+document.getElementById('flow').addEventListener('click',e=>{const b=e.target.closest('button');if(b)jump(b.dataset.j)});
 function jump(id){
   shareMode='link'; document.getElementById('toast').classList.remove('on');
   if(id==='cashback'){go('home',true);setTimeout(()=>openSheet('cashback'),150);return}
-  if(id==='share'){go('referral',true);setTimeout(()=>openSheet('share'),150);return}
-  if(id==='details'){people.paul.reminded=false;tab='unlock';renderList();openDetails('paul');return}
-  if(id==='remind'){people.paul.reminded=false;openDetails('paul');setTimeout(()=>openRemind('paul'),150);return}
+  if(id==='share'){go('referral',true);setTimeout(()=>openShare('link'),150);return}
+  if(['pending','earning','ended'].includes(id)){go('referrals',true);setTab(id);mark(id);return}
+  if(id==='details'){people.paul.nudged=null;go('referrals',true);setTab('pending');openDetails('paul');return}
+  if(id==='nudge'){people.paul.nudged=null;go('referrals',true);setTab('pending');openDetails('paul');setTimeout(()=>openNudge('paul'),150);return}
+  if(id==='scratch'){duos.eva.opened=false;go('referrals',true);setTab('ended');openScratch('eva');return}
+  if(id==='story'){go('referrals',true);setTab('ended');openStory('eva',0);return}
+  if(id==='ig'){go('referrals',true);setTab('ended');openStory('eva',4,true);return}
   go(id,true);
 }
-function mark(id){document.querySelectorAll('#flow button').forEach(b=>b.classList.toggle('on',b.dataset.j===id))}
-function resetAll(){people.paul.reminded=false;people.lea.reminded=false;people.sam.reminded='yesterday';tab='unlock';document.querySelectorAll('#tabs button').forEach((x,i)=>x.classList.toggle('on',i===0));renderList();go('home',true)}
+function mark(id){
+  let m=id; if(id==='referrals') m=tab; if(id==='scratch'||id==='story'||id==='ig'||id==='nudge') m=id;
+  document.querySelectorAll('#flow button').forEach(b=>b.classList.toggle('on',b.dataset.j===m));
+}
+function resetAll(){people.paul.nudged=null;people.lea.nudged=null;people.sam.nudged='yesterday';duos.eva.opened=false;tab=null;go('home',true)}
 
-paintIcons(); renderList(); go('home',true);
+paintIcons(); go('home',true);
 </script>
 </body>
 </html>
