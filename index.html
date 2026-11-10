@@ -1004,12 +1004,12 @@ function jump(id){
   if(id==='fresh'){freshMode=true;go('referrals',true);setTab('pending');mark('fresh');return}
   if(id==='lea'){people.lea.nudged=null;go('referrals',true);setTab('pending');openDetails('lea');mark('lea');return}
   if(id==='expired'){people.lea.expired=true;go('referrals',true);setTab('pending');mark('expired');return}
-  if(['pending','earning','ended'].includes(id)){go('referrals',true);setTab(id);mark(id);return}
+  if(['pending','earning','ended'].includes(id)){if(id==='ended')duos.eva.opened=false;go('referrals',true);setTab(id);mark(id);return}
   if(id==='details'){people.paul.nudged=null;go('referrals',true);setTab('pending');openDetails('paul');return}
   if(id==='nudge'){people.paul.nudged=null;go('referrals',true);setTab('pending');openDetails('paul');setTimeout(()=>openNudge('paul'),150);return}
   if(id==='scratch'){duos.eva.opened=false;go('referrals',true);setTab('ended');openScratch('eva');return}
-  if(id==='story'){go('referrals',true);setTab('ended');openStory('eva',0);return}
-  if(id==='ig'){go('referrals',true);setTab('ended');openStory('eva',4,true);return}
+  if(id==='story'){duos.eva.opened=true;go('referrals',true);setTab('ended');openStory('eva',0);return}
+  if(id==='ig'){duos.eva.opened=true;go('referrals',true);setTab('ended');openStory('eva',4,true);return}
   go(id,true);
 }
 function mark(id){
