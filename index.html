@@ -410,8 +410,8 @@ svg{display:block}
     <section class="screen" id="referrals">
       <div class="hdr"><button class="ic" onclick="back()"><i data-i="chevl"></i></button><h2>My referrals</h2><span></span></div>
       <div class="scroll has-footer">
-        <div class="amount">$90<small>.38</small></div>
-        <div class="caption">Total earned from referrals · +$4.20 this month</div>
+        <div class="amount" id="amtTotal">$90<small>.38</small></div>
+        <div class="caption" id="amtCap">Total earned from referrals · +$4.20 this month</div>
         <div class="tabs" id="tabs">
           <button data-t="pending">Pending</button>
           <button data-t="earning">Earning</button>
@@ -558,7 +558,7 @@ function paintIcons(root=document){
 /* ---------- data ---------- */
 const people={
  paul:{n:'Paul Martin',i:'P',tab:'pending',status:'nobank',signed:'Mar 3',nudged:null},
- lea:{n:'Léa Dubois',i:'L',tab:'pending',status:'invited',invited:'Mar 6',nudged:null},
+ lea:{n:'Léa Dubois',i:'L',tab:'pending',status:'invited',invited:'Mar 6',expires:'Apr 5',daysLeft:23,nudged:null,expired:false},
  sam:{n:'Sam Petit',i:'S',tab:'pending',status:'nobank',signed:'Feb 27',nudged:'yesterday'},
  nina:{n:'Nina Roy',i:'N',tab:'earning',earned:'$14.20',left:'8 months left'},
  tom:{n:'Tom Garcia',i:'T',tab:'earning',earned:'$9.85',left:'2 months left'}
@@ -574,8 +574,8 @@ const duos={
       brands:[['Urban Wear','7 purchases between you'],['Home Base','3 purchases'],['Peak Sports','2 purchases']],
       personas:[['You','The Deal Hunter','First on boosted offers'],['Lina','The Smart Shopper','Never pays full price']]}
 };
-let tab=null, current='paul', currentDuo='eva', shareMode='link';
-const needsAction=()=>Object.values(people).some(p=>p.tab==='pending'&&!p.nudged);
+let tab=null, current='paul', currentDuo='eva', shareMode='link', freshMode=false;
+const needsAction=()=>Object.values(people).some(p=>p.tab==='pending'&&!p.nudged&&!p.expired);
 
 /* ---------- my referrals ---------- */
 function setTab(t){tab=t;document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));renderList();
@@ -584,16 +584,22 @@ document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.cl
 function statusPill(p){return p.status==='invited'?`<span class="pill">${svg('clock',16)}Invited</span>`:`<span class="pill">${svg('bank',16)}No bank yet</span>`}
 function renderList(){
   const el=document.getElementById('reflist');
+  document.getElementById('amtTotal').innerHTML=freshMode?'$0<small>.00</small>':'$90<small>.38</small>';
+  document.getElementById('amtCap').textContent=freshMode?'Total earned from referrals':'Total earned from referrals · +$4.20 this month';
   if(tab==='ended'){el.innerHTML=renderEnded();return}
+  if(freshMode){ el.innerHTML= tab==='pending'?`<div class="card" style="text-align:center;padding:28px 20px"><div style="width:56px;height:56px;border-radius:28px;background:#fff;display:grid;place-items:center;margin:0 auto 10px">${svg('link')}</div><div style="font-size:20px;font-weight:700">Your link was opened 3 times</div><div style="font-size:15px;color:var(--ink2);line-height:1.4;margin:8px 0 12px">Nobody has joined yet. Friends usually join within a few days, we'll let you know as soon as someone does.</div><button class="link" onclick="openShare('link')">Share it again</button></div>`:`<div class="note">Nothing here yet.</div>`; return; }
   let h='<div class="list">';
-  Object.entries(people).filter(([k,p])=>p.tab===tab).forEach(([k,p])=>{
+  Object.entries(people).filter(([k,p])=>p.tab===tab&&!p.expired).forEach(([k,p])=>{
     const right= tab==='pending'?statusPill(p):`<span class="amt">${p.earned}</span>`;
     const sub= tab==='earning'?`<div class="s">${p.left}</div>`:'';
     h+=`<button class="row" onclick="openDetails('${k}')"><div class="avatar">${p.i}</div><div class="grow"><div class="t">${p.n}</div>${sub}</div>${right}${svg('chevr')}</button>`;
   });
-  el.innerHTML=h+'</div>';
+  h+='</div>';
+  if(tab==='pending'&&people.lea.expired) h+=`<div class="card" style="display:flex;align-items:center;gap:10px;margin-top:12px;padding:12px 16px"><span>${svg('clock',20)}</span><span style="flex:1;font-size:14px;color:var(--ink2)">Léa's invite expired after 30 days.</span><button class="link" onclick="go('contacts')">Invite again</button></div>`;
+  el.innerHTML=h;
 }
 function renderEnded(){
+  if(freshMode) return '<div class="note">Nothing here yet.</div>';
   let h=`<div style="margin-bottom:12px"><div style="font-size:20px;font-weight:700">3 duo years completed</div><div style="font-size:14px;color:var(--ink2);margin-top:4px;line-height:1.4">Every duo lasts a year. Open each recap to see what you earned together.</div></div>`;
   for(const [k,d] of Object.entries(duos)){
     const head=`<div class="top"><div class="bub"><span class="you">You</span><span>${d.i}</span></div><div class="tt"><b>${d.opened?d.type:'Mystery duo'}</b><span>You &amp; ${d.n} · ${d.when}</span></div><div class="am"><b>${d.you}</b><span>for you</span></div></div>`;
@@ -613,14 +619,22 @@ function openDetails(k){
   const nb=document.getElementById('nudgeBtn'), help=document.getElementById('helpBtn');
   if(p.tab==='pending'){
     body+=`<div class="list" style="margin-bottom:16px"><div class="kv"><span>You've earned</span><span>$0 so far</span></div><div class="kv"><span>Next reward</span><span>$3 for you, $3 for ${first}</span></div></div>`;
-    const s1=p.status==='invited'?'now':'done', s2=p.status==='invited'?'todo':'now';
+    const inv=p.status==='invited';
+    const s1=inv?'now':'done', s2=inv?'todo':'now';
     body+=`<div class="list tl"><h3>${first}'s progress</h3>
-      ${step(s1,'Joined',s1==='done'?p.signed:`Now · invited ${p.invited}`,true)}
+      ${step(s1,inv?'Sign up':'Joined',s1==='done'?p.signed:`Now · invited ${p.invited} via contacts`,true)}
       ${step(s2,'Bank to connect',s2==='now'?`Now · waiting for ${first}`:'Any bank except PayPal',true)}
       ${step('todo','Cash for both','$3 each, then your 10% all year',false)}</div>`;
-    body+=`<div class="note">${first} agreed to share their progress. One nudge every 3 days.</div>`;
-    nb.style.display=''; help.textContent=`${first} is stuck? Get help`;
-    nb.disabled=!!p.nudged; nb.textContent=p.nudged?`Nudged ${p.nudged}`:`Send ${first} a nudge`;
+    if(inv){
+      body+=`<div class="card" style="display:flex;gap:12px;margin-top:16px;padding:14px 16px"><span>${svg('clock',22)}</span><div><div style="font-size:15px;font-weight:600">Invite valid for ${p.daysLeft} more days</div><div class="small">If ${first} doesn't join by ${p.expires}, the invite expires. You can invite her again anytime.</div></div></div>`;
+      body+=`<div class="note">${first} isn't a member yet, so you can remind her once.</div>`;
+      nb.style.display=''; nb.disabled=!!p.nudged; nb.textContent=p.nudged?`Reminded ${p.nudged}`:`Send ${first} a reminder`;
+      help.textContent='Cancel invite'; help.onclick=()=>cancelInvite(current);
+    } else {
+      body+=`<div class="note">${first} agreed to share their progress. One nudge every 3 days.</div>`;
+      nb.style.display=''; help.textContent=`${first} is stuck? Get help`; help.onclick=()=>toast('Help center would open here');
+      nb.disabled=!!p.nudged; nb.textContent=p.nudged?`Nudged ${p.nudged}`:`Send ${first} a nudge`;
+    }
   } else {
     body+=`<div class="list"><div class="kv"><span>You've earned</span><span>${p.earned}</span></div><div class="kv"><span>Status</span><span class="pill green">Earning 10%</span></div><div class="kv"><span>Time left</span><span>${p.left.replace(' left','')}</span></div></div>`;
     nb.style.display='none'; help.textContent='Questions? Get help';
@@ -636,7 +650,7 @@ const tones={
  funny:n=>`${n}, $3 is sitting there doing nothing. Give it a home: connect your bank and we both cash in. app.link/r/alex`
 };
 function openNudge(k){const p=people[k]; if(p.nudged)return; const f=p.n.split(' ')[0];
-  document.getElementById('nudgeTitle').textContent=`Give ${f} a friendly nudge`;
+  document.getElementById('nudgeTitle').textContent=p.status==='invited'?`Give ${f} a friendly reminder`:`Give ${f} a friendly nudge`;
   setTone('friendly'); openSheet('nudge'); mark('nudge');}
 function setTone(t){document.querySelectorAll('#tones button').forEach(b=>b.classList.toggle('on',b.dataset.tone===t)); const f=people[current].n.split(' ')[0]; const m=document.getElementById('msg'); m.value=tones[t](f); count();}
 document.getElementById('tones').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setTone(b.dataset.tone)});
@@ -647,7 +661,7 @@ function nudgeToShare(){closeSheets(true); shareMode='nudge'; const f=people[cur
 /* ---------- share ---------- */
 function openShare(mode){shareMode=mode; document.getElementById('pvTitle').textContent='Alex just sent you $3. Ready to claim it?'; openSheet('share')}
 function shareDone(msg){
-  if(shareMode==='nudge'){const p=people[current]; p.nudged='today'; closeSheets(); shareMode='link'; renderList(); toast(`Nudge sent to ${p.n.split(' ')[0]}`); if(isOn('details')) openDetails(current); return;}
+  if(shareMode==='nudge'){const p=people[current]; p.nudged='today'; closeSheets(); shareMode='link'; renderList(); toast(`${p.status==='invited'?'Reminder':'Nudge'} sent to ${p.n.split(' ')[0]}`); if(isOn('details')) openDetails(current); return;}
   closeSheets(); if(msg) toast(msg); setTimeout(()=>go('next'),250);
 }
 const apps=[['Messages','#34C759','M'],['WhatsApp','#25D366','W'],['Messenger','#3B66FF','m'],['Mail','#1A8CFF','@'],['More','#D1D1D6','···']];
@@ -748,6 +762,7 @@ function showAlert(){document.getElementById('alert').classList.add('on')}
 function allowContacts(){document.getElementById('alert').classList.remove('on');toast('Contact picker would open here')}
 function denyContacts(){document.getElementById('alert').classList.remove('on');go('referral',true);setTimeout(()=>toast('No problem. You can share your link instead.'),200)}
 let tt; function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2200)}
+function cancelInvite(k){people[k].expired=true; back(); renderList(); toast('Invite cancelled');}
 function copyCode(b){try{navigator.clipboard&&navigator.clipboard.writeText('UBBAKZ').catch(()=>{})}catch(_){} const sp=b.querySelector('span'); sp.textContent='Copied'; toast('Code copied'); setTimeout(()=>sp.textContent='Copy',1600)}
 function nope(){toast('Not part of this prototype. Try “Share & earn”.')}
 function replay(){const g=document.querySelector('#next .grow-anim');if(g)g.animate([{transform:'scale(.6)',opacity:.3},{transform:'scale(1.08)',opacity:1},{transform:'scale(1)'}],{duration:700,easing:'cubic-bezier(.2,.8,.2,1)'})}
@@ -756,7 +771,7 @@ function replay(){const g=document.querySelector('#next .grow-anim');if(g)g.anim
 const flow=[
  ['Entry points',[['home','0a','Home · “Share & earn”'],['cashback','0b','After a cash back']]],
  ['Understand and share',[['referral','1','Referral page'],['contacts','2','Before contacts access'],['share','3','Share sheet'],['next','4','We handle the rest']]],
- ['Track and nudge',[['pending','5','My referrals · Pending'],['earning','5a','My referrals · Earning'],['details','6','Referral details'],['nudge','7','Nudge sheet']]],
+ ['Track and nudge',[['pending','5','My referrals · Pending'],['earning','5a','My referrals · Earning'],['fresh','5b','Link opened, nobody joined'],['details','6','Referral details'],['lea','6a','Invited via contacts'],['expired','6b','Invite expired'],['nudge','7','Nudge sheet']]],
  ['Celebrate',[['ended','8','My referrals · Ended'],['scratch','9','Scratch to reveal'],['story','10','Recap stories'],['ig','11','Share to a story']]]
 ];
 document.getElementById('flow').innerHTML=flow.map(([g,items])=>`<div class="grp">${g}</div>`+items.map(([id,n,l])=>`<button data-j="${id}"><span>${n}</span>${l}</button>`).join('')).join('');
@@ -765,6 +780,10 @@ function jump(id){
   shareMode='link'; document.getElementById('toast').classList.remove('on');
   if(id==='cashback'){go('home',true);setTimeout(()=>openSheet('cashback'),150);return}
   if(id==='share'){go('referral',true);setTimeout(()=>openShare('link'),150);return}
+  freshMode=false; people.lea.expired=false;
+  if(id==='fresh'){freshMode=true;go('referrals',true);setTab('pending');mark('fresh');return}
+  if(id==='lea'){people.lea.nudged=null;go('referrals',true);setTab('pending');openDetails('lea');mark('lea');return}
+  if(id==='expired'){people.lea.expired=true;go('referrals',true);setTab('pending');mark('expired');return}
   if(['pending','earning','ended'].includes(id)){go('referrals',true);setTab(id);mark(id);return}
   if(id==='details'){people.paul.nudged=null;go('referrals',true);setTab('pending');openDetails('paul');return}
   if(id==='nudge'){people.paul.nudged=null;go('referrals',true);setTab('pending');openDetails('paul');setTimeout(()=>openNudge('paul'),150);return}
@@ -777,7 +796,7 @@ function mark(id){
   let m=id; if(id==='referrals') m=tab; if(id==='scratch'||id==='story'||id==='ig'||id==='nudge') m=id;
   document.querySelectorAll('#flow button').forEach(b=>b.classList.toggle('on',b.dataset.j===m));
 }
-function resetAll(){people.paul.nudged=null;people.lea.nudged=null;people.sam.nudged='yesterday';duos.eva.opened=false;tab=null;go('home',true)}
+function resetAll(){freshMode=false;people.lea.expired=false;people.paul.nudged=null;people.lea.nudged=null;people.sam.nudged='yesterday';duos.eva.opened=false;tab=null;go('home',true)}
 
 paintIcons(); go('home',true);
 </script>
