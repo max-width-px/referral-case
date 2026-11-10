@@ -157,8 +157,8 @@ svg{display:block}
 .step .tx{padding-top:5px}
 .step .tx{padding-bottom:16px;flex:1}
 .step:last-child .tx{padding-bottom:0}
-.step .a{font-size:16px;font-weight:500}
-.step .b{font-size:14px;color:var(--ink2);margin-top:2px}
+.step .a{font-size:16px;font-weight:500;line-height:1.35}
+.step .b{font-size:14px;color:var(--ink2);margin-top:2px;line-height:1.35}
 .step.now .a{font-weight:600}
 .step.now .b{color:#1A8C33}
 .step.todo .a{color:var(--ink2)}
@@ -666,7 +666,7 @@ function openDetails(k){
   }
   document.getElementById('detailBody').innerHTML=body; go('details');
 }
-function step(st,a,b,line,icon){const col=st==='done'?'#fff':st==='now'?'#1A8C33':st==='todo'?'#9A9A9A':'#000';
+function step(st,a,b,line,icon){const col=st==='done'?'#fff':st==='now'?'#1A8C33':st==='todo'?'#999999':'#000';
   const inner=icon?svg(icon,16,col,1.8):(st==='done'?svg('check',14,'#fff',2.4):'');
   return `<div class="step ${st}"><div class="rail"><div class="ind ${st}">${inner}</div>${line?`<div class="line ${st==='done'?'done':''}"></div>`:''}</div><div class="tx"><div class="a">${a}</div><div class="b">${b}</div></div></div>`}
 
