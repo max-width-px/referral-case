@@ -60,6 +60,10 @@ svg{display:block}
 .link{display:inline-flex;gap:6px;align-items:center;font-size:14px;font-weight:500;text-decoration:underline;text-underline-offset:3px}
 .footer{position:absolute;left:0;right:0;bottom:0;background:#fff;padding:12px 16px 30px;display:flex;flex-direction:column;gap:4px;z-index:5;box-shadow:0 -4px 16px rgba(0,0,0,.06)}
 .footer.flat{box-shadow:none}
+.coderow{display:flex;align-items:center;gap:8px;background:var(--soft);border-radius:12px;padding:10px 12px 10px 16px}
+.coderow b{flex:1;font-size:17px;font-weight:700;letter-spacing:.04em}
+.coderow button{display:flex;align-items:center;gap:4px;font-size:14px;font-weight:600}
+#referral .scroll.has-footer{padding-bottom:210px}
 .card{border-radius:var(--r);background:var(--soft);padding:16px}
 .list{border:1px solid var(--line);border-radius:var(--r);background:#fff}
 .list h3{font-size:16px;font-weight:700;padding:16px 16px 4px}
@@ -346,13 +350,8 @@ svg{display:block}
             <div><i><svg-i data-i="bank"></svg-i></i>They join and<br>connect a bank</div>
             <div><i><svg-i data-i="coin"></svg-i></i>You both get $3,<br>then you earn 10%</div>
           </div>
-          <div class="sep"></div>
-          <div class="ex"><div class="l"><div style="font-size:14px;font-weight:500">If your friend gets $120 back this year</div><div class="small">$3 bonus + $12 (10%). Paid by us, never taken from your friend.</div></div><div class="a">+$15</div></div>
-          <div class="small" style="margin-top:12px">Cash back = money back on what you buy, credited to your balance.</div>
-        </div>
-        <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-          <div><div style="font-size:12px;color:var(--ink2)">Your code</div><div style="font-size:24px;font-weight:700;letter-spacing:.02em">UBBAKZ</div></div>
-          <button class="ic" onclick="toast('Code copied')" aria-label="Copy code"><i data-i="copy"></i></button>
+          <div style="font-size:14px;font-weight:500;line-height:1.4;margin-top:16px">If your friend gets $120 back this year, you get <b>$12 (10%)</b>.</div>
+          <div class="small" style="margin-top:8px">Cash back = money back on what you buy, credited to your balance.</div>
         </div>
         <button class="list" style="display:block;width:100%;padding:16px;margin-bottom:16px" onclick="go('referrals')">
           <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:16px">Your referrals</b><span class="link" style="text-decoration:underline">Follow-up <i data-i="chevr" data-s="16"></i></span></div>
@@ -366,7 +365,8 @@ svg{display:block}
         </div>
         <div class="note"><b>Good to know</b>Your bonus is paid once your friend connects a bank. <u>See full terms</u></div>
       </div>
-      <div class="footer">
+      <div class="footer" style="gap:8px">
+        <div class="coderow"><span style="font-size:13px;color:var(--ink2)">Your code</span><b>UBBAKZ</b><button onclick="copyCode(this)"><i data-i="copy" data-s="18"></i><span>Copy</span></button></div>
         <button class="btn primary" onclick="openShare('link')"><i data-i="link" data-c="#fff" data-s="20"></i>Share my link</button>
         <button class="btn tertiary" onclick="go('contacts')">Invite from contacts</button>
       </div>
@@ -746,6 +746,7 @@ function showAlert(){document.getElementById('alert').classList.add('on')}
 function allowContacts(){document.getElementById('alert').classList.remove('on');toast('Contact picker would open here')}
 function denyContacts(){document.getElementById('alert').classList.remove('on');go('referral',true);setTimeout(()=>toast('No problem. You can share your link instead.'),200)}
 let tt; function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2200)}
+function copyCode(b){try{navigator.clipboard&&navigator.clipboard.writeText('UBBAKZ').catch(()=>{})}catch(_){} const sp=b.querySelector('span'); sp.textContent='Copied'; toast('Code copied'); setTimeout(()=>sp.textContent='Copy',1600)}
 function nope(){toast('Not part of this prototype. Try “Share & earn”.')}
 function replay(){const g=document.querySelector('#next .grow-anim');if(g)g.animate([{transform:'scale(.6)',opacity:.3},{transform:'scale(1.08)',opacity:1},{transform:'scale(1)'}],{duration:700,easing:'cubic-bezier(.2,.8,.2,1)'})}
 
