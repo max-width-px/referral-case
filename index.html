@@ -323,15 +323,25 @@ svg{display:block}
 .story .sctas{position:relative;z-index:2;display:flex;flex-direction:column;gap:6px;align-items:center}
 
 /* ig */
-.ig{position:absolute;inset:0;background:#141414;z-index:80;display:none}
+.ig{position:absolute;inset:0;background:linear-gradient(180deg,#7BF080,#4DD65C);z-index:80;display:none;overflow:hidden}
 .ig.on{display:block}
-.igcard{position:absolute;left:50%;top:170px;width:290px;transform:translateX(-50%) rotate(-3deg);background:#fff;border-radius:26px;padding:26px 22px;text-align:center}
-.igcard small{font-size:12px;font-weight:700;color:var(--green-ink);letter-spacing:.04em}
-.igcard b{display:block;font-size:54px;font-weight:700;letter-spacing:-.02em;margin:4px 0}
-.igcard .tg{display:flex;gap:6px;justify-content:center;margin:12px 0 8px;flex-wrap:wrap}
-.igcard .tg span{background:var(--chip);border-radius:999px;padding:5px 10px;font-size:12px;font-weight:600}
-.igcard em{font-style:normal;font-weight:700;font-size:20px}
-.sticker{position:absolute;left:50%;top:520px;transform:translateX(-50%);background:#fff;color:#2563EB;border-radius:12px;padding:10px 16px;font-weight:700;font-size:15px;display:flex;gap:6px;align-items:center;white-space:nowrap}
+.ig .coin{position:absolute;border-radius:50%;background:rgba(255,255,255,.22);color:rgba(255,255,255,.35);font-weight:700;display:flex;align-items:center;justify-content:center}
+.igcard{position:absolute;left:24px;right:24px;top:104px;display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+.igcard small{font-size:12px;font-weight:700;color:#0F5C1F;letter-spacing:.06em}
+.igcard .duo{display:flex;border:none;background:none;padding:0;border-radius:0;box-shadow:none;margin:0;width:auto;height:auto}.igcard .duo span{width:92px;height:92px;border-radius:50%;border:4px solid #64E86A;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:22px}
+.igcard .duo span:first-child{background:#000;color:#fff}.igcard .duo span+span{background:#fff;color:#000;margin-left:-22px}
+.igcard h1{font-size:56px;line-height:.92;letter-spacing:-.03em;font-weight:700;margin:0;color:#000}
+.igcard .amt{background:#000;border-radius:18px;padding:12px 18px 12px 16px;display:flex;gap:10px;align-items:baseline;transform:rotate(-2deg)}
+.igcard .amt b{color:#64E86A;font-size:40px;line-height:1;letter-spacing:-.02em}.igcard .amt span{color:#fff;font-weight:600;font-size:15px}
+.igcard .tg{display:flex;gap:8px;flex-wrap:wrap}
+.igcard .tg span{background:#fff;border-radius:999px;padding:8px 14px;font-size:15px;font-weight:700;box-shadow:0 3px 8px rgba(0,0,0,.12)}
+.igcard .tg span:nth-child(1){transform:rotate(-4deg)}.igcard .tg span:nth-child(2){transform:rotate(3deg)}.igcard .tg span:nth-child(3){transform:rotate(-2deg)}
+.igcard .cap{font-size:13px;font-weight:500;color:#0F5C1F}
+.ig.on .igcard>*{animation:igIn .5s cubic-bezier(.2,1.4,.4,1) backwards}.ig.on .igcard.done>*{animation:none}
+.ig.on .igcard>*:nth-child(2){animation-delay:.08s}.ig.on .igcard>*:nth-child(3){animation-delay:.16s}.ig.on .igcard>*:nth-child(4){animation-delay:.26s}.ig.on .igcard>*:nth-child(5){animation-delay:.36s}.ig.on .igcard>*:nth-child(6){animation-delay:.42s}
+@keyframes igIn{from{opacity:0;translate:0 16px;scale:.92}to{opacity:1;translate:0 0;scale:1}}
+.sticker{position:absolute;left:24px;transform:rotate(3deg);background:#fff;color:#2563EB;border-radius:14px;padding:12px 18px 12px 16px;font-weight:700;font-size:16px;display:flex;gap:8px;align-items:center;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.igpaid{position:absolute;left:28px;font-size:11px;font-weight:500;color:#0F5C1F}
 .igbot{position:absolute;bottom:40px;left:0;right:0;display:flex;gap:10px;justify-content:center}
 .igbot button{padding:13px 20px;border-radius:999px;font-weight:600;font-size:15px}
 </style>
@@ -546,11 +556,15 @@ svg{display:block}
 
     <!-- INSTAGRAM -->
     <div class="ig" id="ig">
-      <button class="ic" style="position:absolute;top:56px;left:16px" onclick="closeIg()"><i data-i="x" data-c="#fff"></i></button>
-      <div style="position:absolute;top:62px;right:22px;color:#fff;font-weight:700;font-size:18px">Aa</div>
+      <div class="coin" style="width:150px;height:150px;left:250px;top:90px;font-size:80px">$</div>
+      <div class="coin" style="width:180px;height:180px;left:-50px;top:560px;font-size:96px">$</div>
+      <div class="coin" style="width:90px;height:90px;left:290px;top:640px;font-size:48px">$</div>
+      <button class="ic" style="position:absolute;top:56px;left:16px" onclick="closeIg()"><i data-i="x" data-c="#000"></i></button>
+      <div style="position:absolute;top:62px;right:22px;color:#000;font-weight:700;font-size:18px">Aa</div>
       <div class="igcard" id="igcard"></div>
-      <div class="sticker"><i data-i="link" data-c="#2563EB" data-s="18"></i>GET $3 WITH MY LINK</div>
-      <div class="igbot"><button style="background:#fff;color:#000" onclick="igDone()">Your story</button><button style="background:#22C55E;color:#fff" onclick="igDone()">Close friends</button></div>
+      <div class="sticker" id="igSticker"><i data-i="link" data-c="#2563EB" data-s="18"></i>GET $3 WITH MY LINK</div>
+      <div class="igpaid" id="igPaid">Cash back app · paid by Joko</div>
+      <div class="igbot"><button style="background:#fff;color:#000" onclick="igDone()">Your story</button><button style="background:#16A34A;color:#fff" onclick="igDone()">Close friends</button></div>
     </div>
 
     <div class="alert" id="alert"><div class="box">
@@ -817,7 +831,7 @@ function renderStory(){const d=duos[sDuo]; const s=slides(d);
 }
 function storyNav(dir){const n=slides(duos[sDuo]).length; sIdx=Math.max(0,Math.min(n-1,sIdx+dir)); renderStory();}
 function closeStory(){document.getElementById('story').classList.remove('on'); mark(stack[stack.length-1]); renderList();}
-function openIg(){const d=duos[sDuo]; document.getElementById('igcard').innerHTML=`<small>MY DUO YEAR WITH ${d.n.toUpperCase()}</small><b>${d.together}</b><div style="font-weight:600">back in our pockets</div><div class="tg">${d.opposite?'<span>Zero brands in common</span>':d.brands.map(b=>`<span>${b[0]}</span>`).join('')}</div><em>${d.type}</em>`; document.getElementById('ig').classList.add('on'); document.getElementById('phone').classList.add('dark'); mark('ig');}
+function openIg(){const d=duos[sDuo]; const c=document.getElementById('igcard'); c.classList.remove('done'); setTimeout(()=>c.classList.add('done'),1300); c.innerHTML=`<small>MY DUO YEAR · NOV 2025 → NOV 2026</small><div class="duo"><span>Me</span><span>${d.n}</span></div><h1>${d.type}</h1><div class="amt"><b>${d.together}</b><span>back in our pockets</span></div><div class="tg">${d.opposite?'<span>Zero brands in common</span>':d.brands.map(b=>`<span>${b[0]}</span>`).join('')}</div><div class="cap">${d.opposite?'Opposites, still saving':'Top brands we both love'}</div>`; const ig=document.getElementById('ig'); ig.classList.add('on'); document.getElementById('phone').classList.remove('dark'); requestAnimationFrame(()=>{const y=c.offsetTop+c.offsetHeight+22; const st=document.getElementById('igSticker'); st.style.top=y+'px'; document.getElementById('igPaid').style.top=(y+st.offsetHeight+14)+'px';}); mark('ig');}
 function closeIg(){document.getElementById('phone').classList.remove('dark'); document.getElementById('ig').classList.remove('on'); mark('story');}
 function igDone(){document.getElementById('phone').classList.remove('dark'); document.getElementById('ig').classList.remove('on'); document.getElementById('story').classList.remove('on'); toast('Shared to your story, with your link'); renderList(); mark(stack[stack.length-1]);}
 
