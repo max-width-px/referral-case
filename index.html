@@ -246,8 +246,11 @@ svg{display:block}
 /* duo cards */
 .duo{border:1px solid var(--line);border-radius:20px;padding:16px;background:#fff;margin-bottom:12px}
 .duo.ticket{border:2px solid var(--green)}
-.duo.fresh{background:#E6FBE7}.duo.fresh .bub span{background:#fff;border-color:#E6FBE7}.duo.fresh .tl3>div{background:#fff}
-.jst{display:inline-flex;gap:6px;align-items:center;background:#fff;color:#1A8C33;font-size:13px;font-weight:600;border-radius:999px;padding:5px 10px 5px 8px;margin-bottom:12px}
+.duo.fresh{border:1px solid #1A8C33}
+.jst{display:inline-flex;align-items:center;background:#E6FBE7;color:#1A8C33;font-size:13px;font-weight:600;border-radius:999px;padding:4px 8px;white-space:nowrap}
+.duo .tt .tr{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.duo .tt b{font-size:22px !important;line-height:1.25}.duo .tt>span{font-weight:700;font-size:14px}.duo .tt .jst{color:#1A8C33;font-size:13px;font-weight:600}.duo .am b{font-size:22px !important}
+.duo .tl3 div:first-child{background:#E6FBE7}.duo .tl3 div:first-child span{color:#1A5932}
 .duo .top{display:flex;gap:12px;align-items:center}
 .bub{display:flex}
 .bub span{width:40px;height:40px;border-radius:20px;display:grid;place-items:center;font-weight:700;font-size:15px;border:2px solid #fff;background:var(--chip)}
@@ -263,7 +266,7 @@ svg{display:block}
 .duo .tz{font-size:14px;color:var(--ink2);line-height:1.4;margin-bottom:14px}
 .duo .tl3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
 .duo .tl3 div{background:var(--soft);border-radius:12px;padding:10px}
-.duo .tl3 b{font-size:13px;font-weight:700;display:block}
+.duo .tl3 b{font-size:14px;font-weight:700;display:block}
 .duo .tl3 span{font-size:11px;color:var(--ink2);font-weight:500}
 .duo .lk{display:flex;justify-content:center;margin-top:10px}
 
@@ -638,7 +641,7 @@ const duos={
  eva:{n:'Eva',i:'E',type:'The Smart Savers',when:'Nov 2026',cb:'$198.30',cut:'$19.83',you:'$22.83',friend:'$201.30',together:'$224.13',brand:'Urban Wear',buys:'9',opened:false,justEnded:true,
       brands:[['Urban Wear','9 purchases between you'],['Peak Sports','6 purchases'],['Stayaway','2 trips, $41 back']],
       personas:[['You','The Deal Hunter','First on boosted offers, 23 of them this year'],['Eva','The Weekend Explorer','Travel and sports, mostly on Saturdays']]},
- hugo:{n:'Hugo',i:'H',type:'The Weekend Duo',when:'Jan 2026',cb:'$284.00',cut:'$28.40',you:'$31.40',friend:'$287.00',together:'$318.40',brand:'Peak Sports',buys:'11',opened:true,
+ hugo:{n:'Hugo',i:'H',type:'The Weekend Duo',when:'Jan 2026',cb:'$284.00',cut:'$28.40',you:'$31.40',friend:'$287.00',together:'$318.40',brand:'Sports',buys:'11',opened:true,
       brands:[['Peak Sports','11 purchases between you'],['Stayaway','3 trips'],['Urban Wear','4 purchases']],
       personas:[['You','The Planner','Books early, saves more'],['Hugo','The Weekend Explorer','Always on the move']]},
  lina:{n:'Lina',i:'L',type:'The Opposites',when:'Sep 2025',cb:'$91.00',cut:'$9.10',you:'$12.10',friend:'$94.00',together:'$106.10',brand:'None',buys:'0',opened:true,opposite:true,
@@ -674,7 +677,7 @@ function renderEnded(){
   if(freshMode) return '<div class="note">Nothing here yet.</div>';
   let h=`<div style="margin-bottom:12px"><div style="font-size:20px;font-weight:700">3 duo years completed</div><div style="font-size:14px;color:var(--ink2);margin-top:4px;line-height:1.4">Every duo lasts a year. Open each recap to see what you earned together.</div></div>`;
   for(const [k,d] of Object.entries(duos)){
-    const jst=d.justEnded?`<div class="jst">${svg('checkc',14,'#1A8C33')}Just ended</div>`:''; const head=jst+`<div class="top"><div class="bub"><span class="you">You</span><span>${d.i}</span></div><div class="tt"><b>${d.opened?d.type:'Mystery duo'}</b><span>You &amp; ${d.n} · ${d.when}</span></div><div class="am"><b>${d.you}</b><span>for you</span></div></div>`;
+    const jst=d.justEnded?`<span class="jst">Just ended</span>`:''; const head=`<div class="top"><div class="tt"><div class="tr"><b>${d.opened?d.type:'Mystery duo'}</b>${jst}</div><span>You &amp; ${d.n} · ${d.when}</span></div><div class="am"><b>${d.you}</b><span>for you</span></div></div>`;
     if(!d.opened){
       h+=`<div class="duo ticket${d.justEnded?' fresh':''}">${head}<div class="perf"></div><div class="tz">Your year with ${d.n} is complete. Reveal how much you earned together.</div><button class="btn primary" onclick="openScratch('${k}')">${svg('giftstar',18,'#fff')}Reveal your total</button></div>`;
     } else {
