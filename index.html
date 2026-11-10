@@ -560,6 +560,7 @@ const P={
  bank:'<path d="M3 10h18L12 4 3 10Z"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>',
  coin:'<circle cx="12" cy="12" r="9"/><path d="M14.5 9.5c-.4-.9-1.4-1.5-2.5-1.5-1.5 0-2.5.8-2.5 2s1 1.6 2.5 2 2.5.8 2.5 2-1 2-2.5 2c-1.2 0-2.2-.6-2.6-1.6M12 6.5V8m0 8v1.5"/>',
  copy:'<rect x="9" y="9" width="12" height="12" rx="3"/><path d="M5 15H4.5A1.5 1.5 0 0 1 3 13.5v-9A1.5 1.5 0 0 1 4.5 3h9A1.5 1.5 0 0 1 15 4.5V5"/>',
+ users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.9.7 3.2 2.5 3.5 5.2"/>',
  userplus:'<circle cx="10" cy="8" r="4"/><path d="M3 20c.7-3.6 3.5-6 7-6 1.3 0 2.5.3 3.5.9M19 14v6M16 17h6"/>',
  user:'<circle cx="12" cy="8" r="4"/><path d="M4.5 20c.8-3.6 3.8-6 7.5-6s6.7 2.4 7.5 6"/>',
  bell:'<path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15L6 16Z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
@@ -807,9 +808,8 @@ function buildCarousel(){
   carSlides=[];
   const unopened=Object.entries(duos).find(([k,d])=>!d.opened);
   if(unopened){const [k,d]=unopened; carSlides.push({cls:'green',html:`<div class="ico">${svg('giftstar',18)}</div><div style="flex:1"><b>Your year with ${d.n} just ended</b><span class="s">Reveal your total</span></div>${svg('chevr',20)}`,go:()=>{go('referrals');setTab('ended');openScratch(k)}});}
-  const waiting=Object.entries(people).filter(([k,p])=>p.tab==='pending'&&!p.nudged&&!p.expired);
-  if(waiting.length){const names=waiting.map(([k,p])=>p.n.split(' ')[0]); const label=names.length>1?names.slice(0,-1).join(', ')+' and '+names.slice(-1)+' are still pending':names[0]+' is still pending';
-    carSlides.push({cls:'grey',html:`<div class="av">${waiting.slice(0,2).map(([k,p])=>`<span>${p.i}</span>`).join('')}</div><div style="flex:1"><b>${label}</b><span class="s">Send ${names.length>1?'them':'them'} a nudge</span></div>${svg('chevr',20)}`,go:()=>{go('referrals');setTab('pending')}});}
+  const pend=Object.values(people).filter(p=>p.tab==='pending'&&!p.expired).length;
+  if(pend){ carSlides.push({cls:'grey',html:`<div class="ico" style="background:#fff">${svg('users',18)}</div><div style="flex:1"><b>${pend} friend${pend>1?'s':''} still pending</b><span class="s">Send ${pend>1?'them':'them'} a nudge</span></div>${svg('chevr',20)}`,go:()=>{go('referrals');setTab('pending')}}); }
   if(!carSlides.length){ carSlides.push({cls:'grey',html:`<div class="ico" style="background:#fff">${svg('link',18)}</div><div style="flex:1"><b>Bring a new friend along</b><span class="s">Share your link</span></div>${svg('chevr',20)}`,go:()=>openShare('link')}); }
   host.innerHTML=`<div class="car"><div class="track" id="carTrack">${carSlides.map((c,i)=>`<button class="sl ${c.cls}" data-i="${i}">${c.html}</button>`).join('')}</div></div>`+(carSlides.length>1?`<div class="cdots" id="carDots">${carSlides.map((_,i)=>`<button data-d="${i}" aria-label="Slide ${i+1}"></button>`).join('')}</div>`:'');
   if(carSlides.length===1) host.querySelector('.sl').style.flexBasis='100%';
