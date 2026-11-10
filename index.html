@@ -77,6 +77,7 @@ svg{display:block}
 .avatar.lg{width:64px;height:64px;border-radius:32px;font-size:24px}
 .pill{display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 9px;border-radius:999px;background:var(--chip);font-size:13px;font-weight:500;white-space:nowrap;flex-shrink:0}
 .pill svg{width:14px;height:14px}
+.amt{font-size:18px;font-weight:700;white-space:nowrap}
 .row .grow .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pill.green{background:var(--green-soft)}
 .hero{text-align:center;padding:4px 0 16px}
@@ -586,8 +587,8 @@ function renderList(){
   if(tab==='ended'){el.innerHTML=renderEnded();return}
   let h='<div class="list">';
   Object.entries(people).filter(([k,p])=>p.tab===tab).forEach(([k,p])=>{
-    const right= tab==='pending'?statusPill(p):`<span class="pill">${svg('clock',16)}${p.left}</span>`;
-    const sub= tab==='earning'?`<div class="s">${p.earned} earned</div>`:'';
+    const right= tab==='pending'?statusPill(p):`<span class="amt">${p.earned}</span>`;
+    const sub= tab==='earning'?`<div class="s">${p.left}</div>`:'';
     h+=`<button class="row" onclick="openDetails('${k}')"><div class="avatar">${p.i}</div><div class="grow"><div class="t">${p.n}</div>${sub}</div>${right}${svg('chevr')}</button>`;
   });
   el.innerHTML=h+'</div>';
