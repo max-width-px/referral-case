@@ -320,12 +320,12 @@ svg{display:block}
 .brand b{font-size:22px;display:block}
 .brand span{font-size:14px;color:var(--ink2)}
 .slide-money{display:flex;flex-direction:column;gap:16px;position:relative}.slide-money .deco{position:absolute;right:-30px;top:-120px;width:150px;transform:rotate(-8deg)}
-.cats{display:flex;flex-direction:column;gap:10px}
-.cat{position:relative;overflow:hidden;background:#fff;border:1px solid #E3E3E3;border-radius:20px;height:96px;display:flex;align-items:center;padding:0 16px}
-.cat.top{height:116px;border-color:#1A8C33}
-.cat>div{position:relative;z-index:1;max-width:62%}.cat small{font-size:12px;font-weight:700;color:var(--green-ink)}.cat b{display:block;font-size:20px;font-weight:700;line-height:1.15}.cat span{font-size:13px;color:var(--ink2);display:block;margin-top:2px}
-.cat img{position:absolute;right:0;bottom:0;height:100%;width:auto}
-.cat.sq{height:104px;align-items:flex-start;padding-top:14px;margin-top:8px}.cat.sq b{font-size:17px}.cat.sq img{height:78%}
+.fcats{display:flex;flex-direction:column;gap:10px}
+.fcat{position:relative;overflow:hidden;background:#fff;border:1px solid #E3E3E3;border-radius:20px;height:96px;display:flex;align-items:center;padding:0 16px}
+.fcat.top{height:116px;border-color:#1A8C33}
+.fcat>div{position:relative;z-index:1;max-width:62%}.fcat small{font-size:12px;font-weight:700;color:var(--green-ink)}.fcat b{display:block;font-size:20px;font-weight:700;line-height:1.15}.fcat span{font-size:13px;color:var(--ink2);display:block;margin-top:2px}
+.fcat img{position:absolute;right:0;bottom:0;height:100%;width:auto}
+.fcat.sq{height:104px;align-items:flex-start;padding-top:14px;margin-top:8px}.fcat.sq b{font-size:17px}.fcat.sq img{height:78%}
 .opp{display:grid;grid-template-columns:1fr 1fr;gap:10px}.opp small{font-size:12px;font-weight:700;color:var(--ink2);letter-spacing:.04em}
 .pimg{position:relative;overflow:hidden;background:#fff !important;border:1px solid #E3E3E3;border-radius:20px !important;padding-right:104px !important;min-height:96px}.pimg img{position:absolute;right:0;bottom:0;height:96px}
 .persona{background:var(--soft);border-radius:16px;padding:16px}
@@ -848,8 +848,8 @@ let sIdx=0, sDuo='eva';
 const personaImg={'The Deal Hunter':'boosted','The Weekend Explorer':'travel','The Planner':'finance','The Adventurer':'leisure','The Homebody':'home'};
 function slides(d){return [
  `<div class="slide-money"><img class="deco" src="img/plant.png" alt=""><h3>Together, you got back</h3><div class="huge"><u>${d.together}</u></div><div><div class="srow"><div><b>${d.n}</b><span>${d.cb} cash back + $3 bonus</span></div><em>${d.friend}</em></div><div class="srow"><div><b>You</b><span>${d.cut} (10% of ${d.n}'s ${d.cb}) + $3 bonus</span></div><em>${d.you}</em></div></div><div style="color:var(--ink2);font-size:14px">Paid by Joko. Nobody paid for the other.</div></div>`,
- (d.opposite?`<h3>Your shared favorites</h3><h2 style="font-size:36px">Zero brands in common</h2><div class="opp"><div><small>YOU LOVE</small>${d.mineC.map(c=>`<div class="cat sq"><b>${c[1]}</b><img src="img/cat-${c[0]}.png" alt=""></div>`).join('')}</div><div><small>${d.n.toUpperCase()} LOVES</small>${d.theirsC.map(c=>`<div class="cat sq"><b>${c[1]}</b><img src="img/cat-${c[0]}.png" alt=""></div>`).join('')}</div></div><div style="font-size:16px;font-weight:600">Total opposites, and still ${d.together} back together.</div>`
- :`<h3>Your shared favorites</h3><h2 style="font-size:34px">Same taste, same brands</h2><div class="cats">${d.cats.map((c,i)=>`<div class="cat${i===0?' top':''}"><div><small>#${i+1}</small><b>${c[1]}</b><span>${c[2]}</span></div><img src="img/cat-${c[0]}.png" alt=""></div>`).join('')}</div><div style="color:var(--ink2);font-size:13px">Only brands you both shop at. Nothing else is shown.</div>`),
+ (d.opposite?`<h3>Your shared favorites</h3><h2 style="font-size:36px">Zero brands in common</h2><div class="opp"><div><small>YOU LOVE</small>${d.mineC.map(c=>`<div class="fcat sq"><b>${c[1]}</b><img src="img/cat-${c[0]}.png" alt=""></div>`).join('')}</div><div><small>${d.n.toUpperCase()} LOVES</small>${d.theirsC.map(c=>`<div class="fcat sq"><b>${c[1]}</b><img src="img/cat-${c[0]}.png" alt=""></div>`).join('')}</div></div><div style="font-size:16px;font-weight:600">Total opposites, and still ${d.together} back together.</div>`
+ :`<h3>Your shared favorites</h3><h2 style="font-size:34px">Same taste, same brands</h2><div class="fcats">${d.cats.map((c,i)=>`<div class="fcat${i===0?' top':''}"><div><small>#${i+1}</small><b>${c[1]}</b><span>${c[2]}</span></div><img src="img/cat-${c[0]}.png" alt=""></div>`).join('')}</div><div style="color:var(--ink2);font-size:13px">Only brands you both shop at. Nothing else is shown.</div>`),
  `<h3>Your shopper duo</h3><h2 style="color:var(--green-ink)">${d.type}</h2>${d.personas.map(p=>`<div class="persona pimg"><small>${p[0].toUpperCase()}</small><b>${p[1]}</b><span>${p[2]}</span><img src="img/cat-${personaImg[p[1]]||'gifts'}.png" alt=""></div>`).join('')}`,
  `<h2>Ready for round two?</h2><div class="opt pimg"><small>DUO CHALLENGE WITH ${d.n.toUpperCase()}</small><b>Both shop at 3 partner brands this month, get $5 each</b><img src="img/cat-gifts.png" alt=""></div><div class="opt pimg"><small>A NEW DUO YEAR</small><b>Invite a new friend: $3 each, then your 10% for a year</b><img src="img/cat-boosted.png" alt=""></div>`
 ];}
