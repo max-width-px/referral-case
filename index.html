@@ -325,20 +325,29 @@ svg{display:block}
 /* ig */
 .ig{position:absolute;inset:0;background:#64E86A;z-index:80;display:none;overflow:hidden}
 .ig.on{display:block}
-.igcard{position:absolute;left:24px;right:24px;top:150px;display:flex;flex-direction:column;align-items:flex-start;gap:20px}
-.igcard small{font-size:12px;font-weight:700;color:#0F5C1F;letter-spacing:.06em}
-.igcard .duo{display:flex;border:none;background:none;padding:0;border-radius:0;box-shadow:none;margin:0;width:auto;height:auto}.igcard .duo span{width:92px;height:92px;border-radius:50%;border:4px solid #64E86A;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:22px}
-.igcard .duo span:first-child{background:#000;color:#fff}.igcard .duo span+span{background:#fff;color:#000;margin-left:-22px}
-.igcard h1{font-size:56px;line-height:.92;letter-spacing:-.03em;font-weight:700;margin:0;color:#000}
-.igcard .amt{background:#000;border-radius:18px;padding:12px 18px 12px 16px;display:flex;gap:10px;align-items:baseline}
-.igcard .amt b{color:#64E86A;font-size:40px;line-height:1;letter-spacing:-.02em}.igcard .amt span{color:#fff;font-weight:600;font-size:15px}
-.igcard .tg{display:flex;gap:8px;flex-wrap:wrap}
-.igcard .tg span{background:#fff;border-radius:999px;padding:8px 14px;font-size:15px;font-weight:700;box-shadow:0 3px 8px rgba(0,0,0,.12)}
-.igcard .cap{font-size:15px;font-weight:600;color:rgba(0,0,0,.7)}
-.ig.on .igcard>*{animation:igIn .5s cubic-bezier(.2,1.4,.4,1) backwards}.ig.on .igcard.done>*{animation:none}
-.ig.on .igcard>*:nth-child(2){animation-delay:.08s}.ig.on .igcard>*:nth-child(3){animation-delay:.16s}.ig.on .igcard>*:nth-child(4){animation-delay:.26s}.ig.on .igcard>*:nth-child(5){animation-delay:.36s}.ig.on .igcard>*:nth-child(6){animation-delay:.42s}
+.igs{position:absolute;inset:0;background:#64E86A;overflow:hidden;color:#000}
+.igs .coin{position:absolute;border-radius:50%;background:rgba(255,255,255,.24);color:rgba(255,255,255,.4);font-weight:700;display:flex;align-items:center;justify-content:center}
+.igs .plant{position:absolute;left:190px;top:420px;width:200px;transform:rotate(-6deg)}
+.igs .c{position:absolute;left:24px;right:24px;top:128px}
+.igs .k{font-size:12px;font-weight:700;color:#0F5C1F;letter-spacing:.06em}
+.igs .am{font-size:84px;font-weight:700;letter-spacing:-.04em;line-height:1;margin:2px 0}
+.igs .sw{font-size:24px;font-weight:600}
+.igs .ty{font-size:30px;font-weight:700;letter-spacing:-.02em;margin-top:2px}
+.igs .br{font-size:14px;font-weight:500;opacity:.65;margin-top:2px}
+.igs .join{position:absolute;left:24px;top:600px;display:flex;gap:10px;align-items:center;font-weight:700;font-size:18px}
+.igs .join span{width:36px;height:36px;border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center}.igs .join img{width:25px}
+.igs .stk{position:absolute;left:24px;top:648px;background:#fff;color:#2563EB;border-radius:14px;padding:12px 18px 12px 16px;font-weight:700;font-size:16px;display:flex;gap:8px;align-items:center;white-space:nowrap}
+.ig.on .igs .c>*{animation:igIn .5s cubic-bezier(.2,1.4,.4,1) backwards}.ig.on .igs .c>*:nth-child(2){animation-delay:.08s}.ig.on .igs .c>*:nth-child(3){animation-delay:.16s}.ig.on .igs .c>*:nth-child(4){animation-delay:.3s}.ig.on .igs .c>*:nth-child(5){animation-delay:.36s}.ig.on .igs .c>*:nth-child(6){animation-delay:.42s}
+.ig.on .igs.done .c>*{animation:none}
 @keyframes igIn{from{opacity:0;translate:0 16px;scale:.92}to{opacity:1;translate:0 0;scale:1}}
-.sticker{position:absolute;left:24px;background:#fff;color:#2563EB;border-radius:14px;padding:12px 18px 12px 16px;font-weight:700;font-size:16px;display:flex;gap:8px;align-items:center;white-space:nowrap}
+.sscrim{position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:77;opacity:0;pointer-events:none;transition:opacity .25s}.sscrim.on{opacity:1;pointer-events:auto}
+#storyOpts{z-index:78;text-align:center}
+.pv{width:135px;height:292px;border-radius:12px;overflow:hidden;position:relative;margin:14px auto 18px;box-shadow:0 6px 16px rgba(0,0,0,.15)}
+.pv .igs{inset:auto;left:0;top:0;width:375px;height:812px;transform:scale(.36);transform-origin:0 0}
+.sorow{display:flex;gap:12px;align-items:center;text-align:left;margin-bottom:12px}.sorow div{flex:1}.sorow b{display:block;font-size:16px}.sorow small{font-size:13px;color:var(--ink2);line-height:1.3;display:block;margin-top:2px}
+.tgl{width:51px;height:31px;border-radius:16px;background:#D9D9D9;position:relative;flex:none;transition:background .2s}.tgl::after{content:"";position:absolute;left:2px;top:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.2);transition:left .2s}
+.tgl.on{background:#1A8C33}.tgl.on::after{left:22px}
+.sofld{display:none;width:100%;box-sizing:border-box;border:0;background:#F4F4F4;border-radius:12px;padding:14px 16px;font:inherit;font-size:16px;margin-bottom:16px;outline:none}.sofld.on{display:block}
 .igbot{position:absolute;bottom:40px;left:0;right:0;display:flex;gap:10px;justify-content:center}
 .igbot button{padding:13px 20px;border-radius:999px;font-weight:600;font-size:15px}
 </style>
@@ -553,11 +562,19 @@ svg{display:block}
 
     <!-- INSTAGRAM -->
     <div class="ig" id="ig">
-      <button class="ic" style="position:absolute;top:56px;left:16px" onclick="closeIg()"><i data-i="x" data-c="#000"></i></button>
-      <div style="position:absolute;top:62px;right:22px;color:#000;font-weight:700;font-size:18px">Aa</div>
-      <div class="igcard" id="igcard"></div>
-      <div class="sticker" id="igSticker"><i data-i="link" data-c="#2563EB" data-s="18"></i>GET $3 WITH MY LINK</div>
+      <div class="igs" id="igcard"></div>
+      <button class="ic" style="position:absolute;top:56px;left:16px;z-index:2" onclick="closeIg()"><i data-i="x" data-c="#000"></i></button>
+      <div style="position:absolute;top:62px;right:22px;color:#000;font-weight:700;font-size:18px;z-index:2">Aa</div>
       <div class="igbot"><button style="background:#fff;color:#000" onclick="igDone()">Your story</button><button style="background:#16A34A;color:#fff" onclick="igDone()">Close friends</button></div>
+    </div>
+    <div class="sscrim" id="soScrim" onclick="closeOpts()"></div>
+    <div class="sheet app" id="storyOpts">
+      <div class="grab"></div>
+      <div style="font-size:22px;font-weight:700">Share your year</div>
+      <div class="pv"><div class="igs" id="soPv"></div></div>
+      <div class="sorow"><div><b>Show your friend's name</b><small>Off by default. You can also tag them on Instagram.</small></div><button class="tgl" id="soTg" onclick="toggleName()" aria-label="Show your friend's name"></button></div>
+      <input class="sofld" id="soName" maxlength="20" oninput="storyName=this.value.trim()||null; renderPv()" aria-label="Friend's name">
+      <button class="btn primary" onclick="closeOpts(true); openIg()">Share to Instagram</button>
     </div>
 
     <div class="alert" id="alert"><div class="box">
@@ -820,18 +837,24 @@ function closeScratchSilently(){document.getElementById('scratch').classList.rem
 function renderStory(){const d=duos[sDuo]; const s=slides(d);
   document.getElementById('bars').innerHTML=s.map((_,i)=>`<i class="${i<=sIdx?'on':''}"></i>`).join('');
   document.getElementById('sbody').innerHTML=s[sIdx];
-  document.getElementById('sctas').innerHTML= sIdx===s.length-1? `<button class="btn primary" onclick="openIg()">${svg('share',18,'#fff')}Share your recap</button><button class="btn tertiary" onclick="closeStory();go('referral');setTimeout(()=>openShare('link'),250)">Invite a new friend</button>`:'';
+  document.getElementById('sctas').innerHTML= sIdx===s.length-1? `<button class="btn primary" onclick="openOpts()">${svg('share',18,'#fff')}Share your recap</button><button class="btn tertiary" onclick="closeStory();go('referral');setTimeout(()=>openShare('link'),250)">Invite a new friend</button>`:'';
 }
 function storyNav(dir){const n=slides(duos[sDuo]).length; sIdx=Math.max(0,Math.min(n-1,sIdx+dir)); renderStory();}
 function closeStory(){document.getElementById('story').classList.remove('on'); mark(stack[stack.length-1]); renderList();}
-function openIg(){const d=duos[sDuo]; const c=document.getElementById('igcard'); c.classList.remove('done'); setTimeout(()=>c.classList.add('done'),1300); c.innerHTML=`<small>MY DUO YEAR · NOV 2025 → NOV 2026</small><div class="duo"><span>Me</span><span>${d.n}</span></div><h1>${d.type}</h1><div class="amt"><b>${d.together}</b><span>back in our pockets</span></div><div class="cap">${d.opposite?'Zero brands in common':d.brands.map(b=>b[0]).join(' · ')}</div>`; const ig=document.getElementById('ig'); ig.classList.add('on'); document.getElementById('phone').classList.remove('dark'); requestAnimationFrame(()=>{const y=c.offsetTop+c.offsetHeight+22; const st=document.getElementById('igSticker'); st.style.top=y+'px';}); mark('ig');}
+let storyName=null;
+function storyHTML(d,name){return `<div class="coin" style="width:140px;height:140px;left:262px;top:96px;font-size:76px">$</div><div class="coin" style="width:90px;height:90px;left:190px;top:470px;font-size:48px">$</div><div class="coin" style="width:70px;height:70px;left:300px;top:560px;font-size:38px">$</div><img class="plant" src="img/plant.png" alt=""><div class="c"><div class="k">ONE YEAR OF SAVING TOGETHER</div><div class="am">${d.together}</div><div class="sw">saved with ${name||'my duo'}</div><div class="k" style="margin-top:36px">WE'RE</div><div class="ty">${d.type}</div><div class="br">${d.opposite?'Zero brands in common':d.brands.map(b=>b[0]).join(' · ')}</div></div><div class="join"><span><img src="img/joko.png" alt="Joko"></span>Join us on Joko</div><div class="stk">${svg('link',18,'#2563EB')}GET $3 WITH MY LINK</div>`}
+function renderPv(){document.getElementById('soPv').innerHTML=storyHTML(duos[sDuo],storyName)}
+function openOpts(){storyName=null; document.getElementById('soTg').classList.remove('on'); const f=document.getElementById('soName'); f.classList.remove('on'); f.value=duos[sDuo].n; renderPv(); document.getElementById('soScrim').classList.add('on'); document.getElementById('storyOpts').classList.add('on'); mark('story');}
+function closeOpts(keep){document.getElementById('soScrim').classList.remove('on'); document.getElementById('storyOpts').classList.remove('on');}
+function toggleName(){const t=document.getElementById('soTg'), f=document.getElementById('soName'); const on=!t.classList.contains('on'); t.classList.toggle('on',on); f.classList.toggle('on',on); storyName=on?(f.value.trim()||null):null; renderPv();}
+function openIg(){const d=duos[sDuo]; const c=document.getElementById('igcard'); c.classList.remove('done'); setTimeout(()=>c.classList.add('done'),1300); c.innerHTML=storyHTML(d,storyName); document.getElementById('ig').classList.add('on'); document.getElementById('phone').classList.remove('dark'); mark('ig');}
 function closeIg(){document.getElementById('phone').classList.remove('dark'); document.getElementById('ig').classList.remove('on'); mark('story');}
 function igDone(){document.getElementById('phone').classList.remove('dark'); document.getElementById('ig').classList.remove('on'); document.getElementById('story').classList.remove('on'); toast('Shared to your story, with your link'); renderList(); mark(stack[stack.length-1]);}
 
 /* ---------- navigation ---------- */
 const stack=['home'];
 function isOn(id){return document.getElementById(id).classList.contains('on')}
-function closeOverlays(){['scratch','story','ig','alert'].forEach(id=>document.getElementById(id).classList.remove('on')); document.getElementById('phone').classList.remove('dark')}
+function closeOverlays(){closeOpts();['scratch','story','ig','alert'].forEach(id=>document.getElementById(id).classList.remove('on')); document.getElementById('phone').classList.remove('dark')}
 function go(id,replace){
   closeSheets(true); closeOverlays();
   document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));
