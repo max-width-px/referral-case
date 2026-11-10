@@ -434,7 +434,8 @@ svg{display:block}
       <div class="hdr"><button class="ic" onclick="back()"><i data-i="chevl"></i></button><h2>My referrals</h2><span></span></div>
       <div class="scroll has-footer">
         <div class="amount roll" id="amtTotal">$90<small>.38</small></div>
-        <div class="caption" id="amtCap">Total earned from referrals · +$4.20 this month</div>
+        <div style="display:flex;justify-content:center;margin-top:8px" id="amtBadgeWrap"><span class="gpill">+$4.20 this month</span></div>
+        <div class="caption" id="amtCap" style="margin-top:6px">Total earned from referrals</div>
         <div class="tabs" id="tabs">
           <button data-t="pending">Pending</button>
           <button data-t="earning">Earning</button>
@@ -610,7 +611,7 @@ function statusPill(p){return p.status==='invited'?`<span class="pill">${svg('cl
 function renderList(){
   const el=document.getElementById('reflist');
   document.getElementById('amtTotal').innerHTML=freshMode?'$0<small>.00</small>':'$90<small>.38</small>';
-  document.getElementById('amtCap').textContent=freshMode?'Total earned from referrals':'Total earned from referrals · +$4.20 this month';
+  document.getElementById('amtCap').textContent='Total earned from referrals'; document.getElementById('amtBadgeWrap').style.display=freshMode?'none':'flex';
   if(tab==='ended'){el.innerHTML=renderEnded();return}
   if(freshMode){ el.innerHTML= tab==='pending'?`<div class="card" style="text-align:center;padding:28px 20px"><div style="width:56px;height:56px;border-radius:28px;background:#fff;display:grid;place-items:center;margin:0 auto 10px">${svg('link')}</div><div style="font-size:20px;font-weight:700">Your link was opened 3 times</div><div style="font-size:15px;color:var(--ink2);line-height:1.4;margin:8px 0 12px">Nobody has joined yet. Friends usually join within a few days, we'll let you know as soon as someone does.</div><button class="link" onclick="openShare('link')">Share it again</button></div>`:`<div class="note">Nothing here yet.</div>`; return; }
   let h='<div class="list">';
