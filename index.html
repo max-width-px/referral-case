@@ -198,6 +198,25 @@ svg{display:block}
 .tabbar{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:0}
 .tabbar img{display:block;width:100%;height:auto}
 #home .scroll{padding-bottom:110px}
+.gpill{background:#E6FBE7;color:#1B8C33;font-size:13px;font-weight:600;border-radius:999px;padding:4px 8px;white-space:nowrap}
+.car{overflow:hidden;margin:0 -16px;padding:0 16px}
+.car .track{display:flex;gap:8px;transition:transform .5s cubic-bezier(.2,.8,.2,1);touch-action:pan-y}
+.car .sl{flex:0 0 calc(100% - 28px);display:flex;align-items:center;gap:10px;border-radius:12px;padding:12px;text-align:left}
+.car .sl.green{background:#E6FBE7}
+.car .sl.grey{background:var(--soft)}
+.car .sl .ico{width:36px;height:36px;border-radius:18px;background:var(--green);display:grid;place-items:center;flex-shrink:0}
+.car .sl b{display:block;font-size:14px;font-weight:600;line-height:1.3}
+.car .sl span.s{font-size:13px;font-weight:500;color:var(--ink2)}
+.car .sl.green span.s{color:#1B8C33}
+.car .av{display:flex}.car .av span{width:32px;height:32px;border-radius:16px;background:#fff;border:2px solid var(--soft);display:grid;place-items:center;font-size:13px;font-weight:700;margin-left:-8px}.car .av span:first-child{margin-left:0}
+.cdots{display:flex;gap:6px;justify-content:center;margin-top:10px}
+.cdots button{width:6px;height:6px;border-radius:3px;background:#ccc;transition:width .3s,background .3s;padding:0}
+.cdots button.on{width:16px;background:#000}
+.roll{display:inline-flex;align-items:baseline}
+.amount.roll{display:flex;justify-content:center}
+.rd{display:inline-block;height:1.05em;overflow:hidden;line-height:1.05em;vertical-align:baseline}
+.rd i{display:block;font-style:normal;transition:transform 1.2s cubic-bezier(.15,.85,.25,1)}
+.rd i span{display:block;height:1.05em}
 .perm{border:1px solid var(--line);border-radius:var(--r);padding:24px 16px;text-align:center;margin:auto 0}
 .perm h1{font-size:24px;font-weight:700;margin-top:12px;line-height:1.2}
 .perm p{font-size:15px;color:var(--ink2);margin:8px 0 16px;line-height:1.45}
@@ -354,11 +373,11 @@ svg{display:block}
           <h1>Sharing is earning</h1>
           <p>Get $3 for every friend who joins, plus 10% of their cash back for a year</p>
         </div>
-        <button class="list" style="display:block;width:100%;padding:16px;margin-bottom:16px" onclick="go('referrals')">
-          <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:16px">Your referrals</b><span class="link" style="text-decoration:underline">Follow-up <i data-i="chevr" data-s="16"></i></span></div>
-          <div style="display:flex;align-items:baseline;gap:8px;margin:10px 0"><b style="font-size:32px">$90.38</b><span style="color:var(--ink2);font-size:14px">earned so far</span></div>
-          <div style="display:flex;align-items:center;gap:10px"><div class="stack"><span>P</span><span>L</span><span>S</span></div><span style="font-size:14px">3 friends in progress · 2 need a nudge</span></div>
-        </button>
+        <div class="list sumcard" style="padding:16px;margin-bottom:16px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:16px">Your referrals</b><button class="link" onclick="go('referrals')">See all <i data-i="chevr" data-s="16"></i></button></div>
+          <div style="display:flex;align-items:center;gap:10px;margin:8px 0 14px"><b class="roll" id="cardTotal" style="font-size:34px;letter-spacing:-.01em">$90.38</b><span class="gpill">+$4.20 this month</span></div>
+          <div id="actCarousel"></div>
+        </div>
         <div class="card" style="margin-bottom:16px">
           <div style="font-weight:700;font-size:16px">How it works</div>
           <div class="how3">
@@ -420,7 +439,7 @@ svg{display:block}
     <section class="screen" id="referrals">
       <div class="hdr"><button class="ic" onclick="back()"><i data-i="chevl"></i></button><h2>My referrals</h2><span></span></div>
       <div class="scroll has-footer">
-        <div class="amount" id="amtTotal">$90<small>.38</small></div>
+        <div class="amount roll" id="amtTotal">$90<small>.38</small></div>
         <div class="caption" id="amtCap">Total earned from referrals · +$4.20 this month</div>
         <div class="tabs" id="tabs">
           <button data-t="pending">Pending</button>
@@ -763,6 +782,8 @@ function go(id,replace){
   if(stack[stack.length-1]!==id) stack.push(id);
   const sc=document.querySelector('#'+id+' .scroll'); if(sc) sc.scrollTop=0;
   if(id==='referrals' && !tab) setTab(needsAction()?'pending':'earning');
+  if(id==='referral') buildCarousel();
+  if(id==='referral'||id==='referrals') setTimeout(()=>rollPage(id),60);
   if(id==='next') replay();
   mark(id);
 }
@@ -777,6 +798,57 @@ function cancelInvite(k){people[k].expired=true; back(); renderList(); toast('In
 function copyCode(b){try{navigator.clipboard&&navigator.clipboard.writeText('UBBAKZ').catch(()=>{})}catch(_){} const sp=b.querySelector('span'); sp.textContent='Copied'; toast('Code copied'); setTimeout(()=>sp.textContent='Copy',1600)}
 function nope(){toast('Not part of this prototype. Try “Share & earn”.')}
 function replay(){const g=document.querySelector('#next .grow-anim');if(g)g.animate([{transform:'scale(.6)',opacity:.3},{transform:'scale(1.08)',opacity:1},{transform:'scale(1)'}],{duration:700,easing:'cubic-bezier(.2,.8,.2,1)'})}
+
+
+/* ---------- action carousel ---------- */
+let carIdx=0, carTimer=null, carSlides=[];
+function buildCarousel(){
+  const host=document.getElementById('actCarousel'); if(!host) return;
+  carSlides=[];
+  const unopened=Object.entries(duos).find(([k,d])=>!d.opened);
+  if(unopened){const [k,d]=unopened; carSlides.push({cls:'green',html:`<div class="ico">${svg('giftstar',18)}</div><div style="flex:1"><b>Your year with ${d.n} just ended</b><span class="s">Reveal your total</span></div>${svg('chevr',20)}`,go:()=>{go('referrals');setTab('ended');openScratch(k)}});}
+  const waiting=Object.entries(people).filter(([k,p])=>p.tab==='pending'&&!p.nudged&&!p.expired);
+  if(waiting.length){const names=waiting.map(([k,p])=>p.n.split(' ')[0]); const label=names.length>1?names.slice(0,-1).join(', ')+' and '+names.slice(-1)+' are still pending':names[0]+' is still pending';
+    carSlides.push({cls:'grey',html:`<div class="av">${waiting.slice(0,2).map(([k,p])=>`<span>${p.i}</span>`).join('')}</div><div style="flex:1"><b>${label}</b><span class="s">Send ${names.length>1?'them':'them'} a nudge</span></div>${svg('chevr',20)}`,go:()=>{go('referrals');setTab('pending')}});}
+  if(!carSlides.length){ carSlides.push({cls:'grey',html:`<div class="ico" style="background:#fff">${svg('link',18)}</div><div style="flex:1"><b>Bring a new friend along</b><span class="s">Share your link</span></div>${svg('chevr',20)}`,go:()=>openShare('link')}); }
+  host.innerHTML=`<div class="car"><div class="track" id="carTrack">${carSlides.map((c,i)=>`<button class="sl ${c.cls}" data-i="${i}">${c.html}</button>`).join('')}</div></div>`+(carSlides.length>1?`<div class="cdots" id="carDots">${carSlides.map((_,i)=>`<button data-d="${i}" aria-label="Slide ${i+1}"></button>`).join('')}</div>`:'');
+  if(carSlides.length===1) host.querySelector('.sl').style.flexBasis='100%';
+  host.querySelectorAll('.sl').forEach(b=>b.addEventListener('click',()=>{ if(dragMoved) return; carSlides[+b.dataset.i].go(); }));
+  host.querySelectorAll('.cdots button').forEach(b=>b.addEventListener('click',()=>{carGo(+b.dataset.d);restartCar();}));
+  // swipe
+  const tr=document.getElementById('carTrack'); let x0=null; 
+  tr.addEventListener('pointerdown',e=>{x0=e.clientX;dragMoved=false});
+  tr.addEventListener('pointermove',e=>{if(x0!==null&&Math.abs(e.clientX-x0)>8)dragMoved=true});
+  tr.addEventListener('pointerup',e=>{ if(x0===null)return; const dx=e.clientX-x0; x0=null; if(Math.abs(dx)>40){carGo(carIdx+(dx<0?1:-1));restartCar();} setTimeout(()=>dragMoved=false,50)});
+  carIdx=0; carGo(0); restartCar();
+}
+let dragMoved=false;
+function carGo(i){ const n=carSlides.length; if(!n) return; carIdx=(i+n)%n; const tr=document.getElementById('carTrack'); if(!tr) return;
+  const sl=tr.children[0]; const w=sl.getBoundingClientRect().width+8; tr.style.transform=`translateX(${-carIdx*w}px)`;
+  document.querySelectorAll('#carDots button').forEach((d,k)=>d.classList.toggle('on',k===carIdx)); }
+function restartCar(){ clearInterval(carTimer); if(carSlides.length>1) carTimer=setInterval(()=>{ if(isOn('referral')) carGo(carIdx+1); },5000); }
+
+/* ---------- casino number roll ---------- */
+function rollTo(el, text, smallFrom){
+  // smallFrom: index from which chars are rendered small (for $90.38 -> '.38')
+  el.innerHTML=''; el.setAttribute('aria-label',text); el.setAttribute('role','text');
+  [...text].forEach((ch,idx)=>{
+    const wrapSmall = smallFrom!=null && idx>=smallFrom;
+    const holder = wrapSmall ? (el.querySelector('small')||el.appendChild(document.createElement('small'))) : el;
+    if(/\d/.test(ch)){
+      const d=document.createElement('span'); d.className='rd'; d.setAttribute('aria-hidden','true');
+      const col=document.createElement('i'); const target=+ch; const loops=2+((text.length-idx)%3);
+      let html=''; for(let l=0;l<loops;l++) for(let k=0;k<10;k++) html+=`<span>${k}</span>`; html+=`<span>${target}</span>`;
+      col.innerHTML=html; d.appendChild(col); holder.appendChild(d);
+      const steps=loops*10; col.style.transition='none'; col.style.transform='translateY(0)';
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{ col.style.transition=`transform ${0.9+idx*0.12}s cubic-bezier(.15,.85,.25,1)`; col.style.transform=`translateY(-${steps*1.05}em)`; }));
+    } else { holder.appendChild(document.createTextNode(ch)); }
+  });
+}
+function rollPage(id){
+  if(id==='referral'){ const el=document.getElementById('cardTotal'); if(el) rollTo(el,'$90.38'); }
+  if(id==='referrals'){ const el=document.getElementById('amtTotal'); if(freshMode) rollTo(el,'$0.00',2); else rollTo(el,'$90.38',3); }
+}
 
 /* ---------- side panel ---------- */
 const flow=[
