@@ -936,9 +936,10 @@ function rollTo(el, text, smallFrom){
     } else { holder.appendChild(document.createTextNode(ch)); }
   });
 }
+function settle(el,text,smallFrom){ setTimeout(()=>{ if(!el) return; el.innerHTML = smallFrom!=null ? text.slice(0,smallFrom)+'<small>'+text.slice(smallFrom)+'</small>' : text; }, 2300); }
 function rollPage(id){
-  if(id==='referral'){ const el=document.getElementById('cardTotal'); if(el) rollTo(el,'$90.38'); }
-  if(id==='referrals'){ const el=document.getElementById('amtTotal'); if(freshMode) rollTo(el,'$0.00',2); else rollTo(el,'$90.38',3); }
+  if(id==='referral'){ const el=document.getElementById('cardTotal'); if(el){ rollTo(el,'$90.38'); settle(el,'$90.38'); } }
+  if(id==='referrals'){ const el=document.getElementById('amtTotal'); if(freshMode){ rollTo(el,'$0.00',2); settle(el,'$0.00',2);} else { rollTo(el,'$90.38',3); settle(el,'$90.38',3);} }
 }
 
 /* ---------- side panel ---------- */
