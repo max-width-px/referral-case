@@ -234,7 +234,7 @@ svg{display:block}
 .ticket-box .rv b{font-size:60px;font-weight:700;letter-spacing:-.02em;line-height:1}
 .ticket-box .rv span{font-size:16px;font-weight:600}
 .ticket-box .rv small{font-size:14px;font-weight:500;color:#1a5a1e}
-.ticket-box canvas{position:absolute;inset:0;cursor:grab}
+.ticket-box canvas{position:absolute;top:0;left:0;width:100%;height:100%;cursor:grab;touch-action:none}
 .hint{font-size:15px;font-weight:500;color:var(--ink2);margin-top:20px}
 .taprev{margin-top:8px;font-size:14px;text-decoration:underline;color:var(--ink2)}
 .full .after{position:absolute;left:16px;right:16px;bottom:40px;display:none;flex-direction:column;gap:8px;align-items:center}
@@ -683,14 +683,15 @@ function scratchAt(e){
   if(navigator.vibrate && navigator.userActivation && navigator.userActivation.hasBeenActive && e.isTrusted) try{navigator.vibrate(5)}catch(_){}
   document.getElementById('scHint').textContent='Keep going…';
 }
-function checkProgress(){
+function checkProgress(){ if(scratched) return;
   const data=scCtx.getImageData(0,0,622,460).data; let clear=0; for(let i=3;i<data.length;i+=64){ if(data[i]===0) clear++; }
-  if(clear/(data.length/64)>0.55) revealAll();
+  if(clear/(data.length/64)>0.45) revealAll();
 }
 const cv=document.getElementById('scCanvas');
 cv.addEventListener('pointerdown',e=>{drawing=true;cv.setPointerCapture(e.pointerId);scratchAt(e)});
-cv.addEventListener('pointermove',e=>{if(drawing)scratchAt(e)});
-cv.addEventListener('pointerup',()=>{drawing=false;checkProgress()});
+let lastCheck=0;
+cv.addEventListener('pointermove',e=>{if(!drawing)return; scratchAt(e); const now=Date.now(); if(now-lastCheck>150){lastCheck=now; checkProgress();}});
+cv.addEventListener('pointerup',()=>{drawing=false; if(!scratched) checkProgress()});
 cv.addEventListener('pointercancel',()=>{drawing=false});
 function revealAll(){
   if(scratched) return; scratched=true; const c=document.getElementById('scCanvas'); c.style.transition='opacity .4s'; c.style.opacity=0; setTimeout(()=>c.style.display='none',400);
