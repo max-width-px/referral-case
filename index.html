@@ -677,11 +677,11 @@ function renderEnded(){
   if(freshMode) return '<div class="note">Nothing here yet.</div>';
   let h=`<div style="margin-bottom:12px"><div style="font-size:20px;font-weight:700">3 duo years completed</div><div style="font-size:14px;color:var(--ink2);margin-top:4px;line-height:1.4">Every duo lasts a year. Open each recap to see what you earned together.</div></div>`;
   for(const [k,d] of Object.entries(duos)){
-    const jst=d.justEnded?`<span class="jst">Just ended</span>`:''; const head=`<div class="top"><div class="tt"><div class="tr"><b>${d.opened?d.type:'Mystery duo'}</b>${jst}</div><span>You &amp; ${d.n} · ${d.when}</span></div><div class="am"><b>${d.you}</b><span>for you</span></div></div>`;
+    const jst=(d.justEnded&&!d.opened)?`<span class="jst">Just ended</span>`:''; const head=`<div class="top"><div class="tt"><div class="tr"><b>${d.opened?d.type:'Mystery duo'}</b>${jst}</div><span>You &amp; ${d.n} · ${d.when}</span></div><div class="am"><b>${d.you}</b><span>for you</span></div></div>`;
     if(!d.opened){
       h+=`<div class="duo ticket${d.justEnded?' fresh':''}">${head}<div class="perf"></div><div class="tz">Your year with ${d.n} is complete. Reveal how much you earned together.</div><button class="btn primary" onclick="openScratch('${k}')">${svg('giftstar',18,'#fff')}Reveal your total</button></div>`;
     } else {
-      h+=`<div class="duo${d.justEnded?' fresh':''}">${head}<div class="tl3"><div><b>${d.together}</b><span>Together</span></div><div><b>${d.brand}</b><span>${d.opposite?'In common':'Top brand'}</span></div><div><b>${d.buys}</b><span>Shared buys</span></div></div><button class="btn primary" onclick="openStory('${k}',0)">${svg('history',18,'#fff')}Open your recap</button><div class="lk"><button class="link" onclick="openStory('${k}',4,true);setTimeout(openOpts,250)">${svg('share',16)}Share your story</button></div></div>`;
+      h+=`<div class="duo">${head}<div class="tl3"><div><b>${d.together}</b><span>Together</span></div><div><b>${d.brand}</b><span>${d.opposite?'In common':'Top brand'}</span></div><div><b>${d.buys}</b><span>Shared buys</span></div></div><button class="btn primary" onclick="openStory('${k}',0)">${svg('history',18,'#fff')}Open your recap</button><div class="lk"><button class="link" onclick="openStory('${k}',4,true);setTimeout(openOpts,250)">${svg('share',16)}Share your story</button></div></div>`;
     }
   }
   return h;
