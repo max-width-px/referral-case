@@ -220,6 +220,24 @@ svg{display:block}
 .rd{display:inline-block;height:1.05em;overflow:hidden;line-height:1.05em;vertical-align:baseline}
 .rd i{display:block;font-style:normal;transition:transform 1.2s cubic-bezier(.15,.85,.25,1)}
 .rd i span{display:block;height:1.05em}
+.lpill{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:13px;font-weight:600;margin-top:6px;color:#000}
+.field:focus-within{border-width:2px;padding:11px 13px}
+.replace{display:none;align-items:center;gap:8px;background:#FFF6E5;border-radius:12px;padding:10px 12px;font-size:14px;margin:-4px 0 12px}
+.replace.on{display:flex}.replace span{flex:1}.replace button{font-weight:600;text-decoration:underline}
+#nudge{transition:transform .3s cubic-bezier(.2,.8,.2,1),bottom .28s cubic-bezier(.2,.8,.2,1)}
+#nudge.kb{bottom:var(--kbh,291px);border-radius:24px 24px 0 0;padding-bottom:12px}
+#nudge.kb .nsub,#nudge.kb .nnot{display:none}
+#nudge.kb .field textarea{min-height:120px}
+.kbd{position:absolute;left:0;right:0;bottom:0;height:291px;background:#D1D4DA;z-index:60;transform:translateY(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);padding:6px 3px 0;font-family:-apple-system,system-ui,sans-serif}
+.kbd.on{transform:none}
+.kbd .sug{display:flex;height:38px;align-items:center;justify-content:space-around;font-size:16px;color:#000;border-bottom:0}
+.kbd .sug span{flex:1;text-align:center}.kbd .sug span+span{border-left:1px solid #B5B8BE}
+.kbd .r{display:flex;justify-content:center;gap:6px;margin:0 0 11px}
+.kbd .k{width:31px;height:42px;background:#fff;border-radius:5px;box-shadow:0 1px 0 #898A8D;font-size:22px;display:grid;place-items:center;color:#000;padding:0}
+.kbd .k.w{width:44px;background:#ABB0BA;font-size:15px}
+.kbd .k.sp{width:188px;font-size:16px}
+.kbd .k.ret{width:88px;background:#ABB0BA;font-size:16px}
+.kbd .k:active{background:#ABB0BA}
 .perm{border:1px solid var(--line);border-radius:var(--r);padding:24px 16px;text-align:center;margin:auto 0}
 .perm h1{font-size:24px;font-weight:700;margin-top:12px;line-height:1.2}
 .perm p{font-size:15px;color:var(--ink2);margin:8px 0 16px;line-height:1.45}
@@ -465,10 +483,7 @@ svg{display:block}
       <div class="grab"></div>
       <div class="preview"><div class="og">$3</div><div><div class="pt" id="pvTitle">Alex just sent you $3. Ready to claim it?</div><div class="pu">app.link/r/alex · Cash back app</div></div></div>
       <div class="apps" id="apps"></div>
-      <div class="acts">
-        <button onclick="shareDone('Link copied')">Copy link</button>
-        <button onclick="toast('Code copied');closeSheets()">Copy code</button>
-      </div>
+      <div class="acts" id="shareActs"></div>
     </div>
 
     <!-- CASH BACK MOMENT -->
@@ -485,11 +500,13 @@ svg{display:block}
     <div class="sheet app" id="nudge">
       <div class="grab"></div>
       <div style="font-size:22px;font-weight:700" id="nudgeTitle">Give Paul a friendly nudge</div>
-      <div style="font-size:15px;color:var(--ink2);margin-top:4px">Pick a tone, tweak the words, then send it your way.</div>
+      <div class="nsub" style="font-size:15px;color:var(--ink2);margin-top:4px">Pick a tone, tweak the words, then send it your way.</div>
       <div class="chips" id="tones"><button class="on" data-tone="friendly">Friendly</button><button data-tone="short">Short</button><button data-tone="funny">Funny</button></div>
-      <div class="field"><textarea id="msg" maxlength="300"></textarea><div class="meta"><span>Tap to edit</span><span id="count">0/300</span></div></div>
-      <div style="margin-top:16px"><button class="btn primary" onclick="nudgeToShare()">Choose an app to send</button><button class="btn tertiary" onclick="closeSheets()">Not now</button></div>
+      <div class="replace" id="replaceBar"><span>Replace your message?</span><button onclick="confirmTone(true)">Replace</button><button onclick="confirmTone(false)">Keep mine</button></div>
+      <div class="field" id="msgField"><textarea id="msg" maxlength="260" aria-label="Message"></textarea><div class="lpill" title="Your link is always added"><i data-i="link" data-s="14"></i>app.link/r/alex</div><div class="meta"><span id="msgHint">Tap to edit</span><span id="count">0/300</span></div></div>
+      <div style="margin-top:16px" class="nact"><button class="btn primary" onclick="nudgeToShare()">Choose an app to send</button><button class="btn tertiary nnot" onclick="closeSheets()">Not now</button></div>
     </div>
+    <div class="kbd" id="kbd" aria-hidden="true"></div>
 
     <!-- ANSWER SHEET -->
     <div class="sheet app" id="answer">
@@ -674,21 +691,50 @@ function step(st,a,b,line,icon,help){const col=st==='done'?'#fff':st==='now'?'#1
 
 /* ---------- nudge ---------- */
 const tones={
- friendly:n=>`Hey ${n}! Your $3 is still waiting for you. Connect your bank in the app and we both get our cash. Here's my link: app.link/r/alex`,
- short:n=>`${n}, your $3 is waiting. Connect your bank to get it: app.link/r/alex`,
- funny:n=>`${n}, $3 is sitting there doing nothing. Give it a home: connect your bank and we both cash in. app.link/r/alex`
+ friendly:n=>`Hey ${n}! Your $3 is still waiting for you. Connect your bank in the app and we both get our cash.`,
+ short:n=>`${n}, your $3 is waiting. Connect your bank to get it.`,
+ funny:n=>`${n}, $3 is sitting there doing nothing. Give it a home: connect your bank and we both cash in.`
 };
+let curTone='friendly', msgDirty=false, pendingTone=null;
 function openNudge(k){const p=people[k]; if(p.nudged)return; const f=p.n.split(' ')[0];
   document.getElementById('nudgeTitle').textContent=p.status==='invited'?`Give ${f} a friendly reminder`:`Give ${f} a friendly nudge`;
-  setTone('friendly'); openSheet('nudge'); mark('nudge');}
-function setTone(t){document.querySelectorAll('#tones button').forEach(b=>b.classList.toggle('on',b.dataset.tone===t)); const f=people[current].n.split(' ')[0]; const m=document.getElementById('msg'); m.value=tones[t](f); count();}
-document.getElementById('tones').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setTone(b.dataset.tone)});
-function count(){document.getElementById('count').textContent=document.getElementById('msg').value.length+'/300'}
-document.getElementById('msg').addEventListener('input',count);
-function nudgeToShare(){closeSheets(true); shareMode='nudge'; const f=people[current].n.split(' ')[0]; document.getElementById('pvTitle').textContent=`${f}, your $3 is waiting`; setTimeout(()=>openSheet('share'),220)}
+  msgDirty=false; setTone('friendly'); document.getElementById('replaceBar').classList.remove('on'); openSheet('nudge'); mark('nudge');}
+function setTone(t){curTone=t; document.querySelectorAll('#tones button').forEach(b=>b.classList.toggle('on',b.dataset.tone===t)); const f=people[current].n.split(' ')[0]; document.getElementById('msg').value=tones[t](f); msgDirty=false; count();}
+document.getElementById('tones').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.dataset.tone===curTone)return; if(msgDirty){pendingTone=b.dataset.tone; document.getElementById('replaceBar').classList.add('on'); return;} setTone(b.dataset.tone)});
+function confirmTone(yes){document.getElementById('replaceBar').classList.remove('on'); if(yes&&pendingTone) setTone(pendingTone); pendingTone=null;}
+function count(){const n=document.getElementById('msg').value.length+' app.link/r/alex'.length; document.getElementById('count').textContent=n+'/300'}
+const msgEl=document.getElementById('msg');
+msgEl.addEventListener('input',()=>{msgDirty=true;count()});
+/* keyboard */
+const isTouch=window.matchMedia&&window.matchMedia('(pointer: coarse)').matches;
+function buildKbd(){const rows=['qwertyuiop','asdfghjkl','zxcvbnm']; let h='<div class="sug"><span>the</span><span>and</span><span>I\'m</span></div>';
+  h+=`<div class="r">${[...rows[0]].map(c=>`<button class="k" data-k="${c}">${c}</button>`).join('')}</div>`;
+  h+=`<div class="r">${[...rows[1]].map(c=>`<button class="k" data-k="${c}">${c}</button>`).join('')}</div>`;
+  h+=`<div class="r"><button class="k w" data-k="shift">⇧</button>${[...rows[2]].map(c=>`<button class="k" data-k="${c}">${c}</button>`).join('')}<button class="k w" data-k="del">⌫</button></div>`;
+  h+=`<div class="r"><button class="k w" data-k="123">123</button><button class="k sp" data-k=" ">space</button><button class="k ret" data-k="done">Done</button></div>`;
+  const kb=document.getElementById('kbd'); kb.innerHTML=h;
+  kb.addEventListener('pointerdown',e=>e.preventDefault());
+  kb.addEventListener('click',e=>{const b=e.target.closest('button'); if(!b) return; const k=b.dataset.k; const t=msgEl;
+    if(k==='done'){hideKbd(); t.blur(); return;}
+    const st=t.selectionStart, en=t.selectionEnd, v=t.value;
+    if(k==='del'){ if(st===en&&st>0){t.value=v.slice(0,st-1)+v.slice(en); t.selectionStart=t.selectionEnd=st-1;} else {t.value=v.slice(0,st)+v.slice(en); t.selectionStart=t.selectionEnd=st;} }
+    else if(k==='shift'||k==='123'){return;}
+    else { if(t.value.length>=t.maxLength) return; t.value=v.slice(0,st)+k+v.slice(en); t.selectionStart=t.selectionEnd=st+k.length; }
+    msgDirty=true; count(); t.focus(); });
+}
+function showKbd(){ document.getElementById('nudge').classList.add('kb'); if(!isTouch){ document.getElementById('kbd').classList.add('on'); } document.getElementById('msgHint').textContent='Editing'; }
+function hideKbd(){ document.getElementById('nudge').classList.remove('kb'); document.getElementById('kbd').classList.remove('on'); document.getElementById('msgHint').textContent='Tap to edit'; }
+msgEl.addEventListener('focus',showKbd);
+msgEl.addEventListener('blur',()=>setTimeout(()=>{ if(document.activeElement!==msgEl) hideKbd(); },120));
+if(isTouch&&window.visualViewport){ visualViewport.addEventListener('resize',()=>{ const kb=Math.max(0,window.innerHeight-visualViewport.height); document.getElementById('nudge').style.setProperty('--kbh',kb+'px'); }); }
+buildKbd();
+function nudgeToShare(){hideKbd(); msgEl.blur(); closeSheets(true); shareMode='nudge'; setActs('nudge'); const f=people[current].n.split(' ')[0]; document.getElementById('pvTitle').textContent=`${f}, your $3 is waiting`; setTimeout(()=>openSheet('share'),220)}
 
 /* ---------- share ---------- */
-function openShare(mode){shareMode=mode; document.getElementById('pvTitle').textContent='Alex just sent you $3. Ready to claim it?'; openSheet('share')}
+function setActs(mode){ const el=document.getElementById('shareActs');
+  el.innerHTML= mode==='nudge' ? `<button onclick="copyMessage()">Copy message</button>` : `<button onclick="shareDone('Link copied')">Copy link</button><button onclick="toast('Code copied');closeSheets()">Copy code</button>`; }
+function copyMessage(){ const txt=document.getElementById('msg').value+' app.link/r/alex'; try{navigator.clipboard&&navigator.clipboard.writeText(txt).catch(()=>{})}catch(_){} shareDone(); setTimeout(()=>toast('Message copied. Paste it in any app.'),50); }
+function openShare(mode){shareMode=mode; setActs(mode); document.getElementById('pvTitle').textContent='Alex just sent you $3. Ready to claim it?'; openSheet('share')}
 function shareDone(msg){
   if(shareMode==='nudge'){const p=people[current]; p.nudged='today'; closeSheets(); shareMode='link'; renderList(); toast(`${p.status==='invited'?'Reminder':'Nudge'} sent to ${p.n.split(' ')[0]}`); if(isOn('details')) openDetails(current); return;}
   closeSheets(); if(msg) toast(msg); setTimeout(()=>go('next'),250);
@@ -796,7 +842,7 @@ function back(){
   if(cur==='details' && id==='referrals' && !animating){ popFrom('details','referrals'); mark(id); return; }
   document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id)); mark(id)}
 function openSheet(id){document.getElementById('scrim').classList.add('on');document.getElementById(id).classList.add('on');if(['share','cashback'].includes(id))mark(id)}
-function closeSheets(silent){document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('on'));document.getElementById('scrim').classList.remove('on');if(!silent)mark(stack[stack.length-1])}
+function closeSheets(silent){ if(typeof hideKbd==='function') hideKbd();document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('on'));document.getElementById('scrim').classList.remove('on');if(!silent)mark(stack[stack.length-1])}
 function showAlert(){document.getElementById('alert').classList.add('on')}
 function allowContacts(){document.getElementById('alert').classList.remove('on');toast('Contact picker would open here')}
 function denyContacts(){document.getElementById('alert').classList.remove('on');go('referral',true);setTimeout(()=>toast('No problem. You can share your link instead.'),200)}
