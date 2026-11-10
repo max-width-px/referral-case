@@ -157,7 +157,8 @@ svg{display:block}
 .step .tx{padding-top:5px}
 .step .tx{padding-bottom:16px;flex:1}
 .step:last-child .tx{padding-bottom:0}
-.step .a{font-size:16px;font-weight:500;line-height:1.35}
+.step .a{font-size:16px;font-weight:500;line-height:1.35;display:flex;align-items:center;gap:6px}
+.qm{width:20px;height:20px;border-radius:10px;border:1.5px solid #000;font-size:12px;font-weight:700;display:inline-grid;place-items:center;line-height:1;flex-shrink:0}
 .step .b{font-size:14px;color:var(--ink2);margin-top:2px;line-height:1.35}
 .step.now .a{font-weight:600}
 .step.now .b{color:#1A8C33}
@@ -383,8 +384,6 @@ svg{display:block}
         <div class="card" style="margin-bottom:16px">
           <div style="font-weight:700;font-size:16px">How it works</div>
           <div id="howSteps" style="margin-top:14px"></div>
-          <div style="font-size:14px;font-weight:500;line-height:1.4;margin-top:16px">If your friend gets $120 back this year, you get <b>$12 (10%)</b>.</div>
-          <div class="small" style="margin-top:8px">Cash back = money back on what you buy, credited to your balance.</div>
         </div>
         <div class="list">
           <h3>Questions</h3>
@@ -669,9 +668,9 @@ function openDetails(k,rowEl){
   document.getElementById('detailBody').innerHTML=body;
   if(rowEl && isOn('referrals')) pushTo('details', rowEl.querySelector('.avatar')); else go('details');
 }
-function step(st,a,b,line,icon){const col=st==='done'?'#fff':st==='now'?'#1A8C33':st==='todo'?'#999999':'#000';
+function step(st,a,b,line,icon,help){const col=st==='done'?'#fff':st==='now'?'#1A8C33':st==='todo'?'#999999':'#000';
   const inner=icon?svg(icon,16,col,1.8):(st==='done'?svg('check',14,'#fff',2.4):'');
-  return `<div class="step ${st}"><div class="rail"><div class="ind ${st}">${inner}</div>${line?`<div class="line ${st==='done'?'done':''}"></div>`:''}</div><div class="tx"><div class="a">${a}</div><div class="b">${b}</div></div></div>`}
+  return `<div class="step ${st}"><div class="rail"><div class="ind ${st}">${inner}</div>${line?`<div class="line ${st==='done'?'done':''}"></div>`:''}</div><div class="tx"><div class="a">${a}${help?`<button class="qm" aria-label="How much can I earn?" onclick="event.stopPropagation();openAnswer('${help}')">?</button>`:''}</div><div class="b">${b}</div></div></div>`}
 
 /* ---------- nudge ---------- */
 const tones={
@@ -698,9 +697,14 @@ const apps=[['Messages','#34C759','M'],['WhatsApp','#25D366','W'],['Messenger','
 document.getElementById('apps').innerHTML=apps.map(a=>`<button onclick="shareDone()"><i style="background:${a[1]};${a[0]==='More'?'color:#444':''}">${a[2]}</i>${a[0]}</button>`).join('');
 
 /* ---------- answers ---------- */
-const answers={why:['Why does Joko pay me?','Brands pay Joko a commission when your friends shop with cash back. Joko shares part of it with you: $3 when they join, then 10% of their cash back for a year. Nothing is taken from your friend.'],
+const answers={earn:['What you can earn',`<div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+<div style="display:flex;justify-content:space-between"><span>Your friend gets back this year</span><b>$120</b></div>
+<div style="display:flex;justify-content:space-between"><span>Your bonus when they join</span><b>$3</b></div>
+<div style="display:flex;justify-content:space-between"><span>Your 10% of their cash back</span><b>$12</b></div>
+<div style="display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:10px;color:#000;font-size:17px"><b>You get</b><b>$15</b></div></div>
+<p style="margin-top:14px">Paid by Joko, never taken from your friend.</p><p style="margin-top:6px">Cash back = money back on what you buy, credited to your balance.</p>`],why:['Why does Joko pay me?','Brands pay Joko a commission when your friends shop with cash back. Joko shares part of it with you: $3 when they join, then 10% of their cash back for a year. Nothing is taken from your friend.'],
  safe:['Is it safe for my friend?','Bank linking goes through a licensed provider and is read-only: we can see purchases to give cash back, but nobody can move money from the account.']};
-function openAnswer(k){document.getElementById('ansT').textContent=answers[k][0];document.getElementById('ansB').textContent=answers[k][1];openSheet('answer')}
+function openAnswer(k){document.getElementById('ansT').textContent=answers[k][0];const b=document.getElementById('ansB'); if(k==='earn') b.innerHTML=answers[k][1]; else b.textContent=answers[k][1]; openSheet('answer')}
 
 /* ---------- scratch ---------- */
 let scratched=false, scCtx, drawing=false;
@@ -923,7 +927,7 @@ function mark(id){
 function resetAll(){freshMode=false;people.lea.expired=false;people.paul.nudged=null;people.lea.nudged=null;people.sam.nudged='yesterday';duos.eva.opened=false;tab=null;go('home',true)}
 
 document.getElementById('handledSteps').innerHTML=step('done','You share your link','Done!',true,'link')+step('todo','They join and connect a bank','Any bank except PayPal',true,'bank')+step('todo','You both get $3','Then you earn 10% of their cash back for a year',false,'coin');
-document.getElementById('howSteps').innerHTML=step('neutral','You share your link','Your code is added automatically',true,'link')+step('neutral','They join and connect a bank','Any bank except PayPal',true,'bank')+step('neutral','You both get $3','Then you earn 10% of their cash back for a year',false,'coin');
+document.getElementById('howSteps').innerHTML=step('neutral','You share your link','Your code is added automatically',true,'link')+step('neutral','They join and connect a bank','Any bank except PayPal',true,'bank')+step('neutral','You both get $3','Then you earn 10% of their cash back for a year',false,'coin','earn');
 paintIcons(); go('home',true);
 </script>
 </body>
