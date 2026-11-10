@@ -63,7 +63,7 @@ svg{display:block}
 .coderow{display:flex;align-items:center;gap:8px;background:var(--soft);border-radius:12px;padding:10px 12px 10px 16px}
 .coderow b{flex:1;font-size:17px;font-weight:700;letter-spacing:.04em}
 .coderow button{display:flex;align-items:center;gap:4px;font-size:14px;font-weight:600}
-#referral .scroll.has-footer{padding-bottom:210px}
+#referral .scroll.has-footer,#referrals .scroll.has-footer{padding-bottom:210px}
 .card{border-radius:var(--r);background:var(--soft);padding:16px}
 .list{border:1px solid var(--line);border-radius:var(--r);background:#fff}
 .list h3{font-size:16px;font-weight:700;padding:16px 16px 4px}
@@ -193,6 +193,11 @@ svg{display:block}
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .tile{height:120px;border-radius:16px;background:var(--soft);padding:12px;display:flex;flex-direction:column;justify-content:flex-end;font-size:15px;font-weight:600;text-align:left}
 .tile span{font-size:13px;color:#7C3AED;font-weight:600}
+.himg{display:block;width:100%;padding:0}
+.himg img{display:block;width:100%;height:auto}
+.tabbar{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:0}
+.tabbar img{display:block;width:100%;height:auto}
+#home .scroll{padding-bottom:110px}
 .perm{border:1px solid var(--line);border-radius:var(--r);padding:24px 16px;text-align:center;margin:auto 0}
 .perm h1{font-size:24px;font-weight:700;margin-top:12px;line-height:1.2}
 .perm p{font-size:15px;color:var(--ink2);margin:8px 0 16px;line-height:1.45}
@@ -324,15 +329,20 @@ svg{display:block}
           <button onclick="nope()"><i><svg-i data-i="card"></svg-i></i>Card-linked</button>
           <button onclick="nope()"><i><svg-i data-i="gift"></svg-i></i>Gift cards</button>
         </div>
-        <button class="promo" onclick="nope()"><b>Internet deal</b><span>Up to <em>30%</em> off + <em>8%</em> cash back</span></button>
+        <button class="himg" onclick="nope()" style="margin-top:20px"><img src="img/slider.jpg" alt="Red by SFR: up to 30% off + 8.3% cash back"></button>
         <div class="sect">Boosted</div>
-        <div class="tiles">
-          <button class="tile" onclick="nope()">Fashion store<span>10% cash back</span></button>
-          <button class="tile" onclick="nope()">Home &amp; garden<span>8% cash back</span></button>
-          <button class="tile" onclick="nope()">Sports<span>6% cash back</span></button>
-          <button class="tile" onclick="nope()">Travel<span>5% cash back</span></button>
-        </div>
+        <button class="himg" onclick="nope()"><img src="img/boosted.jpg" alt="Boosted offers"></button>
+        <div class="sect">Trendy</div>
+        <button class="himg" onclick="nope()"><img src="img/trendy.jpg" alt="Trendy brands"></button>
+        <button class="btn" style="border:1px solid #000;margin-top:16px" onclick="nope()">Browse merchants</button>
+        <div class="sect">Not to be missed</div>
+        <button class="himg" onclick="nope()"><img src="img/missed.jpg" alt="Offers not to be missed"></button>
+        <div class="sect">Hot deals</div>
+        <button class="himg" onclick="nope()"><img src="img/hot.jpg" alt="Hot deals"></button>
+        <div class="sect">Popular</div>
+        <button class="himg" onclick="nope()"><img src="img/popular.jpg" alt="Popular brands"></button>
       </div>
+      <button class="tabbar" onclick="nope()"><img src="img/tabbar.jpg" alt="Home, Search, Favorites, Wallet"></button>
     </section>
 
     <!-- REFERRAL -->
@@ -419,7 +429,8 @@ svg{display:block}
         </div>
         <div id="reflist"></div>
       </div>
-      <div class="footer">
+      <div class="footer" style="gap:8px">
+        <div class="coderow"><span style="font-size:13px;color:var(--ink2)">Your code</span><b>UBBAKZ</b><button onclick="copyCode(this)"><i data-i="copy" data-s="18"></i><span>Copy</span></button></div>
         <button class="btn primary" id="refCta" onclick="go('referral');setTimeout(()=>openShare('link'),250)"><i data-i="link" data-c="#fff" data-s="20"></i>Share my link</button>
       </div>
     </section>
