@@ -273,9 +273,12 @@ svg{display:block}
 .duo .lk{display:flex;justify-content:center;margin-top:10px}
 
 /* scratch */
-.full{position:absolute;inset:0;background:#fff;z-index:70;display:none;flex-direction:column;align-items:center;padding:100px 24px 40px;text-align:center}
-.full.on{display:flex}
-.full .close{position:absolute;top:56px;left:16px}
+.full,.story{position:absolute;left:0;right:0;bottom:0;top:50px;border-radius:16px 16px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.14);transform:translateY(100%);visibility:hidden;transition:transform .45s cubic-bezier(.32,.72,0,1),visibility 0s .45s;will-change:transform}
+.full.on,.story.on{transform:none;visibility:visible;transition:transform .45s cubic-bezier(.32,.72,0,1)}
+.sgrab{position:absolute;top:6px;left:50%;width:36px;height:5px;margin-left:-18px;border-radius:3px;background:#D1D1D6;z-index:3}
+.fscrim{position:absolute;inset:0;background:rgba(0,0,0,.4);z-index:69;opacity:0;pointer-events:none;transition:opacity .35s}.fscrim.on{opacity:1;pointer-events:auto}
+.full{background:#fff;z-index:70;display:flex;flex-direction:column;align-items:center;padding:52px 24px 40px;text-align:center}
+.full .close{position:absolute;top:14px;right:16px}
 .full h1{font-size:32px;font-weight:700;line-height:1.1;margin-top:12px}
 .full p{font-size:16px;color:var(--ink2);line-height:1.4;margin-top:8px}
 .bigbub{display:flex}
@@ -297,8 +300,7 @@ svg{display:block}
 @keyframes fall{to{transform:translateY(860px) rotate(540deg)}}
 
 /* stories (white) */
-.story{position:absolute;inset:0;background:#fff;z-index:75;display:none;flex-direction:column;padding:56px 24px 36px}
-.story.on{display:flex}
+.story{background:#fff;z-index:75;display:flex;flex-direction:column;padding:20px 24px 36px}
 .bars{display:flex;gap:4px}
 .bars i{flex:1;height:3px;border-radius:2px;background:#E3E3E3}
 .bars i.on{background:#000}
@@ -335,7 +337,7 @@ svg{display:block}
 .opt{background:var(--soft);border-radius:16px;padding:16px}
 .opt small{font-size:12px;font-weight:700;color:var(--green-ink);letter-spacing:.04em}
 .opt b{font-size:17px;font-weight:600;display:block;margin-top:4px;line-height:1.3}
-.tapzones{position:absolute;inset:100px 0 140px;display:grid;grid-template-columns:1fr 2fr;z-index:1}
+.tapzones{position:absolute;inset:70px 0 140px;display:grid;grid-template-columns:1fr 2fr;z-index:1}
 .story .sctas{position:relative;z-index:2;display:flex;flex-direction:column;gap:6px;align-items:center}
 
 /* ig */
@@ -453,7 +455,7 @@ svg{display:block}
 
     <!-- CONTACTS -->
     <section class="screen" id="contacts">
-      <div class="hdr"><button class="ic" onclick="back()"><i data-i="x"></i></button><h2>Invite from contacts</h2><span></span></div>
+      <div class="hdr"><span></span><h2>Invite from contacts</h2><button class="ic" onclick="back()"><i data-i="x"></i></button></div>
       <div class="scroll" style="display:flex;flex-direction:column">
         <div class="perm">
           <div style="display:flex;justify-content:center"><i data-i="idcard" data-s="40"></i></div>
@@ -551,7 +553,9 @@ svg{display:block}
     </div>
 
     <!-- SCRATCH -->
+    <div class="fscrim" id="fsScrim" onclick="closeTopSheet()"></div>
     <div class="full" id="scratch">
+      <div class="sgrab"></div>
       <button class="ic close" onclick="closeScratch()"><i data-i="x"></i></button>
       <div class="confetti" id="confetti"></div>
       <div class="bigbub"><span class="you">You</span><span id="scInit">E</span></div>
@@ -571,6 +575,7 @@ svg{display:block}
 
     <!-- STORIES (white) -->
     <div class="story" id="story">
+      <div class="sgrab"></div>
       <div class="bars" id="bars"></div>
       <div class="stop"><span>Your duo year, wrapped</span><button class="ic" onclick="closeStory()" style="width:32px;height:32px"><i data-i="x"></i></button></div>
       <div class="tapzones"><button onclick="storyNav(-1)" aria-label="Previous"></button><button onclick="storyNav(1)" aria-label="Next"></button></div>
@@ -867,6 +872,15 @@ function revealAll(){
   cf.innerHTML=Array.from({length:44},(_,i)=>`<i style="left:${Math.random()*100}%;background:${cols[i%4]};animation-delay:${Math.random()*.5}s;transform:rotate(${Math.random()*180}deg)"></i>`).join('');
   duos[currentDuo].opened=true; renderList();
 }
+function syncScrim(){const on=['scratch','story'].some(id=>document.getElementById(id).classList.contains('on')); document.getElementById('fsScrim').classList.toggle('on',on)}
+function closeTopSheet(){ if(document.getElementById('story').classList.contains('on')) closeStory(); else if(document.getElementById('scratch').classList.contains('on')) closeScratch(); }
+['scratch','story'].forEach(id=>new MutationObserver(syncScrim).observe(document.getElementById(id),{attributes:true,attributeFilter:['class']}));
+function swipeDown(el,close){let y0=null,dy=0;
+  el.addEventListener('pointerdown',e=>{const r=el.getBoundingClientRect(); if(e.clientY-r.top>64||e.target.closest('button')) return; y0=e.clientY; dy=0; el.style.transition='none'; el.setPointerCapture(e.pointerId)});
+  el.addEventListener('pointermove',e=>{if(y0===null) return; dy=Math.max(0,e.clientY-y0); el.style.transform=`translateY(${dy}px)`});
+  const end=()=>{if(y0===null) return; y0=null; el.style.transition=''; el.style.transform=''; if(dy>110) close()};
+  el.addEventListener('pointerup',end); el.addEventListener('pointercancel',end)}
+swipeDown(document.getElementById('scratch'),()=>closeScratch()); swipeDown(document.getElementById('story'),()=>closeStory());
 function closeScratch(){document.getElementById('scratch').classList.remove('on'); mark(stack[stack.length-1]); if(tab==='ended') renderList();}
 
 /* ---------- stories (white) ---------- */
