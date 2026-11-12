@@ -282,9 +282,7 @@ svg{display:block}
 .bigbub span{width:56px;height:56px;border-radius:28px;display:grid;place-items:center;font-weight:700;font-size:20px;border:3px solid #fff;background:var(--chip)}
 .bigbub span.you{font-size:15px}
 .bigbub span + span{margin-left:-12px;background:var(--chip)}
-.ticket-box{position:relative;width:311px;height:230px;border-radius:24px;overflow:hidden;margin-top:28px;background:radial-gradient(120% 90% at 30% 15%,#A6F7A9 0%,#64E86A 48%,#3CC748 100%);touch-action:none;box-shadow:0 18px 40px -12px rgba(27,140,51,.55),0 0 0 1px rgba(14,59,34,.08)}
-.flake{position:absolute;width:6px;height:4px;border-radius:1px;pointer-events:none;z-index:3;animation:flk .7s cubic-bezier(.3,.6,.5,1) forwards}
-@keyframes flk{to{transform:translate(var(--dx),70px) rotate(220deg);opacity:0}}
+.ticket-box{position:relative;width:311px;height:230px;border-radius:24px;overflow:hidden;margin-top:28px;background:var(--green-soft);touch-action:none}
 .ticket-box .rv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
 .ticket-box .rv b{font-size:60px;font-weight:700;letter-spacing:-.02em;line-height:1}
 .ticket-box .rv span{font-size:16px;font-weight:600}
@@ -811,47 +809,19 @@ function openAnswer(k){document.getElementById('ansT').textContent=answers[k][0]
 /* ---------- scratch ---------- */
 let scratched=false, scCtx, drawing=false, foil, mask, mCtx, shineT0=0, raf=0, glint=null;
 const W=622,H=460;
-function sparkle(c,x,y,r,a){c.save();c.globalAlpha=a;c.fillStyle='#fff';c.beginPath();c.moveTo(x,y-r);c.quadraticCurveTo(x,y,x+r,y);c.quadraticCurveTo(x,y,x,y+r);c.quadraticCurveTo(x,y,x-r,y);c.quadraticCurveTo(x,y,x,y-r);c.fill();c.restore()}
 function buildFoil(){
   foil=document.createElement('canvas'); foil.width=W; foil.height=H; const c=foil.getContext('2d');
-  // metallic green bands
-  const g=c.createLinearGradient(0,0,W,H);
-  [[0,'#0E3B22'],[.18,'#1B6B3B'],[.34,'#3FBF5A'],[.46,'#9BF29E'],[.56,'#2E9E4E'],[.72,'#145530'],[.86,'#4ACB63'],[1,'#123F26']].forEach(([o,col])=>g.addColorStop(o,col));
+  const g=c.createLinearGradient(0,0,W,H); g.addColorStop(0,'#55DF5C'); g.addColorStop(.5,'#7AEE80'); g.addColorStop(1,'#55DF5C');
   c.fillStyle=g; c.fillRect(0,0,W,H);
-  // holographic blobs
-  c.globalCompositeOperation='screen';
-  [[130,90,190,'rgba(216,255,122,.35)'],[500,380,220,'rgba(120,255,214,.28)'],[470,70,140,'rgba(191,242,193,.30)'],[90,400,150,'rgba(100,232,106,.30)']].forEach(([x,y,r,col])=>{const rg=c.createRadialGradient(x,y,0,x,y,r);rg.addColorStop(0,col);rg.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=rg;c.fillRect(0,0,W,H)});
-  c.globalCompositeOperation='source-over';
-  // brushed lines
-  c.strokeStyle='rgba(255,255,255,.06)'; c.lineWidth=1.5;
-  for(let i=-H;i<W;i+=7){c.beginPath();c.moveTo(i,0);c.lineTo(i+H,H);c.stroke()}
-  // glitter
-  for(let i=0;i<320;i++){c.fillStyle=`rgba(255,255,255,${(Math.random()*.55+.1).toFixed(2)})`;const s=Math.random()*2.4+.6;c.fillRect(Math.random()*W,Math.random()*H,s,s)}
-  // ticket border
-  c.setLineDash([10,9]); c.strokeStyle='rgba(255,255,255,.45)'; c.lineWidth=2.5; c.beginPath(); c.roundRect(22,22,W-44,H-44,30); c.stroke(); c.setLineDash([]);
-  // sparkles
-  [[90,95,16,.9],[540,120,11,.8],[120,360,10,.7],[520,360,18,.95],[300,70,8,.6],[440,400,7,.6]].forEach(a=>sparkle(c,...a));
-  // coin
-  const cx=W/2, cy=180; c.save(); c.shadowColor='rgba(6,40,20,.45)'; c.shadowBlur=14; c.shadowOffsetY=5;
-  const cg=c.createLinearGradient(cx-34,cy-34,cx+34,cy+34); cg.addColorStop(0,'#F4FFF4'); cg.addColorStop(.5,'#BFF2C1'); cg.addColorStop(1,'#7FD98A');
-  c.fillStyle=cg; c.beginPath(); c.arc(cx,cy,34,0,Math.PI*2); c.fill(); c.restore();
-  c.strokeStyle='rgba(27,140,51,.5)'; c.lineWidth=3; c.beginPath(); c.arc(cx,cy,26,0,Math.PI*2); c.stroke();
-  c.fillStyle='#1B8C33'; c.font='700 36px Instrument Sans, sans-serif'; c.textAlign='center'; c.textBaseline='middle'; c.fillText('$',cx,cy+2);
-  // label, embossed
-  c.font='700 40px Instrument Sans, sans-serif'; c.textBaseline='alphabetic';
-  c.fillStyle='rgba(6,40,20,.45)'; c.fillText('SCRATCH HERE',cx,282);
-  c.fillStyle='#fff'; c.fillText('SCRATCH HERE',cx,279);
-  c.font='600 22px Instrument Sans, sans-serif'; c.fillStyle='rgba(255,255,255,.8)'; c.fillText('Your total is hiding under the foil',cx,322);
+  c.fillStyle='#000'; c.textAlign='center'; c.font='700 36px Instrument Sans, sans-serif'; c.fillText('SCRATCH HERE',W/2,H/2+12);
 }
 function drawFoil(t){
   const c=scCtx; c.globalCompositeOperation='source-over'; c.clearRect(0,0,W,H); c.drawImage(foil,0,0);
   // sweeping shine band
-  const cyc=3200, p=((t-shineT0)%cyc)/cyc, x=-260+p*1.6*(W+520);
+  const cyc=4200, p=((t-shineT0)%cyc)/cyc, x=-260+p*1.6*(W+520);
   c.save(); c.globalCompositeOperation='lighter'; c.translate(x,0); c.transform(1,0,-.55,1,0,0);
-  const sg=c.createLinearGradient(-90,0,90,0); sg.addColorStop(0,'rgba(255,255,255,0)'); sg.addColorStop(.45,'rgba(220,255,200,.32)'); sg.addColorStop(.5,'rgba(255,255,255,.5)'); sg.addColorStop(.55,'rgba(200,255,230,.32)'); sg.addColorStop(1,'rgba(255,255,255,0)');
+  const sg=c.createLinearGradient(-90,0,90,0); sg.addColorStop(0,'rgba(255,255,255,0)'); sg.addColorStop(.5,'rgba(255,255,255,.28)'); sg.addColorStop(1,'rgba(255,255,255,0)');
   c.fillStyle=sg; c.fillRect(-90,0,180,H+300); c.restore();
-  // glint following the finger
-  if(glint){c.save(); c.globalCompositeOperation='lighter'; const rg=c.createRadialGradient(glint.x,glint.y,0,glint.x,glint.y,140); rg.addColorStop(0,'rgba(200,255,210,.45)'); rg.addColorStop(1,'rgba(0,0,0,0)'); c.fillStyle=rg; c.fillRect(0,0,W,H); c.restore()}
   c.globalCompositeOperation='destination-out'; c.drawImage(mask,0,0); c.globalCompositeOperation='source-over';
 }
 function loop(t){ if(scratched) return; drawFoil(t); raf=requestAnimationFrame(loop) }
@@ -871,16 +841,10 @@ function openScratch(k){
   cancelAnimationFrame(raf); shineT0=performance.now(); raf=requestAnimationFrame(loop);
   document.getElementById('scratch').classList.add('on'); mark('scratch');
 }
-let lastFlake=0;
-function flakes(e){
-  const now=Date.now(); if(now-lastFlake<45) return; lastFlake=now;
-  const host=document.getElementById('scratch'), r=host.getBoundingClientRect(), cols=['#1B6B3B','#64E86A','#BFF2C1','#3FBF5A'];
-  for(let i=0;i<2;i++){const f=document.createElement('i'); f.className='flake'; f.style.left=(e.clientX-r.left)+'px'; f.style.top=(e.clientY-r.top)+'px'; f.style.background=cols[(Math.random()*4)|0]; f.style.setProperty('--dx',(Math.random()*40-20)+'px'); host.appendChild(f); setTimeout(()=>f.remove(),720)}
-}
 function scratchAt(e){
   if(scratched) return; const c=document.getElementById('scCanvas'); const r=c.getBoundingClientRect();
   const x=(e.clientX-r.left)*(W/r.width), y=(e.clientY-r.top)*(H/r.height);
-  mCtx.beginPath(); mCtx.arc(x,y,38,0,Math.PI*2); mCtx.fill(); glint={x,y}; drawFoil(performance.now()); flakes(e);
+  mCtx.beginPath(); mCtx.arc(x,y,38,0,Math.PI*2); mCtx.fill(); drawFoil(performance.now());
   if(navigator.vibrate && navigator.userActivation && navigator.userActivation.hasBeenActive && e.isTrusted) try{navigator.vibrate(5)}catch(_){}
   document.getElementById('scHint').textContent='Keep going…';
 }
