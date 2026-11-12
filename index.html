@@ -645,6 +645,7 @@ const people={
  paul:{n:'Paul Martin',i:'P',tab:'pending',status:'nobank',signed:'Nov 3',nudged:null},
  lea:{n:'Léa Dubois',i:'L',tab:'pending',status:'invited',invited:'Nov 6',expires:'Dec 6',daysLeft:26,nudged:null,expired:false},
  sam:{n:'Sam Petit',i:'S',tab:'pending',status:'nobank',signed:'Oct 27',nudged:'yesterday'},
+ john:{n:'John Lee',i:'J',tab:'pending',status:'private',signed:'Nov 8',nudged:null},
  nina:{n:'Nina Roy',i:'N',tab:'earning',earned:'$14.20',left:'8 months left'},
  tom:{n:'Tom Garcia',i:'T',tab:'earning',earned:'$9.85',left:'2 months left'}
 };
@@ -666,7 +667,7 @@ const needsAction=()=>Object.values(people).some(p=>p.tab==='pending'&&!p.nudged
 function setTab(t){tab=t;document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));renderList();
   const cta=document.getElementById('refCta'); cta.innerHTML=(t==='ended'?'Start a new duo':svg('link',20,'#fff')+'Share my link');}
 document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setTab(b.dataset.t)});
-function statusPill(p){return p.status==='invited'?`<span class="pill">${svg('clock',16)}Invited</span>`:`<span class="pill">${svg('bank',16)}No bank yet</span>`}
+function statusPill(p){return p.status==='private'?`<span class="pill">${svg('lock',16)}Private</span>`:p.status==='invited'?`<span class="pill">${svg('clock',16)}Invited</span>`:`<span class="pill">${svg('bank',16)}No bank yet</span>`}
 function renderList(){
   const el=document.getElementById('reflist');
   document.getElementById('amtTotal').innerHTML=freshMode?'$0<small>.00</small>':'$90<small>.38</small>';
@@ -705,6 +706,15 @@ function openDetails(k,rowEl){
   const nb=document.getElementById('nudgeBtn'), help=document.getElementById('helpBtn');
   if(p.tab==='pending'){
     body+=`<div class="list" style="margin-bottom:16px"><div class="kv"><span>You've earned</span><span>$0 so far</span></div><div class="kv"><span>Next reward</span><span>$3 for you, $3 for ${first}</span></div></div>`;
+    if(p.status==='private'){
+      body+=`<div class="card" style="padding:16px"><div style="display:flex;gap:10px;align-items:center"><span>${svg('lock',20)}</span><div style="font-size:16px;font-weight:700">${first} keeps their progress private</div></div><div class="small" style="margin-top:6px">You'll see it here when your $3 arrives. Your rewards don't change.</div></div>`;
+      body+=`<div class="note">You can still send ${first} one nudge every 3 days.</div>`;
+      nb.style.display=''; nb.disabled=!!p.nudged; nb.textContent=p.nudged?`Nudged ${p.nudged}`:`Send ${first} a nudge`;
+      help.textContent='Questions? Get help'; help.onclick=()=>toast('Help center would open here');
+      document.getElementById('detailBody').innerHTML=body;
+      if(rowEl && isOn('referrals')) pushTo('details', rowEl.querySelector('.avatar')); else go('details');
+      return;
+    }
     const inv=p.status==='invited';
     const s1=inv?'now':'done', s2=inv?'todo':'now';
     body+=`<div class="list tl"><h3>${first}'s progress</h3>
@@ -1003,7 +1013,7 @@ function rollPage(id){
 const flow=[
  ['Entry points',[['home','0a','Home · “Share & earn”'],['cashback','0b','After a cash back']]],
  ['Understand and share',[['referral','1','Referral page'],['contacts','2','Before contacts access'],['share','3','Share sheet'],['next','4','We handle the rest']]],
- ['Track and nudge',[['pending','5','My referrals · Pending'],['earning','5a','My referrals · Earning'],['fresh','5b','Link opened, nobody joined'],['details','6','Referral details'],['lea','6a','Invited via contacts'],['expired','6b','Invite expired'],['nudge','7','Nudge sheet']]],
+ ['Track and nudge',[['pending','5','My referrals · Pending'],['earning','5a','My referrals · Earning'],['fresh','5b','Link opened, nobody joined'],['details','6','Referral details'],['lea','6a','Invited via contacts'],['expired','6b','Invite expired'],['john','6c','Progress kept private'],['nudge','7','Nudge sheet']]],
  ['Celebrate',[['ended','8','My referrals · Ended'],['scratch','9','Scratch to reveal'],['story','10','Recap stories'],['ig','11','Share to a story']]]
 ];
 document.getElementById('flow').innerHTML=flow.map(([g,items])=>`<div class="grp">${g}</div>`+items.map(([id,n,l])=>`<button data-j="${id}"><span>${n}</span>${l}</button>`).join('')).join('');
@@ -1015,6 +1025,7 @@ function jump(id){
   freshMode=false; people.lea.expired=false;
   if(id==='fresh'){freshMode=true;go('referrals',true);setTab('pending');mark('fresh');return}
   if(id==='lea'){people.lea.nudged=null;go('referrals',true);setTab('pending');openDetails('lea');mark('lea');return}
+  if(id==='john'){people.john.nudged=null;go('referrals',true);setTab('pending');openDetails('john');mark('john');return}
   if(id==='expired'){people.lea.expired=true;go('referrals',true);setTab('pending');mark('expired');return}
   if(['pending','earning','ended'].includes(id)){if(id==='ended')duos.eva.opened=false;go('referrals',true);setTab(id);mark(id);return}
   if(id==='details'){people.paul.nudged=null;go('referrals',true);setTab('pending');openDetails('paul');return}
@@ -1028,7 +1039,7 @@ function mark(id){
   let m=id; if(id==='referrals') m=tab; if(id==='scratch'||id==='story'||id==='ig'||id==='nudge') m=id;
   document.querySelectorAll('#flow button').forEach(b=>b.classList.toggle('on',b.dataset.j===m));
 }
-function resetAll(){freshMode=false;people.lea.expired=false;people.paul.nudged=null;people.lea.nudged=null;people.sam.nudged='yesterday';duos.eva.opened=false;tab=null;go('home',true)}
+function resetAll(){freshMode=false;people.lea.expired=false;people.paul.nudged=null;people.lea.nudged=null;people.sam.nudged='yesterday';people.john.nudged=null;duos.eva.opened=false;tab=null;go('home',true)}
 
 document.getElementById('handledSteps').innerHTML=step('done','You share your link','Done!',true,'link')+step('todo','They join and connect a bank','Any bank except PayPal',true,'bank')+step('todo','You both get $3','Then you earn 10% of their cash back for a year',false,'coin');
 document.getElementById('howSteps').innerHTML=step('neutral','You share your link','Your code is added automatically',true,'link')+step('neutral','They join and connect a bank','Any bank except PayPal',true,'bank')+step('neutral','You both get $3','Then you earn 10% of their cash back for a year',false,'coin','earn');
