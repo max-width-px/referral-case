@@ -76,6 +76,10 @@ svg{display:block}
 .row.top{align-items:flex-start}
 .avatar{width:48px;height:48px;border-radius:24px;background:var(--chip);display:grid;place-items:center;font-weight:700;font-size:18px;flex-shrink:0}
 .avatar.lg{width:64px;height:64px;border-radius:32px;font-size:24px}
+.fhero{text-align:center;padding:8px 8px 20px}.fhero h1{font-size:24px;font-weight:700;margin-top:12px;line-height:1.2}.fhero p{font-size:15px;color:var(--ink2);line-height:1.4;margin-top:6px}
+.fbox{border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:12px;background:#fff}.fbox h3{font-size:16px;font-weight:700;margin-bottom:12px}
+.consent{background:var(--soft);border-radius:var(--r);padding:16px;margin-bottom:12px}.consent .sorow{margin-bottom:12px}
+.consent .ln{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--ink2);padding-top:8px}.consent .ln:first-of-type{border-top:1px solid var(--line);padding-top:12px}
 .pill{display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 9px;border-radius:999px;background:var(--chip);font-size:13px;font-weight:500;white-space:nowrap;flex-shrink:0}
 .pill svg{width:14px;height:14px}
 .amt{font-size:18px;font-weight:700;white-space:nowrap}
@@ -512,7 +516,43 @@ svg{display:block}
       </div>
     </section>
 
+    <!-- FRIEND SIDE · R1 welcome -->
+    <section class="screen" id="welcome">
+      <div class="hdr"><button class="ic" onclick="back()"><i data-i="chevl"></i></button><h2>Welcome</h2><span></span></div>
+      <div class="scroll has-footer">
+        <div class="fhero"><div class="avatar lg" style="margin:0 auto">A</div><h1>Alex sent you $3</h1><p>Join Joko and connect a bank: you both get $3. Then shop with cash back as usual.</p></div>
+        <div class="fbox"><h3>How to get your $3</h3><div id="welcomeSteps"></div></div>
+        <div class="consent" id="consentR1"></div>
+      </div>
+      <div class="footer">
+        <button class="btn primary" onclick="claimThree()">Claim my $3</button>
+        <button class="btn tertiary" onclick="toast('Sign in would open here')">I already have an account</button>
+      </div>
+    </section>
+
+    <!-- FRIEND SIDE · R3 referral settings -->
+    <section class="screen" id="friendref">
+      <div class="hdr"><button class="ic" onclick="back()"><i data-i="chevl"></i></button><h2>Referral</h2><span></span></div>
+      <div class="scroll">
+        <div class="fhero"><div class="avatar lg" style="margin:0 auto">A</div><h1>Invited by Alex</h1><p>Joined Nov 3 · $3 each once your bank is connected</p></div>
+        <div class="consent" id="consentR3"></div>
+        <div class="card"><b style="font-size:15px;display:block">Turning it off changes nothing to your rewards</b><span style="font-size:14px;color:var(--ink2);line-height:1.4;display:block;margin-top:4px">You both still get $3, and Alex still earns 10% of your cash back for a year. Alex just stops seeing your progress.</span></div>
+      </div>
+    </section>
+
     <div class="scrim" id="scrim" onclick="closeSheets()"></div>
+
+    <!-- FRIEND SIDE · R2 reminder -->
+    <div class="sheet app" id="waiting">
+      <div class="grab"></div>
+      <h2 style="font-size:24px;font-weight:700;line-height:1.2">Your $3 from Alex is waiting</h2>
+      <p style="font-size:15px;color:var(--ink2);line-height:1.4;margin:6px 0 18px">Connect a bank to get it. Alex gets $3 too, and nothing is taken from you.</p>
+      <div id="waitingSteps"></div>
+      <div style="display:flex;flex-direction:column;gap:4px;margin-top:8px">
+        <button class="btn primary" onclick="closeSheets();setTimeout(()=>toast('Bank connection would open here'),200)">Connect a bank</button>
+        <button class="btn tertiary" onclick="closeSheets()">Later</button>
+      </div>
+    </div>
 
     <!-- NATIVE SHARE SHEET -->
     <div class="sheet ios" id="share">
@@ -1029,18 +1069,38 @@ function rollPage(id){
   if(id==='referrals'){ const el=document.getElementById('amtTotal'); if(freshMode){ rollTo(el,'$0.00',2); settle(el,'$0.00',2);} else { rollTo(el,'$90.38',3); settle(el,'$90.38',3);} }
 }
 
+/* ---------- friend side ---------- */
+let consentOn={R1:true,R3:false};
+function consentHTML(k){const on=consentOn[k];
+  const sub=k==='R1'?'On by default. You can change it anytime in your Profile.':(on?'On. Alex sees your progress.':'Off. Alex only sees that you joined.');
+  return `<div class="sorow"><div><b>Let Alex see your progress</b><small>${sub}</small></div><button class="tgl${on?' on':''}" onclick="toggleConsent('${k}')" aria-label="Let Alex see your progress"></button></div>
+  <div class="ln">${svg('checkc',16,'#1B8C33')}Alex sees: joined, bank connected, $3 received</div>
+  <div class="ln">${svg('lock',16,'#747474')}Never your purchases, brands or amounts</div>`}
+function toggleConsent(k){consentOn[k]=!consentOn[k]; document.getElementById('consent'+k).innerHTML=consentHTML(k)}
+function renderFriend(){
+  document.getElementById('consentR1').innerHTML=consentHTML('R1'); document.getElementById('consentR3').innerHTML=consentHTML('R3');
+  document.getElementById('welcomeSteps').innerHTML=step('now','Join Joko','Takes a minute',true,'userplus')+step('todo','Connect a bank','Any bank except PayPal',true,'bank')+step('todo','You both get $3','Alex gets $3 too',false,'coin');
+  document.getElementById('waitingSteps').innerHTML=step('done','Joined','Nov 3',true,'userplus')+step('now','Connect a bank','Any bank except PayPal',true,'bank')+step('todo','You both get $3','Right after',false,'coin');
+}
+renderFriend();
+function claimThree(){go('home',true);setTimeout(()=>{openSheet('waiting');mark('waiting')},250)}
+
 /* ---------- side panel ---------- */
 const flow=[
  ['Entry points',[['home','0a','Home · “Share & earn”'],['cashback','0b','After a cash back']]],
  ['Understand and share',[['referral','1','Referral page'],['contacts','2','Before contacts access'],['share','3','Share sheet'],['next','4','We handle the rest']]],
  ['Track and nudge',[['pending','5','My referrals · Pending'],['earning','5a','My referrals · Earning'],['fresh','5b','Link opened, nobody joined'],['details','6','Referral details'],['lea','6a','Invited via contacts'],['expired','6b','Invite expired'],['john','6c','Progress kept private'],['nudge','7','Nudge sheet']]],
- ['Celebrate',[['ended','8','My referrals · Ended'],['scratch','9','Scratch to reveal'],['story','10','Recap stories'],['ig','11','Share to a story']]]
+ ['Celebrate',[['ended','8','My referrals · Ended'],['scratch','9','Scratch to reveal'],['story','10','Recap stories'],['ig','11','Share to a story']]],
+ ['Friend side',[['welcome','R1','Joins via Alex’s link'],['waiting','R2','“Your $3 is waiting”'],['friendref','R3','Privacy setting'],['john','R4','Alex’s view · private']]]
 ];
 document.getElementById('flow').innerHTML=flow.map(([g,items])=>`<div class="grp">${g}</div>`+items.map(([id,n,l])=>`<button data-j="${id}"><span>${n}</span>${l}</button>`).join('')).join('');
 document.getElementById('flow').addEventListener('click',e=>{const b=e.target.closest('button');if(b)jump(b.dataset.j)});
 function jump(id){
   shareMode='link'; document.getElementById('toast').classList.remove('on');
   if(id==='cashback'){go('home',true);setTimeout(()=>openSheet('cashback'),150);return}
+  if(id==='welcome'){consentOn.R1=true;renderFriend();go('home',true);go('welcome');return}
+  if(id==='waiting'){go('home',true);setTimeout(()=>{openSheet('waiting');mark('waiting')},150);return}
+  if(id==='friendref'){consentOn.R3=false;renderFriend();go('home',true);go('friendref');return}
   if(id==='share'){go('referral',true);setTimeout(()=>openShare('link'),150);return}
   freshMode=false; people.lea.expired=false;
   if(id==='fresh'){freshMode=true;go('referrals',true);setTab('pending');mark('fresh');return}
