@@ -698,7 +698,7 @@ function renderEnded(){
     if(!d.opened){
       h+=`<div class="duo ticket${d.justEnded?' fresh':''}">${head}<div class="perf"></div><div class="tz">Your year with ${d.n} is complete. Reveal how much you earned together.</div><button class="btn primary" onclick="openScratch('${k}')">${svg('giftstar',18,'#fff')}Reveal your total</button></div>`;
     } else {
-      h+=`<div class="duo">${head}<div class="amts"><div><b>${d.you}</b><span>for you</span></div><i></i><div class="tg"><b>${d.together}</b><span>together</span></div></div><button class="btn secondary" onclick="openStory('${k}',0)">Open your recap</button><div class="lk"><button class="link" onclick="openStory('${k}',99,true);setTimeout(openOpts,250)">${svg('share',16)}Share your story</button></div></div>`;
+      h+=`<div class="duo">${head}<div class="amts"><div><b>${d.you}</b><span>for you</span></div><i></i><div class="tg"><b>${d.together}</b><span>together</span></div></div><button class="btn secondary" onclick="openStory('${k}',0)">Open your recap</button><div class="lk"><button class="link" onclick="sDuo='${k}';openOpts()">${svg('share',16)}Share your story</button></div></div>`;
     }
   }
   return h;
@@ -888,7 +888,7 @@ function closeScratchSilently(){document.getElementById('scratch').classList.rem
 function renderStory(){const d=duos[sDuo]; const s=slides(d); document.getElementById('story').style.background=sIdx===0?'#E6FBE7':'#fff';
   document.getElementById('bars').innerHTML=s.map((_,i)=>`<i class="${i<=sIdx?'on':''}"></i>`).join('');
   document.getElementById('sbody').innerHTML=s[sIdx];
-  document.getElementById('sctas').innerHTML= sIdx===s.length-1? `<button class="btn primary" onclick="openOpts()">${svg('share',18,'#fff')}Share your recap</button><button class="btn tertiary" onclick="closeStory();go('referral');setTimeout(()=>openShare('link'),250)">Invite a new friend</button>`:'';
+  document.getElementById('sctas').innerHTML= sIdx===s.length-1? `<button class="btn primary" onclick="closeStory();setTimeout(openOpts,320)">${svg('share',18,'#fff')}Share your recap</button><button class="btn tertiary" onclick="closeStory();go('referral');setTimeout(()=>openShare('link'),250)">Invite a new friend</button>`:'';
 }
 function storyNav(dir){const n=slides(duos[sDuo]).length; sIdx=Math.max(0,Math.min(n-1,sIdx+dir)); renderStory();}
 function closeStory(){document.getElementById('story').classList.remove('on'); mark(stack[stack.length-1]); renderList();}
@@ -1052,7 +1052,7 @@ function jump(id){
   if(id==='nudge'){people.paul.nudged=null;go('referrals',true);setTab('pending');openDetails('paul');setTimeout(()=>openNudge('paul'),150);return}
   if(id==='scratch'){duos.eva.opened=false;go('referrals',true);setTab('ended');openScratch('eva');return}
   if(id==='story'){duos.eva.opened=true;go('referrals',true);setTab('ended');openStory('eva',0);return}
-  if(id==='ig'){duos.eva.opened=true;go('referrals',true);setTab('ended');openStory('eva',99,true);return}
+  if(id==='ig'){duos.eva.opened=true;go('referrals',true);setTab('ended');sDuo='eva';openIg();return}
   go(id,true);
 }
 function mark(id){
